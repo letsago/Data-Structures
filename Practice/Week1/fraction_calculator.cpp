@@ -1,4 +1,7 @@
-// a fraction calculator
+// A fraction calculator that allows user to create fractions 
+// by entering numerators and denominators as integers,
+// and then performing basic arithmetic operations on those fractions.
+// Dividing by 0 will raise a floating point exception.
 
 #include <iostream>
 using namespace std;
@@ -72,7 +75,9 @@ char getOperator()
         char op;
         std::cin >> op;
  
-        std::cin.ignore(32767,'\n'); // ignores all following bad input if first part of input is valid
+        std::cin.ignore(32767,'\n');    // ignores the invalid cleared input, 
+                                        // 32767 is used because it is the largest number to 
+                                        // safely be represented in a 2-byte integer on all platforms 
  
         // check whether the user entered meaningful input
         if (op == '+' || op == '-' || op == '*' || op == '/' || op == '=')    
@@ -92,23 +97,24 @@ int getInt()
         std::cin >> x;
 
         // check for failed extraction
-        if (std::cin.fail()) // has a previous extraction failed?
+        if (std::cin.fail())
         {
             std::cin.clear(); // put us back in 'normal' operation mode
-            std::cin.ignore(32767,'\n');    // ignores the invalid cleared input, 
-                                            // 32767 is the largest number to safely be represented 
-                                            // in a 2-byte integer on all platforms 
+            std::cin.ignore(32767,'\n');    // ignores the invalid cleared input up to 32767 characters, 
+                                            // 32767 is used because it is the largest number to 
+                                            // safely be represented in a 2-byte integer on all platforms 
             std::cout << "Oops, that input is invalid.  Please try again.\n";
         }
         else
         {
-            std::cin.ignore(32767,'\n'); // ignores following bad input if first part of input is valid
+            std::cin.ignore(32767,'\n');    // ignores invalid input up to 32767 characters
+                                            // see above for why 32767 is used
             return x;
         }
     }
 }
 
-// uses getInt() to extract numerator and denominators of Fraction struct
+// uses getInt() to extract numerator and denominators of Fraction struct 
 Fraction getFraction()
 {
     Fraction frac;
@@ -117,27 +123,75 @@ Fraction getFraction()
     return frac;
 }
 
+// uses Euclid's algorithm to calculatee the greatest common denominator between numerator and denominator 
+// and returns simplified fraction
+Fraction simplifyFraction(Fraction frac)
+{
+    int numerator = frac.numerator;
+    int denominator = frac.denominator;
+    int remainder = numerator % denominator;
+    int gcd = 1; // greatest common denominator
+    Fraction simplified_frac;
+
+    if (remainder == 0)
+    {
+        gcd = denominator;
+        simplified_frac.numerator = frac.numerator / gcd;
+        simplified_frac.denominator = frac.denominator / gcd;
+        return simplified_frac;
+    }
+
+    if (remainder == 1)
+        return frac;
+
+    numerator = frac.denominator;
+    denominator = remainder;
+    remainder = numerator % denominator;
+
+    while (remainder >= 2)
+    {
+        numerator = denominator;
+        denominator = remainder;
+        remainder = numerator % denominator;
+    }
+
+    if (remainder == 0)
+    {
+        gcd = denominator;
+        simplified_frac.numerator = frac.numerator / gcd;
+        simplified_frac.denominator = frac.denominator / gcd;
+        return simplified_frac;
+    }
+
+    if (remainder == 1)
+        return frac;
+}
+
 // pointer input that is deferenced and prints out fraction in numerator/denominator format
 void printFraction(const Fraction* frac)
 {
     Fraction f;
     f = *frac;
-    cout << f.numerator << "/" << f.denominator << "\n";
+    if (f.denominator == 1) // if denominator equals 1, will only print numerator
+        cout << f.numerator << "\n";
+    else 
+        cout << f.numerator << "/" << f.denominator << "\n";
 }
 
 int main()
 {
-    char op;
     Fraction f1, f2, result;
     f1 = getFraction();
+    f1 = simplifyFraction(f1);
     Fraction *ptr1 = &f1;
     Fraction *ptr_result = &result; //retrieve pointers to later printFraction
+    char op;
     
     do 
     {
         op = getOperator();
 
-        // main.cpp returns and outputs last result if user inputs = as op
+        // main() returns and outputs last result if user inputs = as op
         if (op == '=')
             {
             printFraction(ptr1);
@@ -147,6 +201,7 @@ int main()
         f2 = getFraction();
 
         result = calculate(f1, f2, op);
+        result = simplifyFraction(result);
         printFraction(ptr_result); // result continues to update per operation
         
         f1 = result; // results becomes new fraction 1 for later calculations
