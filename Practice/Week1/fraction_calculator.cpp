@@ -13,7 +13,9 @@ struct Fraction
     int denominator;
 };
 
-Fraction add(Fraction f1, Fraction f2)
+// All subsequent Fraction struct function parameters are passed using const 
+// references in order to avoid making unnecessary expensive copies of variables
+Fraction add(const Fraction &f1, const Fraction &f2)
 {
     Fraction f3;
     f3.numerator = ((f1.numerator * f2.denominator) + (f2.numerator * f1.denominator));
@@ -21,7 +23,7 @@ Fraction add(Fraction f1, Fraction f2)
     return f3; 
 }
 
-Fraction subtract(Fraction f1, Fraction f2)
+Fraction subtract(const Fraction &f1, const Fraction &f2)
 {
     Fraction f3;
     f3.numerator = ((f1.numerator * f2.denominator) - (f2.numerator * f1.denominator));
@@ -29,7 +31,7 @@ Fraction subtract(Fraction f1, Fraction f2)
     return f3; 
 }
 
-Fraction multiply(Fraction f1, Fraction f2)
+Fraction multiply(const Fraction &f1, const Fraction &f2)
 {
     Fraction f3;
     f3.numerator = (f1.numerator * f2.numerator);
@@ -37,7 +39,7 @@ Fraction multiply(Fraction f1, Fraction f2)
     return f3; 
 }
 
-Fraction divide(Fraction f1, Fraction f2)
+Fraction divide(const Fraction &f1, const Fraction &f2)
 {
     Fraction f3;
     f3.numerator = (f1.numerator * f2.denominator);
@@ -45,24 +47,24 @@ Fraction divide(Fraction f1, Fraction f2)
     return f3; 
 }
 
-Fraction calculate(Fraction frac1, Fraction frac2, char op)
+Fraction calculate(const Fraction &f1, const Fraction &f2, char op)
 {
     switch(op)
     {
         case '+':
-            add(frac1, frac2);
+            add(f1, f2);
             break;
 
         case '-':
-            subtract(frac1, frac2);
+            subtract(f1, f2);
             break;
 
         case '*':
-            multiply(frac1, frac2);
+            multiply(f1, f2);
             break;
 
         case '/':
-            divide(frac1, frac2);
+            divide(f1, f2);
             break;
     }
 }
@@ -126,7 +128,7 @@ Fraction getFraction()
 
 // uses Euclid's algorithm to calculate the greatest common denominator between numerator and denominator 
 // and returns simplified fraction
-Fraction simplifyFraction(Fraction frac)
+Fraction simplifyFraction(const Fraction &frac)
 {
     int numerator = abs(frac.numerator); 
     int denominator = abs(frac.denominator);
@@ -147,7 +149,7 @@ Fraction simplifyFraction(Fraction frac)
     if (remainder == 1)
         return frac;
 
-    numerator = frac.denominator;
+    numerator = abs(frac.denominator);          // must be non-negative
     denominator = remainder;
     remainder = numerator % denominator;
 
@@ -175,10 +177,22 @@ void printFraction(const Fraction* frac)
 {
     Fraction f;
     f = *frac;
-    if (f.denominator == 1) // if denominator equals 1, will only print numerator
-        cout << f.numerator << "\n";
-    else 
-        cout << f.numerator << "/" << f.denominator << "\n";
+    if (abs(f.denominator) == 1) 
+    {
+        if (f.denominator > 0)              // if denominator equals 1, will only print numerator
+            cout << f.numerator << "\n"; 
+        else                                // if denominator equals -1, will only print -(numerator)
+            cout << -(f.numerator) << "\n";
+    }
+    else
+    {
+        if (f.denominator < 0)              // if denominator is negative and not equal to -1, 
+                                            // will print fraction with negative numerator instead
+            cout << -(f.numerator) << "/" << -(f.denominator) << "\n";
+        else                                // if denominator is positive and not equal to 1,
+                                            // will print fraction normally
+            cout << f.numerator << "/" << f.denominator << "\n";
+    }
 }
 
 int main()
