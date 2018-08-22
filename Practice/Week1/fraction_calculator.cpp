@@ -4,6 +4,7 @@
 // Dividing by 0 will raise a floating point exception.
 
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 struct Fraction
@@ -123,13 +124,15 @@ Fraction getFraction()
     return frac;
 }
 
-// uses Euclid's algorithm to calculatee the greatest common denominator between numerator and denominator 
+// uses Euclid's algorithm to calculate the greatest common denominator between numerator and denominator 
 // and returns simplified fraction
 Fraction simplifyFraction(Fraction frac)
 {
-    int numerator = frac.numerator;
-    int denominator = frac.denominator;
-    int remainder = numerator % denominator;
+    int numerator = abs(frac.numerator); 
+    int denominator = abs(frac.denominator);
+    int remainder = numerator % denominator;    // since numerator and denominator are non-negative, 
+                                                // remainder will also be non-negative
+                                                // which allows Euclid's algorithm to correctly operate
     int gcd = 1; // greatest common denominator
     Fraction simplified_frac;
 
