@@ -32,6 +32,7 @@ bool SampleUnitTests::CompareTest()
     const char str[] = "hiya";
     MyVector<char> A(str, sizeof(str));
     VERIFY_TRUE(compare(A, str));
+    return true;
 }
 
 bool SampleUnitTests::NullTest()
