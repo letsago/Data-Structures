@@ -2,6 +2,7 @@
 
 bool isAlphabet(const char entry)
 {
+    // - and ' are treated as valid characters using same rules as Lingojam's piglatin translator found online
     if ((entry >= 'a' && entry <= 'z') || (entry >= 'A' && entry <= 'Z') || entry == '\'' || entry == '-')
         return true;
     else
@@ -10,24 +11,20 @@ bool isAlphabet(const char entry)
 
 bool isVowel(const char entry)
 {
-    const char validchars[] = "aeiouAEIOU-";
-    for (int i = 0; i < sizeof(validchars) - 1; ++i)
-    {
-        if (entry == validchars[i])
-            return true;
-    }
+    char lower_entry = tolower(entry);
+
+    // - is treated as a vowel using same rules as Lingojam's piglatin translator found online
+    if (lower_entry == 'a' || lower_entry == 'e' || lower_entry == 'i' || lower_entry == 'o' ||
+        lower_entry == 'u' || lower_entry == '-')
+        return true;
 
     return false;
 }
 
 bool isPunctuation(const char entry)
 {
-    const char validchars[] = ".?!,";
-    for (int i = 0; i < sizeof(validchars) - 1; ++i)
-    {
-        if (entry == validchars[i])
-            return true;
-    }
+    if (entry == '.' || entry == '?' || entry == '!' || entry == ',')
+        return true;
 
     return false;
 }
@@ -47,39 +44,6 @@ bool doInvalidCharsExist(const MyVector<char>& input)
 
     return false;
 }
-
-// bool appropriatelySpace(const MyVector<char>& input, MyVector<char>& output)
-// {
-//     output = input;
-
-//     // adding space after last punctuation
-//     for (int i = 0; i < (input.Length() - 1); ++i)
-//     {
-//         if ((input.At(i) == '.' || input.At(i) == '?' || input.At(i) == '!' || input.At(i) == ',') &&
-//             ((input.At(i + 1) >= 'a' && input.At(i + 1) <= 'z') || 
-//             (input.At(i + 1) >= 'A' && input.At(i + 1) <= 'Z')))
-//             {
-//                 output.Insert(i + 1, ' ');
-//             }      
-//     }
-    
-//     // removing multiple spaces
-//     for (int i = 0; i < (input.Length() - 1); ++i)
-//     {
-//         if ((input.At(i) == ' ' && input.At(i + 1) == ' '))
-//             output.Remove(i + 1);
-//     }
-
-//     // if input starts or ends with space, removes that space
-//     if (input.Front() == ' ')
-//         output.Remove_front();
-
-//     // if input ends with space, removes that space
-//     if ((input.Back() - 1) == ' ')
-//         output.Remove(output.Back() - 1);
-    
-//     return true;
-// }
 
 bool pigLatinTranslate(const MyVector<char>& input, MyVector<char>& output)
 {
@@ -197,8 +161,10 @@ bool pigLatinTranslate(const MyVector<char>& input, MyVector<char>& output)
             while (isAlphabet(input.At(input_position + counter)))
             {
                 if (isVowel(input.At(input_position + counter)))
+                {
                     doVowelsExist = true;
-
+                    break;
+                }
                 ++counter;
             }
 
@@ -270,28 +236,6 @@ bool pigLatinTranslate(const MyVector<char>& input, MyVector<char>& output)
     }
     
     output.Insert_back('\0');
+
     return true;
 }
-
-// int main()
-// {
-//     const char str[] = "Oh my snot!!! How come??";
-
-//     const MyVector<char> A(str, sizeof(str));
-//     MyVector<char> B;
-
-//     pigLatinTranslate(A, B);
-    
-//     cout << B.Length() << endl;
-//     cout << sizeof(str) << endl;
-//     B.Print();
-//     // for (int i = 0; i < A.Length(); ++i)
-//     // {
-//     //     cout << A.At(i) << endl;
-//     // }
-//     // for (int i = 0; i < B.Length(); ++i)
-//     // {
-//     //     cout << B.At(i) << endl;
-//     // }
-//     return 0;
-// }

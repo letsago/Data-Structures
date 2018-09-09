@@ -1,7 +1,6 @@
 #pragma once
 
 #include <iostream>
-#include <limits>
 using namespace std;
 
 template <typename T> 
@@ -13,25 +12,29 @@ public:
     // Because we initialized our member variables, we use the default constructor
     MyVector()
     {
-        memory_size = 0;
-        actual_size = 0;
+        m_memory_size = 0;
+        m_actual_size = 0;
         m_data = nullptr;
     }
     
     // Constructor for pre-populating vector with array of characters
     MyVector(const T * input, const int size)
     {
-        actual_size = size;
-        memory_size = 10 * actual_size;
-        T *new_data = new T[memory_size];
-        for (int index = 0; index < actual_size; index++)
-            new_data[index] = input[index];
-        m_data = new_data;
+        m_actual_size = size;
+        m_memory_size = size;
+        m_data = new T[m_memory_size];
+        for (int index = 0; index < m_actual_size; index++)
+        {
+            m_data[index] = input[index];
+        }
     }
 
     // Copy Constructor using the = overloaded assignment where *this (reference) is assigned to MyVector& other
     MyVector(const MyVector& other)
     {
+        m_memory_size = 0;
+        m_actual_size = 0;
+        m_data = nullptr;
         *this = other;
     }
 
@@ -44,13 +47,14 @@ public:
     // Overloading Assignment
     MyVector& operator= (const MyVector &other)
     {
-        T *new_data = new T[other.memory_size];
-        for (int index = 0; index < other.actual_size; index++)
-            new_data[index] = other.At(index);
+        T* new_data = new T[other.m_memory_size];
+        for (int i = 0; i < other.m_actual_size; ++i)
+            new_data[i] = other.m_data[i];
+
         Clear();
+        m_actual_size = other.m_actual_size;
+        m_memory_size = other.m_memory_size;
         m_data = new_data;
-        actual_size = other.actual_size;
-        memory_size = other.memory_size;
 
         // return the existing object so we can chain this operator ("this" is a pointer that points to itself)
         return *this;
@@ -66,7 +70,7 @@ public:
             return;
         }
 
-        for (int index = 0; index < actual_size; index++)
+        for (int index = 0; index < m_actual_size; index++)
             cout << m_data[index];
 
         cout << endl;
@@ -74,84 +78,39 @@ public:
 
     bool Insert(const unsigned int position, T value)
     {
-        int new_memory_size;
-        int new_actual_size;
-        bool isIndexBiggerthanMemorySize = false;
-        bool isIndexBiggerthanActualSize = false;
+        // cannot insert past actual size of array
+        if (position > m_actual_size)
+            return false;
+        
+        int new_actual_size = m_actual_size + 1;
 
-        if (position >= memory_size)
-        {
-            if (position > numeric_limits<int>::max() / 10) // fails to insert if position exceeds order of magnitude within max integer limit
-                return false;
+        if (m_actual_size == 0)
+            Resize(1);
+        else if (new_actual_size > m_memory_size)
+            Resize(m_actual_size * c_capacity_ratio);
 
-            new_memory_size = (position + 1) * 10;
-            new_actual_size = position + 1;
-            isIndexBiggerthanMemorySize = true;
-        }
-        else
-        {
-            if (position >= actual_size)
-            {
-                isIndexBiggerthanActualSize = true;
-                new_actual_size = position + 1;
-            }
-            else
-            {
-                new_actual_size = actual_size + 1;
-            }
-            new_memory_size = memory_size;       
-        }
-
-        if (isIndexBiggerthanMemorySize)
-        {
-            T *new_data = new T[new_memory_size];
-            for (int i = 0; i < new_actual_size - 1; i++)
-            {
-                if (i < actual_size)
-                    new_data[i] = m_data[i];
-                else
-                    new_data[i] = 0;
-            }
-            new_data[new_actual_size - 1] = value;
-
-            Clear();
-            m_data = new_data;
-        }
-        else
-        {
-            if (isIndexBiggerthanActualSize)
-            {
-                for (int i = actual_size; i < new_actual_size - 1; i++)
-                    m_data[i] = 0;
+        for (int i = new_actual_size - 1; i > position; i--)
+            m_data[i] = m_data[i - 1];
                 
-                m_data[new_actual_size - 1] = value;
-            }
-            else
-            {
-                for (int i = new_actual_size - 1; i > position; i--)
-                    m_data[i] = m_data[i - 1];
+        m_data[position] = value;
+        m_actual_size = new_actual_size;
 
-                m_data[position] = value;
-            }
-        }
-        memory_size = new_memory_size;
-        actual_size = new_actual_size;
         return true;
     }
     
     bool Remove(const unsigned int position)
     {
-        if (position >= actual_size)
+        if (position >= m_actual_size)
         {
             return false;   // remove fails if position exceeds actual size of vector
         }
 
-        int new_actual_size = actual_size - 1;
+        int new_actual_size = m_actual_size - 1;
         
         for (int i = position; i < new_actual_size; i++)
             m_data[i] = m_data[i + 1];
         
-        actual_size = new_actual_size;
+        m_actual_size = new_actual_size;
 
         return true;
     }
@@ -178,7 +137,7 @@ public:
     
     T& Back()
     {
-        return At(actual_size - 1);
+        return At(m_actual_size - 1);
     }
 
     const T& Back() const
@@ -198,47 +157,77 @@ public:
 
     int Length() const
     {
-        return actual_size;
+        return m_actual_size;
+    }
+
+    int Capacity() const
+    {
+        return m_memory_size;
+    }
+
+    void Resize(const unsigned int new_size)
+    {
+        int bound;
+        m_memory_size = new_size;
+        T* new_data = new T[m_memory_size];
+        if (new_size > m_actual_size)
+        {
+            bound = m_actual_size;
+        }
+        else
+        {
+            bound = m_memory_size;
+            m_actual_size = m_memory_size;
+        }
+
+        for (int i = 0; i < bound; i++)
+        {
+            new_data[i] = m_data[i];
+        }
+
+        delete[] m_data;
+        m_data = new_data;
     }
 
     void Clear()
     {
         delete[] m_data;
         m_data = nullptr;
-        memory_size = 0;
-        actual_size = 0;
+        m_memory_size = 0;
+        m_actual_size = 0;
     }
     
     // returns true if array is empty
     bool Empty() const
     {
-        return (memory_size == 0);
+        return (m_memory_size == 0);
     }
     
-    void Insert_back(T value) 
+    bool Insert_back(T value) 
     {
-        Insert(actual_size, value);
+        return Insert(m_actual_size, value);
     }
     
-    void Remove_back()
+    bool Remove_back()
     {
-        Remove(actual_size - 1);
+        return Remove(m_actual_size - 1);
     }
     
-    void Insert_front(T value)
+    bool Insert_front(T value)
     {
-        Insert(0, value);
+        return Insert(0, value);
     }
 
-    void Remove_front()
+    bool Remove_front()
     {
-        Remove(0);
+        return Remove(0);
     }
 
 private: 
 
     // Member Variables
-    int memory_size;
-    int actual_size;
+    int c_capacity_ratio = 2;
+    int m_memory_size;
+    int m_actual_size;
     T* m_data;
 };
