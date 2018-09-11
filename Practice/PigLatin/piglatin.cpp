@@ -1,4 +1,6 @@
-#include "headers/piglatin.h"
+#include "piglatin.h"
+
+using namespace pyu;
 
 bool isAlphabet(const char entry)
 {
@@ -29,7 +31,7 @@ bool isPunctuation(const char entry)
     return false;
 }
 
-bool doInvalidCharsExist(const MyVector<char>& input)
+bool doInvalidCharsExist(const Vector<char>& input)
 {
     for (int i = 0; i < input.Length(); ++i)
     {
@@ -45,7 +47,7 @@ bool doInvalidCharsExist(const MyVector<char>& input)
     return false;
 }
 
-bool pigLatinTranslate(const MyVector<char>& input, MyVector<char>& output)
+bool pigLatinTranslate(const Vector<char>& input, Vector<char>& output)
 {
     if (doInvalidCharsExist(input))
         return false;
