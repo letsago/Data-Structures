@@ -72,7 +72,7 @@ public:
             m_state = false;
             return;
         }
-        for (int i = 0; i < MAX_ALLOCATIONS; ++i)
+        for (uint32_t i = 0; i < MAX_ALLOCATIONS; ++i)
         {
             if (m_data[i] == nullptr)
             {
@@ -88,7 +88,7 @@ public:
     {
         if (!m_active) return;
 
-        for (int i = 0; i < MAX_ALLOCATIONS; ++i)
+        for (uint32_t i = 0; i < MAX_ALLOCATIONS; ++i)
         {
             if (m_data[i] == p) {
                 m_data[i] = nullptr;

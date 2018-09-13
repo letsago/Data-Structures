@@ -1,39 +1,29 @@
 #pragma once
 
 #include <pyu/test_lib.h>
+#include <lsi_test.h>
+#include <pyu/linked_list.h>
 
-class LinkedListTests final : public UnitTests
+class LinkedListTests final : public LinearStorageInterfaceTests
 {
 protected:
+    pyu::LinearStorageInterface<int>* createTestLSI()
+    {
+        return new pyu::LinkedList<int>();
+    }
+
     void RunTests() final
     {
-        ADD_TEST(LinkedListTests::InsertTest);
-        ADD_TEST(LinkedListTests::RemoveTest);
-        ADD_TEST(LinkedListTests::InsertFrontTest);
-        ADD_TEST(LinkedListTests::InsertBackTest);
-        ADD_TEST(LinkedListTests::RemoveFrontTest);
-        ADD_TEST(LinkedListTests::RemoveBackTest);
-        ADD_TEST(LinkedListTests::FindFirstTest);
+        LinearStorageInterfaceTests::RunTests();
         ADD_TEST(LinkedListTests::FindManyTest);
-        ADD_TEST(LinkedListTests::ClearTest);
-        ADD_TEST(LinkedListTests::AssignmentOperatorTest);
         ADD_TEST(LinkedListTests::CopyTest);
-        ADD_TEST(LinkedListTests::AtTest);
+        ADD_TEST(LinkedListTests::AssignmentTest);
     }
 
 private:
-    static bool InsertTest();
-    static bool RemoveTest();
-    static bool InsertFrontTest();
-    static bool InsertBackTest();
-    static bool RemoveFrontTest();
-    static bool RemoveBackTest();
-    static bool FindFirstTest();
-    static bool FindManyTest();
-    static bool ClearTest();
-    static bool AssignmentOperatorTest();
-    static bool CopyTest();
-    static bool AtTest();
+    bool FindManyTest();
+    bool AssignmentTest();
+    bool CopyTest();
 
     static Test_Registrar<LinkedListTests> registrar;
 };

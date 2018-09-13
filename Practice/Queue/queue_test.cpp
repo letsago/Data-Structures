@@ -1,147 +1,79 @@
 #include "queue_test.h"
-#include <pyu/vector_queue.h>
+#include <pyu/queue.h>
 
 using namespace pyu;
 
 Test_Registrar<QueueTests> QueueTests::registrar;
 
-bool QueueTests::PushTest()
+bool QueueTests::PushTest(LinearStorageInterface<int>* pLsi)
 {
-    Queue<int> A;
+    Queue<int> A(&pLsi);
 
-    for (int i = 0; i < 5; i++)
+    for (uint32_t i = 0; i < 5; i++)
     {
-        VERIFY_TRUE(A.Push(i));
-        VERIFY_EQ(A.Front(), 0);
-        VERIFY_EQ(A.size(), i + 1);
+        VERIFY_TRUE(A.push(i));
+        VERIFY_EQ(A.front(), 0);
+        VERIFY_EQ(A.length(), i + 1);
     }
+
+    delete pLsi;
     
     return true;
 }
 
-bool QueueTests::PopTest()
+bool QueueTests::PopTest(LinearStorageInterface<int>* pLsi)
 {
-    Queue<int> A;
-    VERIFY_FALSE(A.Pop());
+    Queue<int> A(&pLsi);
+    VERIFY_FALSE(A.pop());
 
-    for (int i = 0; i < 5; i++)
+    for (uint32_t i = 0; i < 5; i++)
     {
-        VERIFY_TRUE(A.Push(i));
-        VERIFY_EQ(A.Front(), 0);
-        VERIFY_EQ(A.size(), i + 1);
+        VERIFY_TRUE(A.push(i));
+        VERIFY_EQ(A.front(), 0);
+        VERIFY_EQ(A.length(), i + 1);
     }
 
-    for (int i = 0; i < 5; i++)
+    for (uint32_t i = 0; i < 5; i++)
     {
-        VERIFY_EQ(A.Front(), i);
-        VERIFY_TRUE(A.Pop());
-        VERIFY_EQ(A.size(), 4 - i);
+        VERIFY_EQ(A.front(), i);
+        VERIFY_TRUE(A.pop());
+        VERIFY_EQ(A.length(), 4 - i);
     }
+
+    delete pLsi;
 
     return true;
 }
 
-bool QueueTests::FrontTest()
+bool QueueTests::FrontTest(LinearStorageInterface<int>* pLsi)
 {
-    Queue<int> A;
-    VERIFY_TRUE(A.Push(0));
-    VERIFY_TRUE(A.Push(1));
-    VERIFY_TRUE(A.Push(2));
-    VERIFY_EQ(A.Front(), 0);
-    A.Front() = 6;
-    VERIFY_EQ(A.Front(), 6);
+    Queue<int> A(&pLsi);
+    VERIFY_TRUE(A.push(0));
+    VERIFY_TRUE(A.push(1));
+    VERIFY_TRUE(A.push(2));
+    VERIFY_EQ(A.front(), 0);
+    A.front() = 6;
+    VERIFY_EQ(A.front(), 6);
+    delete pLsi;
 
     return true;
 }
 
-bool QueueTests::ClearTest()
+bool QueueTests::ClearTest(LinearStorageInterface<int>* pLsi)
 {
-    Queue<int> A;
+    Queue<int> A(&pLsi);
+    VERIFY_TRUE(A.empty());
 
-    VERIFY_TRUE(A.isEmpty());
-
-    for (int i = 0; i < 5; i++)
+    for (uint32_t i = 0; i < 5; i++)
     {
-        VERIFY_TRUE(A.Push(i));
-        VERIFY_EQ(A.Front(), 0);
-        VERIFY_EQ(A.size(), i + 1);
+        VERIFY_TRUE(A.push(i));
+        VERIFY_EQ(A.front(), 0);
+        VERIFY_EQ(A.length(), i + 1);
     }
 
-    A.Clear();
+    A.clear();
+    VERIFY_TRUE(A.empty());
+    delete pLsi;
 
-    VERIFY_TRUE(A.isEmpty());
-
-    return true;
-}
-
-bool QueueTests::AssignmentTest()
-{
-    Queue<int> A;
-
-    for (int i = 0; i < 5; ++i)
-    {
-        VERIFY_TRUE(A.Push(i));
-        VERIFY_EQ(A.Front(), 0);
-        VERIFY_EQ(A.size(), i + 1);
-    }
-
-    Queue<int> B = A;
-
-    A.Clear();
-    VERIFY_EQ(B.size(), 5);
-    VERIFY_EQ(A.size(), 0);
-
-    for (int i = 0; i < 5; ++i)
-    {
-        VERIFY_EQ(B.Front(), i);
-        VERIFY_TRUE(B.Pop());
-        VERIFY_EQ(B.size(), 4 - i);
-    }
-
-    Queue<int> C;
-
-    for (int i = 0; i < 5; ++i)
-    {
-        VERIFY_TRUE(C.Push(i * 2));
-        VERIFY_EQ(C.Front(), 0);
-        VERIFY_EQ(C.size(), i + 1);
-    }
-
-    C = B;
-
-    VERIFY_TRUE(C.isEmpty());
-
-    return true;
-}
-
-bool QueueTests::CopyTest()
-{
-    Queue<int> A;
-
-    for (int i = 0; i < 5; ++i)
-    {
-        VERIFY_TRUE(A.Push(i));
-        VERIFY_EQ(A.Front(), 0);
-        VERIFY_EQ(A.size(), i + 1);
-    }
-
-    Queue<int> B(A);
-
-    A.Clear();
-    VERIFY_EQ(B.size(), 5);
-    VERIFY_TRUE(A.isEmpty());
-
-    for (int i = 0; i < 5; ++i)
-    {
-        VERIFY_EQ(B.Front(), i);
-        VERIFY_TRUE(B.Pop());
-        VERIFY_EQ(B.size(), 4 - i);
-    }
-
-    VERIFY_TRUE(B.isEmpty());
-
-    Queue<int> C(B);
-    VERIFY_TRUE(C.isEmpty());
-    
     return true;
 }

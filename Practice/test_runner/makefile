@@ -9,6 +9,8 @@ INCLUDE_PATH = \
 	-I../LinkedList \
 	-I../Queue \
 	-I../Stack \
+	-I../LinearStorageInterface \
+	-I../Vector \
 
 OUTPUT_PATH = $(TARGET_PATH)
 OBJ_PATH = $(TARGET_PATH)/obj

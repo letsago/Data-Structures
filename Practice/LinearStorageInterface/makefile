@@ -1,7 +1,7 @@
 include ../makefile.inc
 
 C_FLAGS = $(DEFAULT_FLAGS) -c
-INCLUDE_PATH = $(INC) -I../LinearStorageInterface
+INCLUDE_PATH = $(INC)
 OBJ_DIR = $(TARGET_PATH)/obj
 
 all: $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(wildcard *.cpp))

@@ -5,11 +5,17 @@ SUBDIRS := \
 	./PigLatin \
 	./Queue \
 	./Stack \
+	./LinearStorageInterface \
+	./Vector \
 
 ALLDIRS := $(SUBDIRS) $(BASEDIRS)
 
-$(TOPTARGETS): $(ALLDIRS)
+$(TOPTARGETS): clearscreen $(ALLDIRS)
+
 $(ALLDIRS):
 	$(MAKE) -C $@ $(MAKECMDGOALS)
+
+clearscreen:
+	clear
 
 .PHONY: $(TOPTARGETS) $(ALLDIRS)

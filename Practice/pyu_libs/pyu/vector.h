@@ -1,12 +1,13 @@
 #pragma once
 
 #include <iostream>
+#include "linear_storage_interface.h"
 
 namespace pyu
 {
 
 template <typename T> 
-class Vector
+class Vector : public LinearStorageInterface<T>
 {
 public:
 
@@ -44,7 +45,7 @@ public:
     // Deconstructor that clears Vector when function goes out of scope
     ~Vector()
     {
-        Clear();
+        clear();
     }
     
     // Overloading Assignment
@@ -54,7 +55,7 @@ public:
         for (uint32_t i = 0; i < other.m_actual_size; ++i)
             new_data[i] = other.m_data[i];
 
-        Clear();
+        clear();
         m_actual_size = other.m_actual_size;
         m_memory_size = other.m_memory_size;
         m_data = new_data;
@@ -64,7 +65,7 @@ public:
     }
 
     // Member Functions
-    void Print() const
+    void print() const
     {
         // if user passed in a null pointer for array, bail out early!
         if (!m_data)
@@ -73,13 +74,13 @@ public:
             return;
         }
 
-        for (int index = 0; index < m_actual_size; index++)
+        for (uint32_t index = 0; index < m_actual_size; index++)
             std::cout << m_data[index];
 
         std::cout << std::endl;
     }
 
-    bool Insert(const uint32_t position, T value)
+    bool insert(const uint32_t position, const T value)
     {
         // cannot insert past actual size of array
         if (position > m_actual_size)
@@ -88,9 +89,9 @@ public:
         uint32_t new_actual_size = m_actual_size + 1;
 
         if (m_actual_size == 0)
-            Resize(1);
+            resize(1);
         else if (new_actual_size > m_memory_size)
-            Resize(m_actual_size * c_capacity_ratio);
+            resize(m_actual_size * c_capacity_ratio);
 
         for (uint32_t i = new_actual_size - 1; i > position; i--)
             m_data[i] = m_data[i - 1];
@@ -101,16 +102,16 @@ public:
         return true;
     }
     
-    bool Remove(const uint32_t position)
+    bool remove(const uint32_t position)
     {
         if (position >= m_actual_size)
         {
             return false;   // remove fails if position exceeds actual size of vector
         }
 
-        int new_actual_size = m_actual_size - 1;
+        uint32_t new_actual_size = m_actual_size - 1;
         
-        for (int i = position; i < new_actual_size; i++)
+        for (uint32_t i = position; i < new_actual_size; i++)
             m_data[i] = m_data[i + 1];
         
         m_actual_size = new_actual_size;
@@ -118,59 +119,50 @@ public:
         return true;
     }
     
-    T& At(const uint32_t position)
+    T& at(const uint32_t position)
     {
         return m_data[position];   
     }
     
-    const T& At(const uint32_t position) const
+    const T& at(const uint32_t position) const
     {
         return m_data[position];   
     }
 
-    T& Front()
+    int find(const T value) const
     {
-        return At(0);
-    }
+        for (uint32_t i = 0; i < length(); ++i)
+        {
+            if (at(i) == value)
+                return i;
+        }
 
-    const T& Front() const
-    {
-        return At(0);
+        return -1;
     }
     
-    T& Back()
-    {
-        return At(m_actual_size - 1);
-    }
-
-    const T& Back() const
-    {
-        return At(0);
-    }
-    
-    T* Data()
+    T* data()
     { 
         return m_data; 
     }
 
-    const T* Data() const
+    const T* data() const
     {
         return m_data;
     }
 
-    int Length() const
+    uint32_t length() const
     {
         return m_actual_size;
     }
 
-    int Capacity() const
+    int capacity() const
     {
         return m_memory_size;
     }
 
-    void Resize(const uint32_t new_size)
+    void resize(const uint32_t new_size)
     {
-        int bound;
+        uint32_t bound;
         m_memory_size = new_size;
         T* new_data = new T[m_memory_size];
         if (new_size > m_actual_size)
@@ -183,7 +175,7 @@ public:
             m_actual_size = m_memory_size;
         }
 
-        for (int i = 0; i < bound; i++)
+        for (uint32_t i = 0; i < bound; i++)
         {
             new_data[i] = m_data[i];
         }
@@ -192,7 +184,7 @@ public:
         m_data = new_data;
     }
 
-    void Clear()
+    void clear()
     {
         delete[] m_data;
         m_data = nullptr;
@@ -200,32 +192,6 @@ public:
         m_actual_size = 0;
     }
     
-    // returns true if array is empty
-    bool Empty() const
-    {
-        return (m_actual_size == 0);
-    }
-    
-    bool Insert_back(T value) 
-    {
-        return Insert(m_actual_size, value);
-    }
-    
-    bool Remove_back()
-    {
-        return Remove(m_actual_size - 1);
-    }
-    
-    bool Insert_front(T value)
-    {
-        return Insert(0, value);
-    }
-
-    bool Remove_front()
-    {
-        return Remove(0);
-    }
-
 private: 
 
     // Member Variables

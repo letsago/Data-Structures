@@ -7,7 +7,7 @@ namespace pyu
 {
 
 template <typename T>
-class LinkedList
+class LinkedList : public LinearStorageInterface<T>
 {
     public: 
 
@@ -19,7 +19,7 @@ class LinkedList
 
     ~LinkedList()
     {
-        Clear();
+        clear();
     }
 
     LinkedList(const LinkedList& other)
@@ -31,17 +31,17 @@ class LinkedList
 
     LinkedList& operator= (const LinkedList &other)
     {
-        Clear();
+        clear();
 
         for (uint32_t i = 0; i < other.m_size; ++i)
         {
-            Insert(i, other.At(i));
+            insert(i, other.at(i));
         }
 
         return *this;
     }
 
-    void Print()
+    void print() const
     {
         Obj* temp = m_head;
 
@@ -54,17 +54,12 @@ class LinkedList
         std::cout << std::endl;
     }
 
-    int Length() const
+    uint32_t length() const
     {   
         return m_size;
     }
 
-    bool isEmpty()
-    {
-        return (m_size == 0);
-    }
-
-    bool Insert(const uint32_t position, const T value)
+    bool insert(const uint32_t position, const T value)
     {
         if (position > m_size)
             return false;
@@ -94,7 +89,7 @@ class LinkedList
         return true;
     }
 
-    bool Remove(const uint32_t position)
+    bool remove(const uint32_t position)
     {
         if (m_head == nullptr)
             return false;
@@ -126,27 +121,7 @@ class LinkedList
         return true;
     }
 
-    bool Insert_front(const T value)
-    {
-        return Insert(0, value);
-    }
-
-    bool Remove_front()
-    {
-        return Remove(0);
-    }
-
-    bool Insert_back(const T value)
-    {
-        return Insert(m_size, value);
-    }
-
-    bool Remove_back()
-    {
-        return Remove(m_size - 1);
-    }
-
-    T& At(const uint32_t position)
+    T& at(const uint32_t position)
     {
         Obj* current = m_head;
 
@@ -160,7 +135,7 @@ class LinkedList
         return value;
     }
 
-    const T& At(const uint32_t position) const
+    const T& at(const uint32_t position) const
     {
         Obj* current = m_head;
 
@@ -174,27 +149,7 @@ class LinkedList
         return value;
     }
 
-    T& Front()
-    {
-        return At(0);
-    }
-
-    const T& Front() const
-    {
-        return At(0);
-    }
-
-    T& Back()
-    {
-        return At(m_size - 1);
-    }
-
-    const T& Back() const
-    {
-        return At(m_size - 1);
-    }
-
-    int FindFirst(const T value) const
+    int find(const T value) const
     {
         Obj* target = m_head;
 
@@ -209,7 +164,7 @@ class LinkedList
         return -1;
     }
 
-    Vector<int> FindMany(const T value) const
+    Vector<int> findmany(const T value) const
     {
         Vector<int> indices;
         Obj* target = m_head;
@@ -217,7 +172,7 @@ class LinkedList
         for (uint32_t i = 0; i < m_size; ++i)
         {
             if (target -> m_value == value)
-                indices.Insert_back(i);
+                indices.insert_back(i);
             
             target = target -> m_next;    
         }
@@ -225,7 +180,7 @@ class LinkedList
         return indices;
     }
 
-    void Clear()
+    void clear()
     {   
         Obj* curr = m_head;
         Obj* next;
