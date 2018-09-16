@@ -11,6 +11,7 @@ INCLUDE_PATH = \
 	-I../Stack \
 	-I../LinearStorageInterface \
 	-I../Vector \
+	-I../Array \
 
 OUTPUT_PATH = $(TARGET_PATH)
 OBJ_PATH = $(TARGET_PATH)/obj

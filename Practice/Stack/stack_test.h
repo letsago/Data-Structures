@@ -4,6 +4,7 @@
 #include <pyu/linear_storage_interface.h>
 #include <pyu/vector.h>
 #include <pyu/linked_list.h>
+#include <pyu/array.h>
 
 class StackTests final : public UnitTests
 {
@@ -12,12 +13,16 @@ protected:
     {
         ADD_TEST(StackTests::PushTest, new pyu::Vector<int>);
         ADD_TEST(StackTests::PushTest, new pyu::LinkedList<int>);
+        ADD_TEST(StackTests::PushTest, new pyu::Array<int, 10>);
         ADD_TEST(StackTests::PopTest, new pyu::Vector<int>);
         ADD_TEST(StackTests::PopTest, new pyu::LinkedList<int>);
+        ADD_TEST(StackTests::PopTest, new pyu::Array<int, 10>);
         ADD_TEST(StackTests::TopTest, new pyu::Vector<int>);
         ADD_TEST(StackTests::TopTest, new pyu::LinkedList<int>);
+        ADD_TEST(StackTests::TopTest, new pyu::Array<int, 10>);
         ADD_TEST(StackTests::ClearTest, new pyu::Vector<int>);
         ADD_TEST(StackTests::ClearTest, new pyu::LinkedList<int>);
+        ADD_TEST(StackTests::ClearTest, new pyu::Array<int, 10>);
     }
 
 private:

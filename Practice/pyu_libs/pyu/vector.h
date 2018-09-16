@@ -74,8 +74,8 @@ public:
             return;
         }
 
-        for (uint32_t index = 0; index < m_actual_size; index++)
-            std::cout << m_data[index];
+        for (uint32_t index = 0; index < m_actual_size; ++index)
+            std::cout << m_data[index] << " ";
 
         std::cout << std::endl;
     }
@@ -155,7 +155,7 @@ public:
         return m_actual_size;
     }
 
-    int capacity() const
+    uint32_t capacity() const
     {
         return m_memory_size;
     }

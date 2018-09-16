@@ -30,7 +30,6 @@ public:
     bool push(T value)
     {
         return m_pLsi->insert_back(value);
-
     }
 
     T& front()

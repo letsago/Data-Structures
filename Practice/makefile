@@ -7,6 +7,7 @@ SUBDIRS := \
 	./Stack \
 	./LinearStorageInterface \
 	./Vector \
+	./Array \
 
 ALLDIRS := $(SUBDIRS) $(BASEDIRS)
 

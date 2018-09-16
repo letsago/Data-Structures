@@ -3,6 +3,7 @@
 #include <piglatin_test.h>
 #include <linkedlist_test.h>
 #include <vector_test.h>
+#include <array_test.h>
 #include <queue_test.h>
 #include <stack_test.h>
 
