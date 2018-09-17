@@ -9,8 +9,8 @@ class QueueArrayTests final : public UnitTests
 protected:
     void RunTests() final
     {
-        ADD_TEST(QueueArrayTests::InvalidPushTest, new pyu::RollingArray<int, 5>);
-        ADD_TEST(QueueArrayTests::RollingPopTest, new pyu::RollingArray<int, 5>);
+        ADD_TEST(InvalidPushTest, new pyu::RollingArray<int, 5>);
+        ADD_TEST(RollingPopTest, new pyu::RollingArray<int, 5>);
     }
 
 private:

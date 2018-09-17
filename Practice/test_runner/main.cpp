@@ -9,6 +9,8 @@
 
 int main()
 {
+    // In order to disable a test simply call;
+    // DISABLE_TEST(VectorTests);
     UnitTests::Run_All();
 
     return 0;

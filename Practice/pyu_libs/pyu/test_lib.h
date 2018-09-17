@@ -1,10 +1,11 @@
 #pragma once
 
+#include <cxxabi.h>
 #include <typeindex>
 #include <iostream>
 #include <utility>
 #include <vector>
-#include <map>
+#include <unordered_map>
 
 #ifndef MAX_ALLOCATIONS
 #define MAX_ALLOCATIONS 256
@@ -45,16 +46,47 @@
 #define VERIFY_NOT_EQ(valA, valB) __VERIFY("NOT_EQ", !=, valA, valB, true)
 #define VERIFY_TRUE(statement) __VERIFY("TRUE", ==, statement, true, false)
 #define VERIFY_FALSE(statement) __VERIFY("FALSE", ==, statement, false, false)
+#define DISABLE_TEST(type) UnitTests::setTestStatus(typeid(type), false);
+#define ENABLE_TEST(type) UnitTests::setTestStatus(typeid(type), true);
+
+
+template <typename T> char* get_typename(T& object)
+{
+    return abi::__cxa_demangle(typeid(object).name(), 0, 0, 0);
+}
 
 #define ADD_TEST(test, ...) { \
-    COLOR_LINE(YELLOW, "Running test:\t" << #test) \
-    getTracker().setActive(true); \
-    uint32_t _staring_leaks = getTracker().NumMemoryLeaks(); \
-    bool result = test(__VA_ARGS__); \
-    getTracker().setActive(false); \
-    MEMORY_LEAK(result, _staring_leaks); \
-    UnitTests::s_summary.push_back(std::make_pair(#test, result)); \
-    PASS_FAIL_LINE(result, #test << std::endl ) \
+    std::string test_name(get_typename(*this)); \
+    test_name += "::"; \
+    test_name += #test; \
+    test_name += "("; \
+    test_name += #__VA_ARGS__; \
+    test_name += ")"; \
+    std::string status; \
+    bool enabled = UnitTests::s_testStats()[typeid(*this)].enabled; \
+    if (enabled) \
+    { \
+        status = "Running"; \
+    } \
+    else \
+    { \
+        status = "Skipping"; \
+    } \
+    COLOR_LINE(YELLOW, status << " test:\t" << test_name) \
+    if (enabled) \
+    { \
+        getTracker().setActive(true); \
+        uint32_t _staring_leaks = getTracker().NumMemoryLeaks(); \
+        bool result = test(__VA_ARGS__); \
+        getTracker().setActive(false); \
+        MEMORY_LEAK(result, _staring_leaks); \
+        UnitTests::s_summary.push_back(std::make_pair(test_name, result ? 1 : 0)); \
+        PASS_FAIL_LINE(result, test_name << std::endl ); \
+    } \
+    else \
+    { \
+        UnitTests::s_summary.push_back(std::make_pair(test_name, 2)); \
+    }  \
 }
 
 class MemoryTracker
@@ -118,7 +150,12 @@ public:
 MemoryTracker& getTracker();
 
 class UnitTests;
-typedef std::map<std::type_index, UnitTests*(*)()> typemap;
+struct TestMetadata
+{
+    bool enabled = true;
+};
+typedef std::unordered_map<std::type_index, UnitTests*(*)()> typemap;
+typedef std::unordered_map<std::type_index, TestMetadata> infomap;
 
 class UnitTests
 {
@@ -132,6 +169,10 @@ public:
             delete test;
         }
         UnitTests::Summary();
+    }
+
+    static void setTestStatus(std::type_index t, bool status) {
+        s_testStats()[t].enabled = status;
     }
 
 private:
@@ -153,12 +194,22 @@ private:
         
         int passed = 0;
         int total = 0;
+        int skipped = 0;
         for (auto& it : s_summary)
         {
-            PASS_FAIL_LINE(it.second, it.first)
-            passed += it.second;
+            if (it.second == 2)
+            {
+                COLOR_LINE(YELLOW, "Skipped " << it.first);
+                skipped += 1;
+            }
+            else
+            {
+                PASS_FAIL_LINE(it.second, it.first)
+                passed += it.second;
+            }
             total += 1;
         }
+        if (skipped) std::cout << "Test skipped:\t" << skipped  << " / " << total << std::endl;
         std::cout << "Test passed:\t" << passed  << " / " << total << std::endl;
     }
 
@@ -167,7 +218,8 @@ protected:
     virtual ~UnitTests() = default;
     virtual void RunTests() = 0;   
     static uint32_t s_refCounters;    
-    static std::vector<std::pair<std::string, bool>> s_summary;
+    static std::vector<std::pair<std::string, int>> s_summary;
+    static infomap & s_testStats();
     
     template<typename U> friend class Test_Registrar;
 };
@@ -176,7 +228,10 @@ template <typename T>
 class Test_Registrar
 {
 public:
-    Test_Registrar() { UnitTests::s_registry()[typeid(T)] = &Test_Registrar::createInstance; }
+    Test_Registrar() { 
+        UnitTests::s_registry()[typeid(T)] = &Test_Registrar::createInstance;
+        UnitTests::s_testStats()[typeid(T)] = TestMetadata();
+    }
 private:
     static UnitTests* createInstance() { return new T; }
 };

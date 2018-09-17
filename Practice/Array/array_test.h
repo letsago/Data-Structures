@@ -15,9 +15,9 @@ protected:
     void RunTests() final
     {
         LinearStorageInterfaceTests::RunTests();
-        ADD_TEST(ArrayTests::StaticMemoryTest);
-        ADD_TEST(ArrayTests::AssignmentTest);
-        ADD_TEST(ArrayTests::CopyTest);
+        ADD_TEST(StaticMemoryTest);
+        ADD_TEST(AssignmentTest);
+        ADD_TEST(CopyTest);
     }
 
 private:

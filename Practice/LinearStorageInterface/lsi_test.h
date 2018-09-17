@@ -12,16 +12,16 @@ protected:
 
     void RunTests()
     {
-        ADD_TEST(LinearStorageInterfaceTests::InsertTest);
-        ADD_TEST(LinearStorageInterfaceTests::RemoveTest);
-        ADD_TEST(LinearStorageInterfaceTests::InsertFrontTest);
-        ADD_TEST(LinearStorageInterfaceTests::InsertBackTest);
-        ADD_TEST(LinearStorageInterfaceTests::RemoveFrontTest);
-        ADD_TEST(LinearStorageInterfaceTests::RemoveBackTest);
-        ADD_TEST(LinearStorageInterfaceTests::ClearTest);
-        ADD_TEST(LinearStorageInterfaceTests::AtTest);
-        ADD_TEST(LinearStorageInterfaceTests::ContainsTest);
-        ADD_TEST(LinearStorageInterfaceTests::FindTest);
+        ADD_TEST(InsertTest);
+        ADD_TEST(RemoveTest);
+        ADD_TEST(InsertFrontTest);
+        ADD_TEST(InsertBackTest);
+        ADD_TEST(RemoveFrontTest);
+        ADD_TEST(RemoveBackTest);
+        ADD_TEST(ClearTest);
+        ADD_TEST(AtTest);
+        ADD_TEST(ContainsTest);
+        ADD_TEST(FindTest);
     }
 
 private:

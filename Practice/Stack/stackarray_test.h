@@ -9,7 +9,7 @@ class StackArrayTests final : public UnitTests
 protected:
     void RunTests() final
     {
-        ADD_TEST(StackArrayTests::InvalidPushTest, new pyu::Array<int, 5>);
+        ADD_TEST(InvalidPushTest, new pyu::Array<int, 5>);
     }
 
 private:

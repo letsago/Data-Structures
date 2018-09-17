@@ -11,18 +11,18 @@ class StackTests final : public UnitTests
 protected:
     void RunTests() final
     {
-        ADD_TEST(StackTests::PushTest, new pyu::Vector<int>);
-        ADD_TEST(StackTests::PushTest, new pyu::LinkedList<int>);
-        ADD_TEST(StackTests::PushTest, new pyu::Array<int, 10>);
-        ADD_TEST(StackTests::PopTest, new pyu::Vector<int>);
-        ADD_TEST(StackTests::PopTest, new pyu::LinkedList<int>);
-        ADD_TEST(StackTests::PopTest, new pyu::Array<int, 10>);
-        ADD_TEST(StackTests::TopTest, new pyu::Vector<int>);
-        ADD_TEST(StackTests::TopTest, new pyu::LinkedList<int>);
-        ADD_TEST(StackTests::TopTest, new pyu::Array<int, 10>);
-        ADD_TEST(StackTests::ClearTest, new pyu::Vector<int>);
-        ADD_TEST(StackTests::ClearTest, new pyu::LinkedList<int>);
-        ADD_TEST(StackTests::ClearTest, new pyu::Array<int, 10>);
+        ADD_TEST(PushTest, new pyu::Vector<int>);
+        ADD_TEST(PushTest, new pyu::LinkedList<int>);
+        ADD_TEST(PushTest, new pyu::Array<int, 10>);
+        ADD_TEST(PopTest, new pyu::Vector<int>);
+        ADD_TEST(PopTest, new pyu::LinkedList<int>);
+        ADD_TEST(PopTest, new pyu::Array<int, 10>);
+        ADD_TEST(TopTest, new pyu::Vector<int>);
+        ADD_TEST(TopTest, new pyu::LinkedList<int>);
+        ADD_TEST(TopTest, new pyu::Array<int, 10>);
+        ADD_TEST(ClearTest, new pyu::Vector<int>);
+        ADD_TEST(ClearTest, new pyu::LinkedList<int>);
+        ADD_TEST(ClearTest, new pyu::Array<int, 10>);
     }
 
 private:

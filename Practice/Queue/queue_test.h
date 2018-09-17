@@ -11,18 +11,18 @@ class QueueTests final : public UnitTests
 protected:
     void RunTests() final
     {
-        ADD_TEST(QueueTests::PushTest, new pyu::Vector<int>);
-        ADD_TEST(QueueTests::PushTest, new pyu::LinkedList<int>);
-        ADD_TEST(QueueTests::PushTest, new pyu::Array<int, 10>);
-        ADD_TEST(QueueTests::PopTest, new pyu::Vector<int>);
-        ADD_TEST(QueueTests::PopTest, new pyu::LinkedList<int>);
-        ADD_TEST(QueueTests::PopTest, new pyu::Array<int, 10>);
-        ADD_TEST(QueueTests::FrontTest, new pyu::Vector<int>);
-        ADD_TEST(QueueTests::FrontTest, new pyu::LinkedList<int>);
-        ADD_TEST(QueueTests::FrontTest, new pyu::Array<int, 10>);
-        ADD_TEST(QueueTests::ClearTest, new pyu::Vector<int>);
-        ADD_TEST(QueueTests::ClearTest, new pyu::LinkedList<int>);
-        ADD_TEST(QueueTests::ClearTest, new pyu::Array<int, 10>);
+        ADD_TEST(PushTest, new pyu::Vector<int>);
+        ADD_TEST(PushTest, new pyu::LinkedList<int>);
+        ADD_TEST(PushTest, new pyu::Array<int, 10>);
+        ADD_TEST(PopTest, new pyu::Vector<int>);
+        ADD_TEST(PopTest, new pyu::LinkedList<int>);
+        ADD_TEST(PopTest, new pyu::Array<int, 10>);
+        ADD_TEST(FrontTest, new pyu::Vector<int>);
+        ADD_TEST(FrontTest, new pyu::LinkedList<int>);
+        ADD_TEST(FrontTest, new pyu::Array<int, 10>);
+        ADD_TEST(ClearTest, new pyu::Vector<int>);
+        ADD_TEST(ClearTest, new pyu::LinkedList<int>);
+        ADD_TEST(ClearTest, new pyu::Array<int, 10>);
     }
 
 private:
