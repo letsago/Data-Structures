@@ -94,3 +94,22 @@ bool LinkedListTests::CopyTest()
     return true;
 }
 
+bool LinkedListTests::IteratorTest()
+{
+    LinkedList<int> A;
+
+    for (uint32_t i = 0; i < 5; ++i)
+    {
+        A.insert_back(i * 2);
+    }
+
+    uint32_t n = 0;
+    for (LinkedList<int>::Iterator it = A.begin(); it != A.end(); ++it)
+    {
+        VERIFY_EQ(*it, n);
+        n = n + 2;
+    }
+
+    return true;
+}
+

@@ -15,15 +15,17 @@ protected:
     void RunTests() final
     {
         LinearStorageInterfaceTests::RunTests();
-        ADD_TEST(FindManyTest);
-        ADD_TEST(CopyTest);
-        ADD_TEST(AssignmentTest);
+        ADD_TEST(LinkedListTests::FindManyTest);
+        ADD_TEST(LinkedListTests::CopyTest);
+        ADD_TEST(LinkedListTests::AssignmentTest);
+        ADD_TEST(LinkedListTests::IteratorTest)
     }
 
 private:
     bool FindManyTest();
     bool AssignmentTest();
     bool CopyTest();
+    bool IteratorTest();
 
     static Test_Registrar<LinkedListTests> registrar;
 };

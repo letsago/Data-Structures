@@ -9,6 +9,7 @@ namespace pyu
 template <typename T>
 class LinkedList : public LinearStorageInterface<T>
 {
+    struct Obj;
     public: 
 
     LinkedList()
@@ -43,12 +44,9 @@ class LinkedList : public LinearStorageInterface<T>
 
     void print() const
     {
-        Obj* temp = m_head;
-
-        while(temp != nullptr)
+        for (Iterator it = begin(); it != end(); ++it)
         {
-            std::cout << temp -> m_value << " ";
-            temp = temp -> m_next;
+            std::cout << *it << " ";
         }
 
         std::cout << std::endl;
@@ -151,14 +149,14 @@ class LinkedList : public LinearStorageInterface<T>
 
     int find(const T value) const
     {
-        Obj* target = m_head;
+        uint32_t counter = 0;
 
-        for (uint32_t i = 0; i < m_size; ++i)
+        for (Iterator it = begin(); it != end(); ++it)
         {
-            if (target -> m_value == value)
-                return i;
-
-            target = target -> m_next;
+            if (*it == value)
+                return counter;
+            
+            ++counter;
         }
 
         return -1;
@@ -167,14 +165,14 @@ class LinkedList : public LinearStorageInterface<T>
     Vector<int> findmany(const T value) const
     {
         Vector<int> indices;
-        Obj* target = m_head;
+        uint32_t counter = 0;
 
-        for (uint32_t i = 0; i < m_size; ++i)
+        for (Iterator it = begin(); it != end(); ++it)
         {
-            if (target -> m_value == value)
-                indices.insert_back(i);
+            if (*it == value)
+                indices.insert_back(counter);
             
-            target = target -> m_next;    
+            ++counter;
         }
         
         return indices;
@@ -194,6 +192,49 @@ class LinkedList : public LinearStorageInterface<T>
 
         m_head = nullptr;
         m_size = 0;
+    }
+
+    class Iterator
+    {
+        public:
+
+        T operator* ()
+        {
+            return m_iterator->m_value;
+        }
+
+        Iterator& operator++ ()
+        {
+            if (m_iterator != nullptr)
+                m_iterator = m_iterator->m_next;
+            return *this;
+        }
+
+        bool operator!= (const Iterator& other) const
+        {
+            return m_iterator != other.m_iterator;
+        }
+
+        private:
+
+        Iterator(const Obj* obj)
+        {
+            m_iterator = obj;
+        }
+
+        const Obj* m_iterator;
+        friend class LinkedList;
+
+    };
+
+    const Iterator begin() const
+    {
+        return Iterator(m_head);
+    }
+
+    const Iterator end() const
+    {
+        return Iterator(nullptr);
     }
 
     private:
