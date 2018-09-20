@@ -2,11 +2,12 @@
 
 #include <pyu/test_lib.h>
 #include <pyu/linear_storage_interface.h>
+#include <pyu/shared_ptr.h>
 
 class LinearStorageInterfaceTests : public UnitTests
 {
 protected:
-    virtual pyu::LinearStorageInterface<int>* createTestLSI() = 0;
+    virtual pyu::shared_ptr<pyu::LinearStorageInterface<int>> createTestLSI() = 0;
     virtual bool CopyTest() = 0;
     virtual bool AssignmentTest() = 0;
 

@@ -6,11 +6,22 @@
 #include <array_test.h>
 #include <queue_test.h>
 #include <stack_test.h>
+#include <sharedptr_test.h>
+#include <stackarray_test.h>
+#include <queuearray_test.h>
 
 int main()
 {
     // In order to disable a test simply call;
-    // DISABLE_TEST(VectorTests);
+    DISABLE_TEST(VectorTests);
+    DISABLE_TEST(StackTests);
+    DISABLE_TEST(QueueTests);
+    DISABLE_TEST(PigLatinTests);
+    DISABLE_TEST(StackArrayTests);
+    DISABLE_TEST(LinkedListTests);
+    DISABLE_TEST(QueueArrayTests);
+    // DISABLE_TEST(ArrayTests);
+    // DISABLE_TEST(SharedPtrTests);
     UnitTests::Run_All();
 
     return 0;

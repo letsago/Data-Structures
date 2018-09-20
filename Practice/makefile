@@ -8,6 +8,7 @@ SUBDIRS := \
 	./LinearStorageInterface \
 	./Vector \
 	./Array \
+	./Shared_Ptr \
 
 ALLDIRS := $(SUBDIRS) $(BASEDIRS)
 

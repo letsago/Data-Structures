@@ -3,13 +3,14 @@
 #include <pyu/test_lib.h>
 #include <lsi_test.h>
 #include <pyu/linked_list.h>
+#include <pyu/shared_ptr.h>
 
 class LinkedListTests final : public LinearStorageInterfaceTests
 {
 protected:
-    pyu::LinearStorageInterface<int>* createTestLSI()
+    pyu::shared_ptr<pyu::LinearStorageInterface<int>> createTestLSI()
     {
-        return new pyu::LinkedList<int>();
+        return pyu::shared_ptr<pyu::LinearStorageInterface<int>>(new pyu::LinkedList<int>());
     }
 
     void RunTests() final

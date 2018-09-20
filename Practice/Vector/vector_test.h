@@ -3,13 +3,14 @@
 #include <pyu/test_lib.h>
 #include <lsi_test.h>
 #include <pyu/vector.h>
+#include <pyu/shared_ptr.h>
 
 class VectorTests final : public LinearStorageInterfaceTests
 {
 protected:
-    pyu::LinearStorageInterface<int>* createTestLSI()
+    pyu::shared_ptr<pyu::LinearStorageInterface<int>> createTestLSI()
     {
-        return new pyu::Vector<int>();
+        return pyu::shared_ptr<pyu::LinearStorageInterface<int>>(new pyu::Vector<int>());
     }
 
     void RunTests() final

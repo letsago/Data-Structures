@@ -19,9 +19,9 @@
 #define COLOR_LINE(color, statements) std::cout << color << statements << DEFAULT << std::endl;
 #define PASS_FAIL_LINE(conditional, statements) COLOR_LINE((conditional ? GREEN : RED), (conditional ? "PASSED" : "FAILED") <<"\t" << statements)
 
-#define MEMORY_LEAK(result, starting_leaks) { \
+#define MEMORY_LEAK(result, starting_leaks, starting_bytes) { \
     bool comp = (getTracker().NumMemoryLeaks() == starting_leaks) & (starting_leaks != MemoryTracker::s_invalidState); \
-    PASS_FAIL_LINE(comp, "MEMORY LEAK TEST"); \
+    PASS_FAIL_LINE(comp, "MEMORY LEAK TEST (bytes: " << getTracker().NumBytesOfError() - starting_bytes << ")" ); \
     result &= comp; \
 }
 
@@ -76,10 +76,11 @@ template <typename T> char* get_typename(T& object)
     if (enabled) \
     { \
         getTracker().setActive(true); \
-        uint32_t _staring_leaks = getTracker().NumMemoryLeaks(); \
+        uint32_t _starting_leaks = getTracker().NumMemoryLeaks(); \
+        uint32_t _starting_bytes = getTracker().NumBytesOfError(); \
         bool result = test(__VA_ARGS__); \
         getTracker().setActive(false); \
-        MEMORY_LEAK(result, _staring_leaks); \
+        MEMORY_LEAK(result, _starting_leaks, _starting_bytes); \
         UnitTests::s_summary.push_back(std::make_pair(test_name, result ? 1 : 0)); \
         PASS_FAIL_LINE(result, test_name << std::endl ); \
     } \
@@ -134,6 +135,18 @@ public:
     uint32_t NumMemoryLeaks() 
     {
         return m_state ? m_numAllocations : s_invalidState;
+    }
+
+    uint32_t NumBytesOfError()
+    {
+        uint32_t total_bytes = 0;
+        for (uint32_t i = 0; i < MAX_ALLOCATIONS; ++i)
+        {
+            if (m_data[i] != nullptr) {
+                total_bytes += m_size[i];
+            }
+        }
+        return total_bytes;
     }
 
 private:

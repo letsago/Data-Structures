@@ -1,205 +1,193 @@
 #include <pyu/test_lib.h>
 #include "lsi_test.h"
 #include <pyu/linear_storage_interface.h>
+#include <pyu/shared_ptr.h>
 
 using namespace pyu;
 
 bool LinearStorageInterfaceTests::InsertTest()
 {
-    LinearStorageInterface<int>* pLsi = createTestLSI();
-    VERIFY_FALSE(pLsi->insert(1, 3));
+    shared_ptr<LinearStorageInterface<int>> p = createTestLSI();
+    VERIFY_FALSE(p->insert(1, 3));
 
     for (uint32_t i = 0; i < 8; ++i)
     {
-        VERIFY_TRUE(pLsi->insert(i, i));
-        VERIFY_EQ(pLsi->length(), i + 1);
+        VERIFY_TRUE(p->insert(i, i));
+        VERIFY_EQ(p->length(), i + 1);
     }
 
-    for (uint32_t i = 0; i < pLsi->length(); ++i)
+    for (uint32_t i = 0; i < p->length(); ++i)
     {
-        VERIFY_EQ(pLsi->at(i), i);
+        VERIFY_EQ(p->at(i), i);
     }
 
-    VERIFY_TRUE(pLsi->insert(5, 10));
-    VERIFY_EQ(pLsi->length(), 9);
-    VERIFY_EQ(pLsi->at(5), 10);
+    VERIFY_TRUE(p->insert(5, 10));
+    VERIFY_EQ(p->length(), 9);
+    VERIFY_EQ(p->at(5), 10);
 
-    for (uint32_t i = 6; i < pLsi->length(); ++i)
+    for (uint32_t i = 6; i < p->length(); ++i)
     {
-        VERIFY_EQ(pLsi->at(i), i - 1);
+        VERIFY_EQ(p->at(i), i - 1);
     }
     
-    VERIFY_FALSE(pLsi->insert(10, 9));
-    delete pLsi;
+    VERIFY_FALSE(p->insert(10, 9));
 
     return true;
 }
 
 bool LinearStorageInterfaceTests::RemoveTest()
 {
-    LinearStorageInterface<int>* pLsi = createTestLSI();
-    VERIFY_FALSE(pLsi->remove(0));
+    shared_ptr<LinearStorageInterface<int>> p = createTestLSI();
+    VERIFY_FALSE(p->remove(0));
 
     for (uint32_t i = 0; i < 5; ++i)
     {
-        VERIFY_TRUE(pLsi->insert(i, i));
-        VERIFY_EQ(pLsi->at(i), i);
-        VERIFY_EQ(pLsi->length(), i + 1);
+        VERIFY_TRUE(p->insert(i, i));
+        VERIFY_EQ(p->at(i), i);
+        VERIFY_EQ(p->length(), i + 1);
     }
 
-    VERIFY_TRUE(pLsi->remove(3));
-    VERIFY_EQ(pLsi->length(), 4);
+    VERIFY_TRUE(p->remove(3));
+    VERIFY_EQ(p->length(), 4);
     
     for (uint32_t i = 0; i < 3; ++i)
     {
-        VERIFY_EQ(pLsi->at(i), i);
+        VERIFY_EQ(p->at(i), i);
     }
 
-    VERIFY_EQ(pLsi->at(3), 4);
-    delete pLsi;
+    VERIFY_EQ(p->at(3), 4);
 
     return true;
 }
 
 bool LinearStorageInterfaceTests::InsertFrontTest()
 {
-    LinearStorageInterface<int>* pLsi = createTestLSI();
+    shared_ptr<LinearStorageInterface<int>> p = createTestLSI();
     for (uint32_t i = 0; i < 5; ++i)
     {
-        VERIFY_TRUE(pLsi->insert_front(i * 2));
-        VERIFY_EQ(pLsi->front(), i * 2);
-        VERIFY_EQ(pLsi->length(), i + 1);
+        VERIFY_TRUE(p->insert_front(i * 2));
+        VERIFY_EQ(p->front(), i * 2);
+        VERIFY_EQ(p->length(), i + 1);
     }
     
     for (uint32_t i = 0; i < 5; ++i)
     {
-        VERIFY_EQ(pLsi->at(i), (4 - i) * 2);
+        VERIFY_EQ(p->at(i), (4 - i) * 2);
     }
-
-    delete pLsi;
 
     return true;
 }
 
 bool LinearStorageInterfaceTests::RemoveFrontTest()
 {
-    LinearStorageInterface<int>* pLsi = createTestLSI();
-    VERIFY_FALSE(pLsi->remove_front());
+    shared_ptr<LinearStorageInterface<int>> p = createTestLSI();
+    VERIFY_FALSE(p->remove_front());
 
     for (uint32_t i = 0; i < 5; ++i)
     {
-        VERIFY_TRUE(pLsi->insert_front(i * 2));
-        VERIFY_EQ(pLsi->front(), i * 2);
-        VERIFY_EQ(pLsi->length(), i + 1);
+        VERIFY_TRUE(p->insert_front(i * 2));
+        VERIFY_EQ(p->front(), i * 2);
+        VERIFY_EQ(p->length(), i + 1);
     }
 
     for (uint32_t i = 5; i > 0; --i)
     {
-        VERIFY_EQ(pLsi->front(), (i - 1) * 2);
-        VERIFY_TRUE(pLsi->remove_front());
-        VERIFY_EQ(pLsi->length(), i - 1);
+        VERIFY_EQ(p->front(), (i - 1) * 2);
+        VERIFY_TRUE(p->remove_front());
+        VERIFY_EQ(p->length(), i - 1);
     }
-
-    delete pLsi;
 
     return true;
 }
 
 bool LinearStorageInterfaceTests::InsertBackTest()
 {
-    LinearStorageInterface<int>* pLsi = createTestLSI();
+    shared_ptr<LinearStorageInterface<int>> p = createTestLSI();
     for (uint32_t i = 0; i < 5; ++i)
     {
-        VERIFY_TRUE(pLsi->insert_back(i * 3));
-        VERIFY_EQ(pLsi->length(), i + 1);
+        VERIFY_TRUE(p->insert_back(i * 3));
+        VERIFY_EQ(p->length(), i + 1);
     }
 
-    for (uint32_t i = 0; i < pLsi->length(); ++i)
+    for (uint32_t i = 0; i < p->length(); ++i)
     {
-        VERIFY_EQ(pLsi->at(i), i * 3);
+        VERIFY_EQ(p->at(i), i * 3);
     }
-
-    delete pLsi;
 
     return true;
 }
 
 bool LinearStorageInterfaceTests::RemoveBackTest()
 {
-    LinearStorageInterface<int>* pLsi = createTestLSI();
-    VERIFY_FALSE(pLsi->remove_front());
+    shared_ptr<LinearStorageInterface<int>> p = createTestLSI();
+    VERIFY_FALSE(p->remove_front());
 
     for (uint32_t i = 0; i < 5; ++i)
     {
-        VERIFY_TRUE(pLsi->insert_back(i * 3));
-        VERIFY_EQ(pLsi->back(), i * 3);
-        VERIFY_EQ(pLsi->length(), i + 1);
+        VERIFY_TRUE(p->insert_back(i * 3));
+        VERIFY_EQ(p->back(), i * 3);
+        VERIFY_EQ(p->length(), i + 1);
     }
 
     for (uint32_t i = 5; i > 0; --i)
     {
-        VERIFY_EQ(pLsi->back(), (i - 1) * 3);
-        VERIFY_TRUE(pLsi->remove_back());
-        VERIFY_EQ(pLsi->length(), i - 1);
+        VERIFY_EQ(p->back(), (i - 1) * 3);
+        VERIFY_TRUE(p->remove_back());
+        VERIFY_EQ(p->length(), i - 1);
     }
-
-    delete pLsi;
 
     return true;
 }
 
 bool LinearStorageInterfaceTests::ClearTest()
 {
-    LinearStorageInterface<int>* pLsi = createTestLSI();
+    shared_ptr<LinearStorageInterface<int>> p = createTestLSI();
     for (uint32_t i = 0; i < 5; ++i)
     {
-        pLsi->insert_back(5);
+        p->insert_back(5);
     }
 
-    VERIFY_EQ(pLsi->length(), 5);
+    VERIFY_EQ(p->length(), 5);
 
-    pLsi->clear();
-    VERIFY_TRUE(pLsi->empty());
-    VERIFY_EQ(pLsi->length(), 0);
-    delete pLsi;
+    p->clear();
+    VERIFY_TRUE(p->empty());
+    VERIFY_EQ(p->length(), 0);
     
     return true;
 }
 
 bool LinearStorageInterfaceTests::AtTest()
 {
-    LinearStorageInterface<int>* pLsi = createTestLSI();
+    shared_ptr<LinearStorageInterface<int>> p = createTestLSI();
     for (uint32_t i = 0; i < 8; ++i)
     {
-        pLsi->insert_back(8);
+        p->insert_back(8);
     }
 
-    pLsi->at(4) = 5;
-    VERIFY_EQ(pLsi->at(4), 5);
-    pLsi->front() = 1;
-    VERIFY_EQ(pLsi->front(), 1);
-    pLsi->back() = 10;
-    VERIFY_EQ(pLsi->back(), 10);
-    delete pLsi;
+    p->at(4) = 5;
+    VERIFY_EQ(p->at(4), 5);
+    p->front() = 1;
+    VERIFY_EQ(p->front(), 1);
+    p->back() = 10;
+    VERIFY_EQ(p->back(), 10);
 
     return true;
 }
 
 bool LinearStorageInterfaceTests::ContainsTest()
 {
-    LinearStorageInterface<int>* pLsi = createTestLSI();
+    shared_ptr<LinearStorageInterface<int>> p = createTestLSI();
     for (uint32_t i = 0; i < 5; ++i)
     {
-        pLsi->insert_back(i);
+        p->insert_back(i);
     }
 
     for (uint32_t i = 0; i < 5; ++i)
     {
-        VERIFY_TRUE(pLsi->contains(i));
+        VERIFY_TRUE(p->contains(i));
     }
 
-    VERIFY_FALSE(pLsi->contains(5));
-    delete pLsi;
+    VERIFY_FALSE(p->contains(5));
 
     return true;
 
@@ -207,29 +195,27 @@ bool LinearStorageInterfaceTests::ContainsTest()
 
 bool LinearStorageInterfaceTests::FindTest()
 {
-    LinearStorageInterface<int>* pLsi = createTestLSI();
-
-    VERIFY_EQ(pLsi->find(0), -1);
+    shared_ptr<LinearStorageInterface<int>> p = createTestLSI();
+    VERIFY_EQ(p->find(0), -1);
 
     for (uint32_t i = 0; i < 5; ++i)
     {
-        VERIFY_TRUE(pLsi->insert_back(i));
+        VERIFY_TRUE(p->insert_back(i));
     }
 
     // Find succeeds if able to find index of given value
     for (uint32_t i = 0; i < 5; ++i)
     {
-        VERIFY_EQ(pLsi->find(i), i);
+        VERIFY_EQ(p->find(i), i);
     }
     
-    VERIFY_TRUE(pLsi->insert(2, 4));
+    VERIFY_TRUE(p->insert(2, 4));
 
     // Find will return the index of first instance of value
-    VERIFY_EQ(pLsi->find(4), 2);
+    VERIFY_EQ(p->find(4), 2);
 
     // If unable to find index of given value, Find fails and returns -1
-    VERIFY_EQ(pLsi->find(8), -1);
-    delete pLsi;
+    VERIFY_EQ(p->find(8), -1);
 
     return true;
 }
