@@ -59,22 +59,15 @@ public:
         m_data = nullptr;
     }
 
-    void print() const
+    void print(std::ostream& os) const
     {
-        // if user passed in a null pointer for RollingArray, bail out early!
-        if (!m_data)
-        {
-            std::cout << "Can't print null pointer, bailing out" << std::endl;
-            return;
-        }
-
         for (uint32_t index = m_head; index < m_size; ++index)
-            std::cout << m_data[index] << " ";
+            os << at(index) << " ";
 
         for (uint32_t index = 0; index < m_head; ++index)
-            std::cout << m_data[index] << " ";
+            os << at(index) << " ";
 
-        std::cout << std::endl;
+        os << std::endl;
     }
 
     bool insert(const uint32_t position, const T value)

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include "linear_storage_interface.h"
 #include "vector.h"
 
 namespace pyu
@@ -34,22 +35,20 @@ class LinkedList : public LinearStorageInterface<T>
     {
         clear();
 
-        for (uint32_t i = 0; i < other.m_size; ++i)
-        {
-            insert(i, other.at(i));
-        }
+        for (Iterator it = other.begin(); it != other.end(); ++it)
+            LinearStorageInterface<T>::insert_back(*it);
 
         return *this;
     }
-
-    void print() const
+    
+    void print(std::ostream& os) const
     {
         for (Iterator it = begin(); it != end(); ++it)
         {
-            std::cout << *it << " ";
+            os << *it << " ";
         }
 
-        std::cout << std::endl;
+        os << std::endl;
     }
 
     uint32_t length() const

@@ -64,22 +64,15 @@ public:
         return *this;
     }
 
-    // Member Functions
-    void print() const
+    void print(std::ostream& os) const
     {
-        // if user passed in a null pointer for array, bail out early!
-        if (!m_data)
-        {
-            std::cout << "Can't print null pointer, bailing out" << std::endl;
-            return;
-        }
+        for (uint32_t i = 0; i < m_actual_size; ++i)
+            os << at(i) << " ";
 
-        for (uint32_t index = 0; index < m_actual_size; ++index)
-            std::cout << m_data[index] << " ";
-
-        std::cout << std::endl;
+        os << std::endl;
     }
 
+    // Member Functions
     bool insert(const uint32_t position, const T value)
     {
         // cannot insert past actual size of array

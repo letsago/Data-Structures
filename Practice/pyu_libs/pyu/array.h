@@ -40,19 +40,12 @@ public:
         m_data = nullptr;
     }
 
-    void print() const
+    void print(std::ostream& os) const
     {
-        // if user passed in a null pointer for array, bail out early!
-        if (!m_data)
-        {
-            std::cout << "Can't print null pointer, bailing out" << std::endl;
-            return;
-        }
-
-        for (uint32_t index = 0; index < m_size; ++index)
-            std::cout << m_data[index] << " ";
-
-        std::cout << std::endl;
+        for (uint32_t i = 0; i < m_size; ++i)
+            os << at(i) << " ";
+        
+        os << std::endl;
     }
 
     bool insert(const uint32_t position, const T value)

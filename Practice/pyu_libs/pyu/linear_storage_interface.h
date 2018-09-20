@@ -58,7 +58,12 @@ class LinearStorageInterface
         return (find(value) != -1); // -1 indicates that value was not found
     }
 
-    virtual void print() const = 0;
+    friend std::ostream& operator<< (std::ostream& os, const LinearStorageInterface& lsi)
+    {
+        lsi.print(os);
+        return os;
+    }
+
     virtual bool insert(const uint32_t position, const T value) = 0;
     virtual bool remove(const uint32_t position) = 0;
     virtual T& at(const uint32_t position) = 0;
@@ -68,6 +73,9 @@ class LinearStorageInterface
     virtual void clear() = 0;
     virtual ~LinearStorageInterface() {}; // This enables parent class deconstructor to have priority over child class deconstructors
  
+    protected:
+
+    virtual void print(std::ostream& os) const = 0;
 };
 
 }
