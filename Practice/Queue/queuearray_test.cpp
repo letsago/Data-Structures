@@ -1,13 +1,14 @@
 #include "queuearray_test.h"
 #include <pyu/queue.h>
+#include <pyu/shared_ptr.h>
 
 using namespace pyu;
 
 Test_Registrar<QueueArrayTests> QueueArrayTests::registrar;
 
-bool QueueArrayTests::InvalidPushTest(LinearStorageInterface<int>* pLsi)
+bool QueueArrayTests::InvalidPushTest(shared_ptr<LinearStorageInterface<int>> pLsi)
 {
-    Queue<int> A(&pLsi);
+    Queue<int> A(pLsi);
     VERIFY_EQ(A.length(), 0);
 
     for (uint32_t i = 0; i < 5; i++)
@@ -19,14 +20,13 @@ bool QueueArrayTests::InvalidPushTest(LinearStorageInterface<int>* pLsi)
 
     VERIFY_FALSE(A.push(5));
     VERIFY_EQ(A.length(), 5);
-    delete pLsi;
     
     return true;
 }
 
-bool QueueArrayTests::RollingPopTest(LinearStorageInterface<int>* pLsi)
+bool QueueArrayTests::RollingPopTest(shared_ptr<LinearStorageInterface<int>> pLsi)
 {
-    Queue<int> A(&pLsi);
+    Queue<int> A(pLsi);
     VERIFY_FALSE(A.pop());
 
     for (uint32_t i = 0; i < 5; i++)
@@ -42,7 +42,6 @@ bool QueueArrayTests::RollingPopTest(LinearStorageInterface<int>* pLsi)
     VERIFY_TRUE(A.push(5));
     VERIFY_EQ(A.front(), 1);
     VERIFY_EQ(A.length(), 5);
-    delete pLsi;
 
     return true;
 }

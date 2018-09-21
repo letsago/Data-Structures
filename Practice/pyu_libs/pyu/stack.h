@@ -1,6 +1,7 @@
 #pragma once
 
 #include "linear_storage_interface.h"
+#include "shared_ptr.h"
 
 namespace pyu
 {
@@ -11,15 +12,9 @@ class Stack
 
 public:
 
-    Stack(pyu::LinearStorageInterface<T>** ppLsi)
+    Stack(shared_ptr<LinearStorageInterface<T>> pLsi)
     {
-        m_pLsi = *ppLsi;
-        *ppLsi = nullptr;
-    }
-
-    ~Stack()
-    {
-        delete m_pLsi;
+        m_pLsi = pLsi;
     }
 
     bool pop()
@@ -55,11 +50,11 @@ public:
     void clear()
     {
         m_pLsi->clear();
-    } 
+    }
 
 private:
 
-    LinearStorageInterface<T>* m_pLsi;
+    shared_ptr<LinearStorageInterface<T>> m_pLsi;
 };
 
 }

@@ -13,11 +13,11 @@ public:
 
     // Vector Constructors
     // Because we initialized our member variables, we use the default constructor
-    Vector()
+    Vector(const int capacity = 0)
     {
-        m_memory_size = 0;
         m_actual_size = 0;
-        m_data = nullptr;
+        m_memory_size = capacity;
+        m_data = new T[m_memory_size];
     }
     
     // Constructor for pre-populating vector with array of characters

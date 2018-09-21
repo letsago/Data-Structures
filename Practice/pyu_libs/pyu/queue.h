@@ -1,6 +1,7 @@
 #pragma once
 
 #include "linear_storage_interface.h"
+#include "shared_ptr.h"
 
 namespace pyu
 {
@@ -11,15 +12,9 @@ class Queue
 
 public:
 
-    Queue(pyu::LinearStorageInterface<T>** ppLsi)
+    Queue(shared_ptr<LinearStorageInterface<T>> pLsi)
     {
-        m_pLsi = *ppLsi;
-        *ppLsi = nullptr;
-    }
-
-    ~Queue()
-    {
-        delete m_pLsi;
+        m_pLsi = pLsi;
     }
 
     bool pop()
@@ -59,7 +54,7 @@ public:
 
 private:
 
-    LinearStorageInterface<T>* m_pLsi;
+    shared_ptr<LinearStorageInterface<T>> m_pLsi;
 };
 
 }

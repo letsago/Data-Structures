@@ -1,13 +1,14 @@
 #include "stackarray_test.h"
 #include <pyu/stack.h>
+#include <pyu/shared_ptr.h>
 
 using namespace pyu;
 
 Test_Registrar<StackArrayTests> StackArrayTests::registrar;
 
-bool StackArrayTests::InvalidPushTest(LinearStorageInterface<int>* pLsi)
+bool StackArrayTests::InvalidPushTest(pyu::shared_ptr<pyu::LinearStorageInterface<int>> pLsi)
 {
-    Stack<int> A(&pLsi);
+    Stack<int> A(pLsi);
 
     VERIFY_EQ(A.length(), 0);
 
@@ -20,8 +21,6 @@ bool StackArrayTests::InvalidPushTest(LinearStorageInterface<int>* pLsi)
 
     VERIFY_FALSE(A.push(5));
     VERIFY_EQ(A.length(), 5);
-
-    delete pLsi;
     
     return true;
 }

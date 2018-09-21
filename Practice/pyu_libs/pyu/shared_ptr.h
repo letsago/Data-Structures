@@ -8,6 +8,12 @@ class shared_ptr
 {
     public:
 
+        shared_ptr()
+        {
+            m_pdata = nullptr;
+            m_counter = nullptr;
+        }
+        
         shared_ptr(T* p)
         {
             m_pdata = p;
@@ -19,9 +25,9 @@ class shared_ptr
             clear();
         }
 
-        shared_ptr(const shared_ptr& p)
+        shared_ptr(const shared_ptr<T>& other)
         {
-            *this = p;
+            *this = other;
         }
 
         T& operator* () const
