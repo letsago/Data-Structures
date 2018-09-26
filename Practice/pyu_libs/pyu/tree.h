@@ -33,7 +33,7 @@ class Tree
     }
 
     bool insert(const T& val)
-    {   
+    {
         Node* next = m_root;
         Node* curr = nullptr;
 
@@ -120,18 +120,19 @@ class Tree
             shared_ptr<LinearStorageInterface<Node*>> pdata(new Vector<Node*>(size()));
             Stack<Node*> deleteorder(pdata);
             deleteorder.push(m_root);
-            
+
             while (deleteorder.length() > 0)
             {
                 Node* curr = deleteorder.top();
-                delete curr;
                 deleteorder.pop();
 
-                if (curr->m_left != nullptr)
+                if (curr->m_left)
                     deleteorder.push(curr->m_left);
 
-                if (curr->m_right != nullptr)
+                if (curr->m_right)
                     deleteorder.push(curr->m_right);
+
+                delete curr;
             }
         }
 
@@ -147,7 +148,7 @@ class Tree
         {
             if (curr == nullptr)
                 return false;
-            
+
             if (val == curr->m_value)
                 return true;
 
