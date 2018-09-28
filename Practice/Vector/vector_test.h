@@ -13,18 +13,19 @@ protected:
         return pyu::shared_ptr<pyu::LinearStorageInterface<int>>(new pyu::Vector<int>());
     }
 
+    pyu::shared_ptr<pyu::LinearStorageInterface<int>> createTestLSI(pyu::shared_ptr<pyu::LinearStorageInterface<int>>& other)
+    {
+        return pyu::shared_ptr<pyu::LinearStorageInterface<int>>(new pyu::Vector<int>(dynamic_cast<pyu::Vector<int>&>(*other)));
+    }
+
     void RunTests() final
     {
         LinearStorageInterfaceTests::RunTests();
         ADD_TEST(ResizeTest);
-        ADD_TEST(CopyTest);
-        ADD_TEST(AssignmentTest);
     }
 
 private:
     bool ResizeTest();
-    bool AssignmentTest();
-    bool CopyTest();
 
     static Test_Registrar<VectorTests> registrar;
-}; 
+};

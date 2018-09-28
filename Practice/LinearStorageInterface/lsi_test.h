@@ -8,8 +8,7 @@ class LinearStorageInterfaceTests : public UnitTests
 {
 protected:
     virtual pyu::shared_ptr<pyu::LinearStorageInterface<int>> createTestLSI() = 0;
-    virtual bool CopyTest() = 0;
-    virtual bool AssignmentTest() = 0;
+    virtual pyu::shared_ptr<pyu::LinearStorageInterface<int>> createTestLSI(pyu::shared_ptr<pyu::LinearStorageInterface<int>>& other) = 0;
 
     void RunTests()
     {
@@ -23,6 +22,11 @@ protected:
         ADD_TEST(AtTest);
         ADD_TEST(ContainsTest);
         ADD_TEST(FindTest);
+        ADD_TEST(EqualityTest);
+        ADD_TEST(AssignmentTest);
+        ADD_TEST(CopyTest);
+        ADD_TEST(IteratorUseTest);
+        ADD_TEST(IteratorBoundsTest);
     }
 
 private:
@@ -36,4 +40,9 @@ private:
     bool AtTest();
     bool ContainsTest();
     bool FindTest();
+    bool EqualityTest();
+    bool AssignmentTest();
+    bool CopyTest();
+    bool IteratorUseTest();
+    bool IteratorBoundsTest();
 };

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <pyu/stack.h>
-#include <pyu/vector.h>
+#include "stack.h"
+#include "vector.h"
 
 namespace pyu
 {

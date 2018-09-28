@@ -2,6 +2,7 @@
 #include "lsi_test.h"
 #include <pyu/linear_storage_interface.h>
 #include <pyu/shared_ptr.h>
+#include <pyu/iterator.h>
 
 using namespace pyu;
 
@@ -29,7 +30,7 @@ bool LinearStorageInterfaceTests::InsertTest()
     {
         VERIFY_EQ(p->at(i), i - 1);
     }
-    
+
     VERIFY_FALSE(p->insert(10, 9));
 
     return true;
@@ -49,7 +50,7 @@ bool LinearStorageInterfaceTests::RemoveTest()
 
     VERIFY_TRUE(p->remove(3));
     VERIFY_EQ(p->length(), 4);
-    
+
     for (uint32_t i = 0; i < 3; ++i)
     {
         VERIFY_EQ(p->at(i), i);
@@ -69,7 +70,7 @@ bool LinearStorageInterfaceTests::InsertFrontTest()
         VERIFY_EQ(p->front(), i * 2);
         VERIFY_EQ(p->length(), i + 1);
     }
-    
+
     for (uint32_t i = 0; i < 5; ++i)
     {
         VERIFY_EQ(p->at(i), (4 - i) * 2);
@@ -152,7 +153,7 @@ bool LinearStorageInterfaceTests::ClearTest()
     p->clear();
     VERIFY_TRUE(p->empty());
     VERIFY_EQ(p->length(), 0);
-    
+
     return true;
 }
 
@@ -179,18 +180,17 @@ bool LinearStorageInterfaceTests::ContainsTest()
     shared_ptr<LinearStorageInterface<int>> p = createTestLSI();
     for (uint32_t i = 0; i < 5; ++i)
     {
-        p->insert_back(i);
+        p->insert_back(i + 1000);
     }
 
     for (uint32_t i = 0; i < 5; ++i)
     {
-        VERIFY_TRUE(p->contains(i));
+        VERIFY_TRUE(p->contains(i + 1000));
     }
 
     VERIFY_FALSE(p->contains(5));
 
     return true;
-
 }
 
 bool LinearStorageInterfaceTests::FindTest()
@@ -208,7 +208,7 @@ bool LinearStorageInterfaceTests::FindTest()
     {
         VERIFY_EQ(p->find(i), i);
     }
-    
+
     VERIFY_TRUE(p->insert(2, 4));
 
     // Find will return the index of first instance of value
@@ -216,6 +216,120 @@ bool LinearStorageInterfaceTests::FindTest()
 
     // If unable to find index of given value, Find fails and returns -1
     VERIFY_EQ(p->find(8), -1);
+
+    return true;
+}
+
+bool LinearStorageInterfaceTests::EqualityTest()
+{
+    shared_ptr<LinearStorageInterface<int>> p = createTestLSI();
+
+    for (uint32_t i = 0; i < 5; ++i)
+    {
+        VERIFY_TRUE(p->insert_back(i));
+    }
+
+    shared_ptr<LinearStorageInterface<int>> r = createTestLSI();
+
+    for (uint32_t i = 0; i < 5; ++i)
+    {
+        VERIFY_TRUE(r->insert_back(i * 2));
+    }
+
+    shared_ptr<LinearStorageInterface<int>> s = createTestLSI();
+
+    for (uint32_t i = 0; i < 6; ++i)
+    {
+        VERIFY_TRUE(s->insert_back(i));
+    }
+
+    VERIFY_EQ(p, p);
+    VERIFY_NOT_EQ(p, r);
+    VERIFY_NOT_EQ(p, s);
+
+    return true;
+}
+
+bool LinearStorageInterfaceTests::AssignmentTest()
+{
+    shared_ptr<LinearStorageInterface<int>> p = createTestLSI();
+
+    for (uint32_t i = 0; i < 5; ++i)
+    {
+        VERIFY_TRUE(p->insert_back(i));
+    }
+
+    shared_ptr<LinearStorageInterface<int>> q = createTestLSI();
+    *q = *p;
+    VERIFY_EQ(q, p);
+
+    p->clear();
+    VERIFY_NOT_EQ(q, p);
+
+    shared_ptr<LinearStorageInterface<int>> r = createTestLSI();
+    VERIFY_NOT_EQ(q, r);
+    VERIFY_TRUE(r->empty());
+
+    *q = *r;
+    VERIFY_EQ(q, r);
+
+    return true;
+}
+
+bool LinearStorageInterfaceTests::CopyTest()
+{
+    shared_ptr<LinearStorageInterface<int>> p = createTestLSI();
+
+    for (uint32_t i = 0; i < 5; ++i)
+    {
+        VERIFY_TRUE(p->insert_back(i));
+    }
+
+    shared_ptr<LinearStorageInterface<int>> q = createTestLSI(p);
+    VERIFY_EQ(q, p);
+
+    p->clear();
+    VERIFY_NOT_EQ(q, p);
+
+    shared_ptr<LinearStorageInterface<int>> r = createTestLSI(p);
+    VERIFY_EQ(p, r);
+    VERIFY_TRUE(r->empty());
+
+    return true;
+}
+
+bool LinearStorageInterfaceTests::IteratorUseTest()
+{
+    shared_ptr<LinearStorageInterface<int>> p = createTestLSI();
+
+    for (uint32_t i = 0; i < 5; ++i)
+    {
+        VERIFY_TRUE(p->insert_back(i * 2));
+    }
+
+    int val = 0;
+
+    for (Iterator<int> it = p->begin(); it != p->end(); ++it)
+    {
+        VERIFY_TRUE(*it == val * 2);
+        ++val;
+    }
+
+    return true;
+}
+
+bool LinearStorageInterfaceTests::IteratorBoundsTest()
+{
+    shared_ptr<LinearStorageInterface<int>> p = createTestLSI();
+
+    for (uint32_t i = 0; i < 5; ++i)
+    {
+        VERIFY_TRUE(p->insert_back(i * 2));
+    }
+
+    Iterator<int> it2 = p->end();
+    it2 = it2 + 5;
+    VERIFY_TRUE(it2 == p->end());
 
     return true;
 }

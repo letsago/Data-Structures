@@ -13,7 +13,7 @@ class shared_ptr
             m_pdata = nullptr;
             m_counter = nullptr;
         }
-        
+
         shared_ptr(T* p)
         {
             m_pdata = p;
@@ -45,6 +45,16 @@ class shared_ptr
             return m_pdata;
         }
 
+        bool operator!= (const shared_ptr<T>& other)
+        {
+            return !(*this == other);
+        }
+
+        bool operator== (const shared_ptr<T>& other)
+        {
+            return *get() == *(other.get());
+        }
+
         shared_ptr<T>& operator= (const shared_ptr<T>& other)
         {
             if (m_pdata != other.m_pdata)
@@ -58,6 +68,12 @@ class shared_ptr
             }
 
             return *this;
+        }
+
+        friend std::ostream& operator<< (std::ostream& os, const shared_ptr& ptr)
+        {
+            os << *ptr;
+            return os;
         }
 
         void clear()

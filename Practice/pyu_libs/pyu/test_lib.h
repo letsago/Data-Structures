@@ -95,10 +95,10 @@ class MemoryTracker
 public:
     void setActive(bool status) { m_active = status; }
 
-    void addAllocation(void* p, size_t size) 
+    void addAllocation(void* p, size_t size)
     {
         if (!m_active) return;
-        
+
         if (m_numAllocations == MAX_ALLOCATIONS || !m_state)
         {
             std::cout << RED << "TOO MANY ALLOCATIONS. PLEASE INCREASE SIZE." << DEFAULT << std::endl;
@@ -132,7 +132,7 @@ public:
         }
     }
 
-    uint32_t NumMemoryLeaks() 
+    uint32_t NumMemoryLeaks()
     {
         return m_state ? m_numAllocations : s_invalidState;
     }
@@ -198,13 +198,13 @@ private:
 
         RunTests();
     }
-    
+
     static void Summary()
     {
         std::cout << "---------------------------------------------" << std::endl;
         std::cout << "-----------        Summary       ------------" << std::endl;
         std::cout << "---------------------------------------------" << std::endl;
-        
+
         int passed = 0;
         int total = 0;
         int skipped = 0;
@@ -229,11 +229,11 @@ private:
 protected:
     UnitTests() = default;
     virtual ~UnitTests() = default;
-    virtual void RunTests() = 0;   
-    static uint32_t s_refCounters;    
+    virtual void RunTests() = 0;
+    static uint32_t s_refCounters;
     static std::vector<std::pair<std::string, int>> s_summary;
     static infomap & s_testStats();
-    
+
     template<typename U> friend class Test_Registrar;
 };
 
@@ -241,7 +241,7 @@ template <typename T>
 class Test_Registrar
 {
 public:
-    Test_Registrar() { 
+    Test_Registrar() {
         UnitTests::s_registry()[typeid(T)] = &Test_Registrar::createInstance;
         UnitTests::s_testStats()[typeid(T)] = TestMetadata();
     }

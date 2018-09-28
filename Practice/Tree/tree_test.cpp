@@ -59,7 +59,7 @@ bool TreeTests::RemoveRootTest()
     }
 
     VERIFY_FALSE(A.remove(10));
-    
+
     // tests for another iteration of removing root
     VERIFY_TRUE(A.remove(5));
     data.remove(data.find(5));
@@ -159,5 +159,3 @@ bool TreeTests::ContainsTest()
 
     return true;
 }
-
-
