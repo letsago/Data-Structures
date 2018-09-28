@@ -2,6 +2,7 @@
 
 #include "stack.h"
 #include "vector.h"
+#include "queue.h"
 
 namespace pyu
 {
@@ -113,6 +114,99 @@ class Tree
         return true;
     }
 
+    uint32_t depth() const
+    {
+        if (m_root == nullptr)
+        {
+            return 0;
+        }
+
+        shared_ptr<LinearStorageInterface<Metadata>> pData(new Vector<Metadata>(size()));
+        Queue<Metadata> order(pData);
+        order.push({m_root, 1});
+        uint32_t d;
+
+        while (order.length() > 0)
+        {
+            Node* curr = order.front().m_node;
+            d = order.front().m_val;
+            order.pop();
+
+            if (curr->m_left != nullptr)
+            {
+                order.push({curr->m_left, d + 1});
+            }
+
+            if (curr->m_right != nullptr)
+            {
+                order.push({curr->m_right, d + 1});
+            }
+        }
+
+        return d;
+    }
+
+    friend std::ostream& operator<< (std::ostream& os, const Tree& tree)
+    {
+        uint32_t d = tree.depth();
+
+        if (d > 0)
+        {
+            shared_ptr<LinearStorageInterface<Metadata>> pData(new Vector<Metadata>(tree.size()));
+            Queue<Metadata> order(pData);
+
+            uint32_t numSpaces = (1 << d) - 1;
+            order.push({tree.m_root, numSpaces >> 1});
+            Node* curr = order.front().m_node;
+            uint32_t pos = order.front().m_val;
+            uint32_t spacesBeforeEnd;   // used to increment appropriate spaces for child node positions and for appropriately inserting
+                                        // spaces instead of values when navigating values queue
+
+            if (d > 1)
+            {
+                spacesBeforeEnd = 1 << (d - 2);
+            }
+            else
+                spacesBeforeEnd = 0;
+
+            while (order.length() > 0)
+            {
+                for (uint32_t i = 0; i < numSpaces; ++i)
+                {
+                    if (i != pos || i == (numSpaces - spacesBeforeEnd))
+                    {
+                        os << ' ';
+
+                        if (i == numSpaces - 1)
+                            spacesBeforeEnd = spacesBeforeEnd >> 1;
+                    }
+                    else
+                    {
+                        os << order.front().m_node->m_value;
+                        order.pop();
+
+                        if (curr->m_left != nullptr)
+                        {
+                            order.push({curr->m_left, pos - spacesBeforeEnd});
+                        }
+
+                        if (curr->m_right != nullptr)
+                        {
+                            order.push({curr->m_right, pos + spacesBeforeEnd});
+                        }
+
+                        curr = order.front().m_node;
+                        pos = order.front().m_val;
+                    }
+                }
+
+                os << std::endl;
+            }
+        }
+
+        return os;
+    }
+
     void clear()
     {
         if (m_root != nullptr)
@@ -175,9 +269,19 @@ class Tree
         Node* m_left;
     };
 
+    struct Metadata
+    {
+        Node* m_node;
+        uint32_t m_val;
+
+        bool operator== (const Metadata& other) const
+        {
+            return (m_node == other.m_node && m_val == other.m_val);
+        }
+    };
+
     Node* m_root;
     uint32_t m_size;
-
 };
 
 }

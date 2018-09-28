@@ -1,8 +1,6 @@
 #pragma once
 
 #include <pyu/test_lib.h>
-#include <lsi_test.h>
-#include <pyu/tree.h>
 
 class TreeTests : public UnitTests
 {
@@ -15,6 +13,15 @@ protected:
         ADD_TEST(RemoveLeafTest);
         ADD_TEST(ClearTest);
         ADD_TEST(ContainsTest);
+        ADD_TEST(DepthTest);
+        ADD_TEST(PrintBalancedTreeTest);
+        ADD_TEST(PrintNonBalancedTreeTest);
+        ADD_TEST(PrintBigBalancedTreeTest);
+        ADD_TEST(PrintBigNonBalancedTreeTest);
+        ADD_TEST(PrintRightSkewedTreeTest);
+        ADD_TEST(PrintLeftSkewedTreeTest);
+        ADD_TEST(PrintNullTreeTest);
+
     }
 
 private:
@@ -23,6 +30,14 @@ private:
     bool RemoveLeafTest();
     bool ClearTest();
     bool ContainsTest();
+    bool DepthTest();
+    bool PrintBalancedTreeTest();
+    bool PrintNonBalancedTreeTest();
+    bool PrintBigBalancedTreeTest();
+    bool PrintBigNonBalancedTreeTest();
+    bool PrintRightSkewedTreeTest();
+    bool PrintLeftSkewedTreeTest();
+    bool PrintNullTreeTest();
 
     static Test_Registrar<TreeTests> registrar;
 };

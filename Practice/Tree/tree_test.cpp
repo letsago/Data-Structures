@@ -1,6 +1,8 @@
 #include "tree_test.h"
 #include <pyu/tree.h>
 #include <pyu/vector.h>
+#include <iostream>
+#include <sstream>
 
 using namespace pyu;
 
@@ -156,6 +158,210 @@ bool TreeTests::ContainsTest()
     VERIFY_FALSE(A.contains(100));
     VERIFY_FALSE(A.contains(0));
     VERIFY_FALSE(A.contains(-100));
+
+    return true;
+}
+
+bool TreeTests::DepthTest()
+{
+    const int arr[] = {10, 5, 20, 15, 8, 2, 25};
+    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        VERIFY_TRUE(A.insert(data.at(i)));
+    }
+
+    VERIFY_EQ(A.depth(), 3);
+
+    Tree<int> B;
+
+    VERIFY_EQ(B.depth(), 0);
+
+    const int arr2[] = {10, 5, 20, 15, 8, 2, 25, 23, 1, 3, 7, 324, 90, 34, -3, -10};
+    Vector<int> data2(arr2, sizeof(arr2)/sizeof(arr2[0]));
+
+    Tree<int> C;
+
+    for (uint32_t i = 0; i < data2.length(); ++i)
+    {
+        VERIFY_TRUE(C.insert(data2.at(i)));
+    }
+
+    VERIFY_EQ(C.depth(), 6);
+
+    return true;
+}
+
+bool TreeTests::PrintBalancedTreeTest()
+{
+    const int arr[] = {4, 2, 6, 1, 3, 5, 10};
+    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        A.insert(data.at(i));
+    }
+
+    std::stringstream ss1;
+    ss1
+        << "   4   "    << std::endl
+        << " 2   6 "    << std::endl
+        << "1 3 5 10"   << std::endl;
+
+    std::stringstream ss2;
+    ss2 << A;
+    VERIFY_EQ(ss1.str(), ss2.str());
+
+    return true;
+}
+
+bool TreeTests::PrintNonBalancedTreeTest()
+{
+    const int arr[] = {10, 5, 20, 8, 2, 25, 1, 3, 7, 9, 30};
+    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        A.insert(data.at(i));
+    }
+
+    std::stringstream ss1;
+    ss1
+        << "       10       "   << std::endl
+        << "   5       20   "   << std::endl
+        << " 2   8       25 "   << std::endl
+        << "1 3 7 9       30"   << std::endl;
+
+    std::stringstream ss2;
+    ss2 << A;
+    VERIFY_EQ(ss1.str(), ss2.str());
+
+    return true;
+
+}
+
+bool TreeTests::PrintBigBalancedTreeTest()
+{
+    const int arr[] = {50, 25, 12, 38, 6, 3, 9, 18, 15, 22, 30, 26, 35, 42, 40, 48, 100, 75, 60, 55, 65, 85, 80, 90, 150, 175, 200, 160, 125, 108, 130};
+    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        A.insert(data.at(i));
+    }
+
+    std::stringstream ss1;
+    ss1
+        << "               50               "                   << std::endl
+        << "       25               100       "                 << std::endl
+        << "   12       38       75       150   "               << std::endl
+        << " 6   18   30   42   60   85   125   175 "           << std::endl
+        << "3 9 15 22 26 35 40 48 55 65 80 90 108 130 160 200"  << std::endl;
+
+    std::stringstream ss2;
+    ss2 << A;
+    VERIFY_EQ(ss1.str(), ss2.str());
+
+    return true;
+}
+
+bool TreeTests::PrintBigNonBalancedTreeTest()
+{
+    const int arr[] = {28, 12, 6, 80, 43, 586, 100, 19, 29, 81, 25, 21, 34, 15};
+    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        A.insert(data.at(i));
+    }
+
+    std::stringstream ss1;
+    ss1
+        << "               28               "       << std::endl
+        << "       12               80       "      << std::endl
+        << "   6       19       43       586   "    << std::endl
+        << "         15   25   29       100     "   << std::endl
+        << "            21     34     81      "     << std::endl;
+
+    std::stringstream ss2;
+    ss2 << A;
+    VERIFY_EQ(ss1.str(), ss2.str());
+
+    return true;
+}
+
+bool TreeTests::PrintRightSkewedTreeTest()
+{
+    const int arr[] = {11, 12, 13, 14};
+    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        A.insert(data.at(i));
+    }
+
+    std::stringstream ss1;
+    ss1
+        << "       11       "   << std::endl
+        << "           12   "   << std::endl
+        << "             13 "   << std::endl
+        << "              14"   << std::endl;
+
+    std::stringstream ss2;
+    ss2 << A;
+    VERIFY_EQ(ss1.str(), ss2.str());
+
+    return true;
+}
+
+bool TreeTests::PrintLeftSkewedTreeTest()
+{
+    const int arr[] = {14, 13, 12, 11};
+    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        A.insert(data.at(i));
+    }
+
+    std::stringstream ss1;
+    ss1
+        << "       14       "   << std::endl
+        << "   13           "   << std::endl
+        << " 12             "   << std::endl
+        << "11              "   << std::endl;
+
+    std::stringstream ss2;
+    ss2 << A;
+    VERIFY_EQ(ss1.str(), ss2.str());
+
+    return true;
+}
+
+bool TreeTests::PrintNullTreeTest()
+{
+    Tree<int> A;
+
+    std::stringstream ss1;
+
+    std::stringstream ss2;
+    ss2 << A;
+    VERIFY_EQ(ss1.str(), ss2.str());
 
     return true;
 }
