@@ -253,6 +253,30 @@ class Tree
         }
     }
 
+    Vector<T> getSorted()
+    {
+        Vector<T> sorted(size());
+        shared_ptr<LinearStorageInterface<Node*>> nodes(new Vector<Node*>(size()));
+        Stack<Node*> stack(nodes);
+        Node* curr = m_root;
+
+        while (!stack.empty() || curr != nullptr)
+        {
+            while (curr != nullptr)
+            {
+                stack.push(curr);
+                curr = curr->m_left;
+            }
+
+            curr = stack.top();
+            stack.pop();
+            sorted.insert_back(curr->m_value);
+            curr = curr->m_right;
+        }
+
+        return sorted;
+    }
+
     private:
 
     struct Node

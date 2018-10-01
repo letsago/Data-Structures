@@ -13,6 +13,11 @@ protected:
         ADD_TEST(RemoveLeafTest);
         ADD_TEST(ClearTest);
         ADD_TEST(ContainsTest);
+        ADD_TEST(SortedBalancedTreeTest);
+        ADD_TEST(SortedNonBalancedTreeTest);
+        ADD_TEST(SortedRightSkewedTreeTest);
+        ADD_TEST(SortedLeftSkewedTreeTest);
+        ADD_TEST(SortedNullTreeTest);
         ADD_TEST(DepthTest);
         ADD_TEST(PrintBalancedTreeTest);
         ADD_TEST(PrintNonBalancedTreeTest);
@@ -30,6 +35,11 @@ private:
     bool RemoveLeafTest();
     bool ClearTest();
     bool ContainsTest();
+    bool SortedBalancedTreeTest();
+    bool SortedNonBalancedTreeTest();
+    bool SortedRightSkewedTreeTest();
+    bool SortedLeftSkewedTreeTest();
+    bool SortedNullTreeTest();
     bool DepthTest();
     bool PrintBalancedTreeTest();
     bool PrintNonBalancedTreeTest();

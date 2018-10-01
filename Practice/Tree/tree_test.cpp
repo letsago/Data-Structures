@@ -8,6 +8,26 @@ using namespace pyu;
 
 Test_Registrar<TreeTests> TreeTests::registrar;
 
+bool IsSorted(const Tree<int>& other, const Vector<int>& sorted)
+{
+    if (other.size() != sorted.length())
+        return false;
+
+    for (uint32_t i = 0; i < sorted.length(); ++i)
+    {
+        if (!other.contains(sorted.at(i)))
+            return false;
+
+        if (i != 0)
+        {
+            if (sorted.at(i) <= sorted.at(i - 1))
+                return false;
+        }
+    }
+
+    return true;
+}
+
 bool TreeTests::InsertTest()
 {
     const int arr[] = {10, 5, 20, 15, 8, 2};
@@ -158,6 +178,79 @@ bool TreeTests::ContainsTest()
     VERIFY_FALSE(A.contains(100));
     VERIFY_FALSE(A.contains(0));
     VERIFY_FALSE(A.contains(-100));
+
+    return true;
+}
+
+bool TreeTests::SortedBalancedTreeTest()
+{
+    const int arr[] = {10, 5, 20, 15, 8, 2, 25, 23, 1, 3, 7, 324, 12, 18};
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
+    {
+        VERIFY_TRUE(A.insert(arr[i]));
+    }
+
+    Vector<int> sorted = A.getSorted();
+
+    return IsSorted(A, sorted);
+}
+
+bool TreeTests::SortedNonBalancedTreeTest()
+{
+    const int arr[] = {10, 5, 20, 15, 8, 2, 25, 23, 1, 3, 7, 324, 90, 34, -3, -10};
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
+    {
+        VERIFY_TRUE(A.insert(arr[i]));
+    }
+
+    Vector<int> sorted = A.getSorted();
+
+    return IsSorted(A, sorted);
+}
+
+bool TreeTests::SortedRightSkewedTreeTest()
+{
+    const int arr[] = {10, 5, 20, 15, 25, 324, 90, 34};
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
+    {
+        VERIFY_TRUE(A.insert(arr[i]));
+    }
+
+    Vector<int> sorted = A.getSorted();
+
+    return IsSorted(A, sorted);
+}
+
+bool TreeTests::SortedLeftSkewedTreeTest()
+{
+    const int arr[] = {10, 5, 20, 8, 2, 1, 3, -3, -10};
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
+    {
+        VERIFY_TRUE(A.insert(arr[i]));
+    }
+
+    Vector<int> sorted = A.getSorted();
+
+    return IsSorted(A, sorted);
+}
+
+bool TreeTests::SortedNullTreeTest()
+{
+    Tree<int> A;
+
+    VERIFY_TRUE(A.getSorted().empty());
 
     return true;
 }
