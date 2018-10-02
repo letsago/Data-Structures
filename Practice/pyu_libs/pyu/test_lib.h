@@ -6,6 +6,9 @@
 #include <utility>
 #include <vector>
 #include <unordered_map>
+#include <chrono>
+#include <iomanip>
+#include <algorithm>
 
 #ifndef MAX_ALLOCATIONS
 #define MAX_ALLOCATIONS 256
@@ -14,9 +17,10 @@
 #define GREEN "\033[1;32m"
 #define RED "\033[1;31m"
 #define YELLOW "\033[1;33m"
+#define BLUE "\033[1;34m"
 #define DEFAULT "\033[0m"
 
-#define COLOR_LINE(color, statements) std::cout << color << statements << DEFAULT << std::endl;
+#define COLOR_LINE(color, statements) (*UnitTests::s_out) << color << statements << DEFAULT << std::endl;
 #define PASS_FAIL_LINE(conditional, statements) COLOR_LINE((conditional ? GREEN : RED), (conditional ? "PASSED" : "FAILED") <<"\t" << statements)
 
 #define MEMORY_LEAK(result, starting_leaks, starting_bytes) { \
@@ -29,17 +33,17 @@
     auto a = valA; \
     auto b = static_cast<std::remove_reference<decltype(valA)>::type>(valB); \
     bool result = (a comp b); \
-    std::cout \
+    (*UnitTests::s_out) \
         << "VERIFY_" << name << "(" \
         << #valA; \
-    if(print_b) std::cout << ", " << #valB; \
-    std::cout << ")"; \
+    if(print_b) (*UnitTests::s_out) << ", " << #valB; \
+    (*UnitTests::s_out) << ")"; \
     if (!result) { \
         if (print_b) COLOR_LINE(RED, " (" << a << ", " << b << ")") \
-        else std::cout << std::endl; \
+        else (*UnitTests::s_out) << std::endl; \
         return false; \
     } \
-    std::cout << std::endl; \
+    (*UnitTests::s_out) << std::endl; \
 }
 
 #define VERIFY_EQ(valA, valB) __VERIFY("EQ", ==, valA, valB, true)
@@ -48,7 +52,7 @@
 #define VERIFY_FALSE(statement) __VERIFY("FALSE", ==, statement, false, false)
 #define DISABLE_TEST(type) UnitTests::setTestStatus(typeid(type), false);
 #define ENABLE_TEST(type) UnitTests::setTestStatus(typeid(type), true);
-
+#define SET_OUTPUT(stream) UnitTests::setOutputStream(&stream);
 
 template <typename T> char* get_typename(T& object)
 {
@@ -63,7 +67,7 @@ template <typename T> char* get_typename(T& object)
     test_name += #__VA_ARGS__; \
     test_name += ")"; \
     std::string status; \
-    bool enabled = UnitTests::s_testStats()[typeid(*this)].enabled; \
+    bool enabled = UnitTests::s_testMetadata()[typeid(*this)].enabled; \
     if (enabled) \
     { \
         status = "Running"; \
@@ -78,15 +82,19 @@ template <typename T> char* get_typename(T& object)
         getTracker().setActive(true); \
         uint32_t _starting_leaks = getTracker().NumMemoryLeaks(); \
         uint32_t _starting_bytes = getTracker().NumBytesOfError(); \
+        auto start_time = std::chrono::high_resolution_clock::now(); \
         bool result = test(__VA_ARGS__); \
+        auto elapsed_time = std::chrono::high_resolution_clock::now() - start_time; \
         getTracker().setActive(false); \
         MEMORY_LEAK(result, _starting_leaks, _starting_bytes); \
-        UnitTests::s_summary.push_back(std::make_pair(test_name, result ? 1 : 0)); \
-        PASS_FAIL_LINE(result, test_name << std::endl ); \
+        uint64_t us = std::chrono::duration_cast<std::chrono::microseconds>(elapsed_time).count(); \
+        UnitTests::s_summary.push_back({test_name, result ? UnitTests::TestResult::PASSED : UnitTests::TestResult::FAILED, us}); \
+        PASS_FAIL_LINE(result, test_name); \
+        COLOR_LINE(BLUE, "Time taken: " << us << " us" << std::endl ); \
     } \
     else \
     { \
-        UnitTests::s_summary.push_back(std::make_pair(test_name, 2)); \
+        UnitTests::s_summary.push_back({test_name, UnitTests::TestResult::SKIPPED, 0}); \
     }  \
 }
 
@@ -101,7 +109,7 @@ public:
 
         if (m_numAllocations == MAX_ALLOCATIONS || !m_state)
         {
-            std::cout << RED << "TOO MANY ALLOCATIONS. PLEASE INCREASE SIZE." << DEFAULT << std::endl;
+            std::cerr << RED << "TOO MANY ALLOCATIONS. PLEASE INCREASE SIZE." << DEFAULT << std::endl;
             m_state = false;
             return;
         }
@@ -185,54 +193,90 @@ public:
     }
 
     static void setTestStatus(std::type_index t, bool status) {
-        s_testStats()[t].enabled = status;
+        s_testMetadata()[t].enabled = status;
+    }
+
+    static void setOutputStream(std::ostream* stream) {
+        UnitTests::s_out = stream;
     }
 
 private:
     static typemap & s_registry();
     void Run()
     {
-        std::cout << "---------------------------------------------" << std::endl;
-        std::cout << "-----------       UnitTests      ------------" << std::endl;
-        std::cout << "---------------------------------------------" << std::endl;
+        (*UnitTests::s_out) << "---------------------------------------------" << std::endl;
+        (*UnitTests::s_out) << "-----------       UnitTests      ------------" << std::endl;
+        (*UnitTests::s_out) << "---------------------------------------------" << std::endl;
 
         RunTests();
     }
 
     static void Summary()
     {
-        std::cout << "---------------------------------------------" << std::endl;
-        std::cout << "-----------        Summary       ------------" << std::endl;
-        std::cout << "---------------------------------------------" << std::endl;
+        (*UnitTests::s_out) << "---------------------------------------------" << std::endl;
+        (*UnitTests::s_out) << "-----------        Summary       ------------" << std::endl;
+        (*UnitTests::s_out) << "---------------------------------------------" << std::endl;
+
+        std::sort (s_summary.begin(), s_summary.end(), [](const UnitTests::TestStats& a, const UnitTests::TestStats& b) {
+            if (a.result != b.result)
+            {
+                return static_cast<int>(a.result) > static_cast<int>(b.result);
+            }
+
+            if (a.duration != b.duration)
+            {
+                return a.duration > b.duration;
+            }
+
+            return a.name < b.name;
+        });
 
         int passed = 0;
         int total = 0;
         int skipped = 0;
+        (*UnitTests::s_out) << BLUE << "Time Taken\t" << GREEN << "Status\tTest Name" << DEFAULT << std::endl;
         for (auto& it : s_summary)
         {
-            if (it.second == 2)
+            (*UnitTests::s_out) << BLUE << std::setfill(' ') << std::setw(10) << it.duration << "\t" << DEFAULT;
+            if (it.result == TestResult::SKIPPED)
             {
-                COLOR_LINE(YELLOW, "Skipped " << it.first);
+                COLOR_LINE(YELLOW, "SKIPPED\t" << it.name);
                 skipped += 1;
             }
             else
             {
-                PASS_FAIL_LINE(it.second, it.first)
-                passed += it.second;
+                PASS_FAIL_LINE(static_cast<int>(it.result), it.name)
+                passed += static_cast<int>(it.result);
             }
             total += 1;
         }
-        if (skipped) std::cout << "Test skipped:\t" << skipped  << " / " << total << std::endl;
-        std::cout << "Test passed:\t" << passed  << " / " << total << std::endl;
+        if (skipped) (*UnitTests::s_out) << "Test skipped:\t" << skipped  << " / " << total << std::endl;
+        (*UnitTests::s_out) << "Test passed:\t" << passed  << " / " << total << std::endl;
     }
 
 protected:
+    enum class TestResult : int
+    {
+        FAILED = 0,
+        PASSED,
+        SKIPPED
+    };
+
+    struct TestStats
+    {
+        std::string name;
+        TestResult result;
+        uint64_t duration;
+    };
+
     UnitTests() = default;
     virtual ~UnitTests() = default;
     virtual void RunTests() = 0;
     static uint32_t s_refCounters;
-    static std::vector<std::pair<std::string, int>> s_summary;
-    static infomap & s_testStats();
+    static std::vector<TestStats> s_summary;
+    static infomap & s_testMetadata();
+    static std::ostream* s_out;
+    static std::string s_summaryFile;
 
     template<typename U> friend class Test_Registrar;
 };
@@ -243,7 +287,7 @@ class Test_Registrar
 public:
     Test_Registrar() {
         UnitTests::s_registry()[typeid(T)] = &Test_Registrar::createInstance;
-        UnitTests::s_testStats()[typeid(T)] = TestMetadata();
+        UnitTests::s_testMetadata()[typeid(T)] = TestMetadata();
     }
 private:
     static UnitTests* createInstance() { return new T; }
