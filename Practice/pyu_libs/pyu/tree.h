@@ -3,6 +3,8 @@
 #include "stack.h"
 #include "vector.h"
 #include "queue.h"
+#include <string>
+#include <algorithm>
 
 namespace pyu
 {
@@ -148,60 +150,108 @@ class Tree
 
     friend std::ostream& operator<< (std::ostream& os, const Tree& tree)
     {
-        uint32_t d = tree.depth();
-
-        if (d > 0)
+        if (tree.m_root != nullptr)
         {
-            shared_ptr<LinearStorageInterface<Metadata>> pData(new Vector<Metadata>(tree.size()));
-            Queue<Metadata> order(pData);
+            Vector<PrintMetadata> printData(tree.size());
+            shared_ptr<LinearStorageInterface<uint32_t>> pPrintPos(new Vector<uint32_t>(tree.size()));
+            Queue<uint32_t> order(pPrintPos);
+            printData.insert_back({tree.m_root, std::to_string(tree.m_root->m_value), 1, 0});
+            order.push(printData.length() - 1);
+            uint32_t numSpaces = 3;
+            double minRelCol = 0;
+            double maxRelCol = 0;
 
-            uint32_t numSpaces = (1 << d) - 1;
-            order.push({tree.m_root, numSpaces >> 1});
-            Node* curr = order.front().m_node;
-            uint32_t pos = order.front().m_val;
-            uint32_t spacesBeforeEnd;   // used to increment appropriate spaces for child node positions and for appropriately inserting
-                                        // spaces instead of values when navigating values queue
-
-            if (d > 1)
-            {
-                spacesBeforeEnd = 1 << (d - 2);
-            }
-            else
-                spacesBeforeEnd = 0;
+            auto addNode = [&printData, &order, &numSpaces](const PrintMetadata& obj, Node* next, double colDelta) {
+                printData.insert_back({
+                        next,
+                        std::to_string(next->m_value),
+                        obj.m_row + 3,
+                        obj.m_relCol + colDelta});
+                order.push(printData.length() - 1);
+                numSpaces = std::max(numSpaces, static_cast<uint32_t>(printData.back().m_str.length()));
+            };
 
             while (order.length() > 0)
             {
-                for (uint32_t i = 0; i < numSpaces; ++i)
+                const PrintMetadata obj = printData.at(order.front());
+                order.pop();
+                double relColDiff = 1.0 / (1 << ((obj.m_row + 2) / 3));
+                minRelCol = std::min(minRelCol, obj.m_relCol);
+                maxRelCol = std::max(maxRelCol, obj.m_relCol);
+
+                if (obj.m_node->m_right)
                 {
-                    if (i != pos || i == (numSpaces - spacesBeforeEnd))
-                    {
-                        os << ' ';
+                    addNode(obj, obj.m_node->m_right, relColDiff);
+                }
 
-                        if (i == numSpaces - 1)
-                            spacesBeforeEnd = spacesBeforeEnd >> 1;
+                if (obj.m_node->m_left)
+                {
+                    addNode(obj, obj.m_node->m_left, -relColDiff);
+                }
+            }
+
+            uint32_t depth = (printData.back().m_row + 2) / 3;
+            uint32_t normFactor = 1 << (depth - 1);
+            uint32_t transFactor = normFactor * std::abs(minRelCol);
+            uint32_t maxCol = maxRelCol * normFactor + transFactor;
+            uint32_t lineCounter;
+            uint32_t prevRow = 0;
+
+            if (depth > 1)
+                lineCounter = (1 << (depth - 2)) - 1;
+            else
+                lineCounter = 0;
+
+            std::string row (numSpaces * (maxCol + 1), ' ');
+            row.append("\n");
+            row = row + row + row;
+            std::string output;
+
+            for (uint32_t i = 0; i < printData.length(); ++i)
+            {
+                if (prevRow != printData.at(i).m_row)
+                {
+                    os << output;
+                    output = row;
+
+                    if (i != 0)
+                        lineCounter = lineCounter >> 1;
+                }
+
+                uint32_t pos = (printData.at(i).m_relCol * normFactor + transFactor) * numSpaces + (numSpaces - printData.at(i).m_str.length()) / 2;
+                output.replace(pos, printData.at(i).m_str.length(), printData.at(i).m_str);
+
+                if (printData.at(i).m_node->m_left || printData.at(i).m_node->m_right)
+                {
+                    uint32_t arrowPos = (numSpaces * (maxCol + 1) + 1) + (printData.at(i).m_relCol * normFactor + transFactor) * numSpaces + numSpaces / 2;
+                    output.replace(arrowPos, 1, "|");
+
+                    int numLines = lineCounter * numSpaces + numSpaces / 2 - 1;
+
+                    std::string lines;
+                    for (int i = 0; i < numLines; ++i)
+                        lines += "_";
+
+                    const uint32_t position = (numSpaces * (maxCol + 1) + 1) + arrowPos;
+
+                    if (printData.at(i).m_node->m_left)
+                    {
+                        output.replace(arrowPos - numLines, numLines, lines);
+                        output.replace(position - numLines - 1, 1, "/");
                     }
-                    else
+
+                    if (printData.at(i).m_node->m_right)
                     {
-                        os << order.front().m_node->m_value;
-                        order.pop();
-
-                        if (curr->m_left != nullptr)
-                        {
-                            order.push({curr->m_left, pos - spacesBeforeEnd});
-                        }
-
-                        if (curr->m_right != nullptr)
-                        {
-                            order.push({curr->m_right, pos + spacesBeforeEnd});
-                        }
-
-                        curr = order.front().m_node;
-                        pos = order.front().m_val;
+                        output.replace(arrowPos + 1, numLines, lines);
+                        output.replace(position + numLines + 1, 1, "\\");
                     }
                 }
 
-                os << std::endl;
+                prevRow = printData.at(i).m_row;
             }
+
+            output.erase(output.begin() + numSpaces * (maxCol + 1) + 1, output.end());
+            os << output;
         }
 
         return os;
@@ -302,6 +352,14 @@ class Tree
         {
             return (m_node == other.m_node && m_val == other.m_val);
         }
+    };
+
+    struct PrintMetadata
+    {
+        Node* m_node;
+        std::string m_str;
+        uint32_t m_row;
+        double m_relCol;
     };
 
     Node* m_root;

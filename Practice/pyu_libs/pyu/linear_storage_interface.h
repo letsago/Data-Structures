@@ -29,7 +29,7 @@ class LinearStorageInterface
             return at(length() - 1);
         }
 
-        bool insert_back(const T value)
+        bool insert_back(const T& value)
         {
             return insert(length(), value);
         }
@@ -39,7 +39,7 @@ class LinearStorageInterface
             return remove(length() - 1);
         }
 
-        bool insert_front(const T value)
+        bool insert_front(const T& value)
         {
             return insert(0, value);
         }
@@ -54,7 +54,7 @@ class LinearStorageInterface
             return (length() == 0);
         }
 
-        int find(const T value) const
+        int find(const T& value) const
         {
             uint32_t counter = 0;
 
@@ -69,7 +69,7 @@ class LinearStorageInterface
             return -1;
         }
 
-        bool contains(const T value) const
+        bool contains(const T& value) const
         {
             return (find(value) != -1); // -1 indicates that value was not found
         }
@@ -103,7 +103,7 @@ class LinearStorageInterface
             return true;
         }
 
-        virtual bool insert(const uint32_t position, const T value) = 0;
+        virtual bool insert(const uint32_t position, const T& value) = 0;
         virtual bool remove(const uint32_t position) = 0;
         virtual T& at(const uint32_t position) = 0;
         virtual const T& at(const uint32_t position) const = 0;

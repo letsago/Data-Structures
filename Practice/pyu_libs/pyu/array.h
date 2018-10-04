@@ -47,7 +47,7 @@ class Array : public LinearStorageInterface<T>
             m_data = nullptr;
         }
 
-        bool insert(const uint32_t position, const T value)
+        bool insert(const uint32_t position, const T& value)
         {
             // cannot insert past actual size of array
             if (position > m_size)

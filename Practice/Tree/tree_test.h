@@ -19,6 +19,7 @@ protected:
         ADD_TEST(SortedLeftSkewedTreeTest);
         ADD_TEST(SortedNullTreeTest);
         ADD_TEST(DepthTest);
+        ADD_TEST(PrintSimplestTreeTest);
         ADD_TEST(PrintBalancedTreeTest);
         ADD_TEST(PrintNonBalancedTreeTest);
         ADD_TEST(PrintBigBalancedTreeTest);
@@ -26,7 +27,6 @@ protected:
         ADD_TEST(PrintRightSkewedTreeTest);
         ADD_TEST(PrintLeftSkewedTreeTest);
         ADD_TEST(PrintNullTreeTest);
-
     }
 
 private:
@@ -41,6 +41,7 @@ private:
     bool SortedLeftSkewedTreeTest();
     bool SortedNullTreeTest();
     bool DepthTest();
+    bool PrintSimplestTreeTest();
     bool PrintBalancedTreeTest();
     bool PrintNonBalancedTreeTest();
     bool PrintBigBalancedTreeTest();

@@ -65,7 +65,7 @@ class LinkedList : public LinearStorageInterface<T>
             return m_size;
         }
 
-        bool insert(const uint32_t position, const T value)
+        bool insert(const uint32_t position, const T& value)
         {
             if (position > m_size)
                 return false;

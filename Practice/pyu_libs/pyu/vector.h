@@ -22,7 +22,7 @@ class Vector : public LinearStorageInterface<T>
         }
 
         // Constructor for pre-populating vector with array of characters
-        Vector(const T * input, const int size)
+        Vector(const T* input, const int size)
         {
             m_actual_size = size;
             m_memory_size = size;
@@ -73,7 +73,7 @@ class Vector : public LinearStorageInterface<T>
         }
 
         // Member Functions
-        bool insert(const uint32_t position, const T value)
+        bool insert(const uint32_t position, const T& value)
         {
             // cannot insert past actual size of array
             if (position > m_actual_size)

@@ -288,6 +288,22 @@ bool TreeTests::DepthTest()
     return true;
 }
 
+bool TreeTests::PrintSimplestTreeTest()
+{
+    Tree<int> A;
+
+    A.insert(2);
+
+    std::stringstream ss1;
+    ss1 << " 2 " << std::endl;
+
+    std::stringstream ss2;
+    ss2 << A;
+    VERIFY_EQ(ss1.str(), ss2.str());
+
+    return true;
+}
+
 bool TreeTests::PrintBalancedTreeTest()
 {
     const int arr[] = {4, 2, 6, 1, 3, 5, 10};
@@ -297,14 +313,18 @@ bool TreeTests::PrintBalancedTreeTest()
 
     for (uint32_t i = 0; i < data.length(); ++i)
     {
-        A.insert(data.at(i));
+        A.insert(data.at(i) * 100000);
     }
 
     std::stringstream ss1;
     ss1
-        << "   4   "    << std::endl
-        << " 2   6 "    << std::endl
-        << "1 3 5 10"   << std::endl;
+        << "                     400000                      "    << std::endl
+        << "               _________|_________               "    << std::endl
+        << "              /                   \\              "   << std::endl
+        << "       200000                      600000        "    << std::endl
+        << "        __|__                       __|__        "    << std::endl
+        << "       /     \\                     /     \\       "  << std::endl
+        << "100000        300000        500000        1000000"    << std::endl;
 
     std::stringstream ss2;
     ss2 << A;
@@ -315,7 +335,7 @@ bool TreeTests::PrintBalancedTreeTest()
 
 bool TreeTests::PrintNonBalancedTreeTest()
 {
-    const int arr[] = {10, 5, 20, 8, 2, 25, 1, 3, 7, 9, 30};
+    const int arr[] = {10, 5, 20, 8, 2, 25, 15, 23, 12, 18, 30};
     Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
 
     Tree<int> A;
@@ -327,17 +347,22 @@ bool TreeTests::PrintNonBalancedTreeTest()
 
     std::stringstream ss1;
     ss1
-        << "       10       "   << std::endl
-        << "   5       20   "   << std::endl
-        << " 2   8       25 "   << std::endl
-        << "1 3 7 9       30"   << std::endl;
+        << "                  10                      "      << std::endl
+        << "          _________|_________             "      << std::endl
+        << "         /                   \\            "     << std::endl
+        << "       5                      20          "      << std::endl
+        << "    ___|___                 ___|___       "      << std::endl
+        << "   /       \\               /       \\      "    << std::endl
+        << " 2           8          15          25    "      << std::endl
+        << "                         |           |    "      << std::endl
+        << "                        / \\         / \\   "    << std::endl
+        << "                     12    18    23    30 "      << std::endl;
 
     std::stringstream ss2;
     ss2 << A;
     VERIFY_EQ(ss1.str(), ss2.str());
 
     return true;
-
 }
 
 bool TreeTests::PrintBigBalancedTreeTest()
@@ -354,11 +379,19 @@ bool TreeTests::PrintBigBalancedTreeTest()
 
     std::stringstream ss1;
     ss1
-        << "               50               "                   << std::endl
-        << "       25               100       "                 << std::endl
-        << "   12       38       75       150   "               << std::endl
-        << " 6   18   30   42   60   85   125   175 "           << std::endl
-        << "3 9 15 22 26 35 40 48 55 65 80 90 108 130 160 200"  << std::endl;
+        << "                                             50                                              "          << std::endl
+        << "                         _____________________|_____________________                         "          << std::endl
+        << "                        /                                           \\                        "         << std::endl
+        << "                     25                                              100                     "          << std::endl
+        << "             _________|_________                             _________|_________             "          << std::endl
+        << "            /                   \\                           /                   \\            "        << std::endl
+        << "         12                      38                      75                      150         "          << std::endl
+        << "       ___|___                 ___|___                 ___|___                 ___|___       "          << std::endl
+        << "      /       \\               /       \\               /       \\               /       \\      "      << std::endl
+        << "    6          18          30          42          60          85          125         175   "          << std::endl
+        << "    |           |           |           |           |           |           |           |    "          << std::endl
+        << "   / \\         / \\         / \\         / \\         / \\         / \\         / \\         / \\   "  << std::endl
+        << " 3     9    15    22    26    35    40    48    55    65    80    90    108   130   160   200"          << std::endl;
 
     std::stringstream ss2;
     ss2 << A;
@@ -381,11 +414,19 @@ bool TreeTests::PrintBigNonBalancedTreeTest()
 
     std::stringstream ss1;
     ss1
-        << "               28               "       << std::endl
-        << "       12               80       "      << std::endl
-        << "   6       19       43       586   "    << std::endl
-        << "         15   25   29       100     "   << std::endl
-        << "            21     34     81      "     << std::endl;
+        << "                                    28                                     "      << std::endl
+        << "                _____________________|_____________________                "      << std::endl
+        << "               /                                           \\               "     << std::endl
+        << "            12                                              80             "      << std::endl
+        << "    _________|_________                             _________|_________    "      << std::endl
+        << "   /                   \\                           /                   \\   "    << std::endl
+        << " 6                      19                      43                      586"      << std::endl
+        << "                      ___|___                 ___|                    ___| "      << std::endl
+        << "                     /       \\               /                       /     "     << std::endl
+        << "                  15          25          29                      100      "      << std::endl
+        << "                               |           |                       |       "      << std::endl
+        << "                              /             \\                     /        "     << std::endl
+        << "                           21                34                81          "      << std::endl;
 
     std::stringstream ss2;
     ss2 << A;
@@ -408,10 +449,16 @@ bool TreeTests::PrintRightSkewedTreeTest()
 
     std::stringstream ss1;
     ss1
-        << "       11       "   << std::endl
-        << "           12   "   << std::endl
-        << "             13 "   << std::endl
-        << "              14"   << std::endl;
+        << "11                      "  << std::endl
+        << " |_________             "  << std::endl
+        << "           \\            " << std::endl
+        << "            12          "  << std::endl
+        << "             |___       "  << std::endl
+        << "                 \\      " << std::endl
+        << "                  13    "  << std::endl
+        << "                   |    "  << std::endl
+        << "                    \\   " << std::endl
+        << "                     14 "  << std::endl;
 
     std::stringstream ss2;
     ss2 << A;
@@ -434,10 +481,16 @@ bool TreeTests::PrintLeftSkewedTreeTest()
 
     std::stringstream ss1;
     ss1
-        << "       14       "   << std::endl
-        << "   13           "   << std::endl
-        << " 12             "   << std::endl
-        << "11              "   << std::endl;
+        << "                     14 "  << std::endl
+        << "             _________| "  << std::endl
+        << "            /           "  << std::endl
+        << "         13             "  << std::endl
+        << "       ___|             "  << std::endl
+        << "      /                 "  << std::endl
+        << "   12                   "  << std::endl
+        << "    |                   "  << std::endl
+        << "   /                    "  << std::endl
+        << "11                      "  << std::endl;
 
     std::stringstream ss2;
     ss2 << A;
