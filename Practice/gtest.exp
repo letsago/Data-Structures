@@ -2,9 +2,9 @@ ifeq ($(GTEST_DIR),)
     $(error GTEST_DIR is not set)
 endif
 
-INCLUDE_PATH := \
-    $(INCLUDE_PATH) \
-    $(GTEST_DIR)/include \
+RAW_INCLUDE_PATH := \
+    $(RAW_INCLUDE_PATH) \
+    -isystem $(GTEST_DIR)/include \
 
 LIBRARY_PATH := \
     $(LIBRARY_PATH) \

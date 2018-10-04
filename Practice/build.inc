@@ -5,13 +5,13 @@ endif
 CC = g++
 DEFAULT_FLAGS = -Wall -std=c++14 -Werror
 LIB_FLAGS = -c -fPIC
-LINKER_FLAGS = -all_load
+LINKER_FLAGS = -pthread
 DEBUG_FLAGS = -ggdb
 
 TARGET_PATH ?= $(PROJECT_DIR)/outputs
 TARGET_OBJECTS_PATH := $(TARGET_PATH)/obj
 TARGET_LIBRARY_PATH := $(TARGET_PATH)/lib
-LIBRARY_PATH := $(TARGET_LIBRARY_PATH)
+LIBRARY_PATH := $(LIBRARY_PATH) $(TARGET_LIBRARY_PATH)
 
 SOURCES ?= $(wildcard *.cpp)
 OBJECTS := $(patsubst %.cpp, $(TARGET_OBJECTS_PATH)/%.o, $(SOURCES))
@@ -20,9 +20,18 @@ INCLUDE_PATH := $(sort $(INCLUDE_PATH))
 TARGET_LIBS := $(sort $(TARGET_LIBS))
 LIBRARY_PATH := $(sort $(LIBRARY_PATH))
 
-RAW_INCLUDE_PATH = $(addprefix -I, $(INCLUDE_PATH))
+RAW_INCLUDE_PATH := $(sort $(RAW_INCLUDE_PATH))
+
+RAW_INCLUDE_PATH := $(RAW_INCLUDE_PATH) $(addprefix -I, $(INCLUDE_PATH))
 RAW_TARGET_LIBS = $(addprefix -l, $(TARGET_LIBS))
 RAW_LIBRARY_PATH = $(addprefix -L , $(LIBRARY_PATH))
+
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+LIBRARY_COMPILER := $(RAW_LIBRARY_PATH) -Wl,--whole-archive $(RAW_TARGET_LIBS) -Wl,--no-whole-archive $(LINKER_FLAGS)
+else
+LIBRARY_COMPILER := $(RAW_LIBRARY_PATH) -all_load $(RAW_TARGET_LIBS) $(LINKER_FLAGS)
+endif
 
 BASE_CMD = $(CC) $(RAW_INCLUDE_PATH) $(DEFAULT_FLAGS)
 
@@ -36,7 +45,7 @@ LINKER = ar rsv $(FULL_TARGET_NAME) $(OBJECTS)
 else
 	ifeq ($(TARGET_TYPE),program)
 FULL_TARGET_NAME = $(TARGET_PATH)/$(TARGET_NAME).out
-LINKER = $(BASE_CMD) $(OBJECTS) $(RAW_LIBRARY_PATH) $(RAW_TARGET_LIBS) -o $(FULL_TARGET_NAME) $(LINKER_FLAGS)
+LINKER = $(BASE_CMD) -o $(FULL_TARGET_NAME) $(OBJECTS) $(LIBRARY_COMPILER)
 	else
 		$(error TARGET_TYPE $(TARGET_TYPE) is not valid. Choose program or library.)
 	endif
