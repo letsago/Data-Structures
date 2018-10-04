@@ -1,34 +1,10 @@
 #include "tree_test.h"
 #include <pyu/tree.h>
-#include <pyu/vector.h>
-#include <iostream>
 #include <sstream>
 
 using namespace pyu;
 
-Test_Registrar<TreeTests> TreeTests::registrar;
-
-bool IsSorted(const Tree<int>& other, const Vector<int>& sorted)
-{
-    if (other.size() != sorted.length())
-        return false;
-
-    for (uint32_t i = 0; i < sorted.length(); ++i)
-    {
-        if (!other.contains(sorted.at(i)))
-            return false;
-
-        if (i != 0)
-        {
-            if (sorted.at(i) <= sorted.at(i - 1))
-                return false;
-        }
-    }
-
-    return true;
-}
-
-bool TreeTests::InsertTest()
+TEST(TreeTests, InsertTest)
 {
     const int arr[] = {10, 5, 20, 15, 8, 2};
     Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
@@ -37,65 +13,61 @@ bool TreeTests::InsertTest()
 
     for (uint32_t i = 0; i < data.length(); ++i)
     {
-        VERIFY_TRUE(A.insert(data.at(i)));
+        ASSERT_TRUE(A.insert(data.at(i)));
     }
 
-    VERIFY_EQ(A.size(), data.length());
+    ASSERT_EQ(A.size(), data.length());
 
     for (uint32_t i = 0; i < data.length(); ++i)
     {
-        VERIFY_TRUE(A.contains(data.at(i)));
+        ASSERT_TRUE(A.contains(data.at(i)));
     }
 
-    VERIFY_FALSE(A.insert(10));
-    VERIFY_FALSE(A.insert(8));
-    VERIFY_FALSE(A.insert(2));
-
-    return true;
+    ASSERT_FALSE(A.insert(10));
+    ASSERT_FALSE(A.insert(8));
+    ASSERT_FALSE(A.insert(2));
 }
 
-bool TreeTests::RemoveRootTest()
+TEST(TreeTests, RemoveRootTest)
 {
     const int arr[] = {10, 5, 20, 15, 8, 2, 25};
     Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
 
     Tree<int> A;
 
-    VERIFY_FALSE(A.remove(8));
+    ASSERT_FALSE(A.remove(8));
 
     for (uint32_t i = 0; i < data.length(); ++i)
     {
-        VERIFY_TRUE(A.insert(data.at(i)));
+        ASSERT_TRUE(A.insert(data.at(i)));
     }
 
-    VERIFY_EQ(A.size(), data.length());
+    ASSERT_EQ(A.size(), data.length());
 
     // tests for removing root
-    VERIFY_TRUE(A.remove(10));
+    ASSERT_TRUE(A.remove(10));
     data.remove(data.find(10));
-    VERIFY_EQ(A.size(), data.length());
+    ASSERT_EQ(A.size(), data.length());
 
     for (uint32_t i = 0; i < data.length(); ++i)
     {
-        VERIFY_TRUE(A.contains(data.at(i)));
+        ASSERT_TRUE(A.contains(data.at(i)));
     }
 
-    VERIFY_FALSE(A.remove(10));
+    ASSERT_FALSE(A.remove(10));
 
     // tests for another iteration of removing root
-    VERIFY_TRUE(A.remove(5));
+    ASSERT_TRUE(A.remove(5));
     data.remove(data.find(5));
-    VERIFY_EQ(A.size(), data.length());
+    ASSERT_EQ(A.size(), data.length());
 
     for (uint32_t i = 0; i < data.length(); ++i)
     {
-        VERIFY_TRUE(A.contains(data.at(i)));
+        ASSERT_TRUE(A.contains(data.at(i)));
     }
-
-    return true;
 }
 
-bool TreeTests::RemoveLeafTest()
+TEST(TreeTests, RemoveLeafTest)
 {
     const int arr[] = {10, 5, 20, 15, 8, 2, 25};
     Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
@@ -104,35 +76,33 @@ bool TreeTests::RemoveLeafTest()
 
     for (uint32_t i = 0; i < data.length(); ++i)
     {
-        VERIFY_TRUE(A.insert(data.at(i)));
+        ASSERT_TRUE(A.insert(data.at(i)));
     }
 
-    VERIFY_EQ(A.size(), 7);
+    ASSERT_EQ(A.size(), 7);
 
     // removes a middle leaf
-    VERIFY_TRUE(A.remove(5));
+    ASSERT_TRUE(A.remove(5));
     data.remove(data.find(5));
-    VERIFY_EQ(A.size(), data.length());
+    ASSERT_EQ(A.size(), data.length());
 
     for (uint32_t i = 0; i < data.length(); ++i)
     {
-        VERIFY_TRUE(A.contains(data.at(i)));
+        ASSERT_TRUE(A.contains(data.at(i)));
     }
 
     // removes an end leaf
-    VERIFY_TRUE(A.remove(15));
+    ASSERT_TRUE(A.remove(15));
     data.remove(data.find(15));
-    VERIFY_EQ(A.size(), data.length());
+    ASSERT_EQ(A.size(), data.length());
 
     for (uint32_t i = 0; i < data.length(); ++i)
     {
-        VERIFY_TRUE(A.contains(data.at(i)));
+        ASSERT_TRUE(A.contains(data.at(i)));
     }
-
-    return true;
 }
 
-bool TreeTests::ClearTest()
+TEST(TreeTests, ClearTest)
 {
     const int arr[] = {10, 5, 20, 15, 8, 2, 25, 1, 7, 9, 40, 30, 42, 28, 35, 26, 46, 50};
     Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
@@ -141,22 +111,20 @@ bool TreeTests::ClearTest()
 
     for (uint32_t i = 0; i < data.length(); ++i)
     {
-        VERIFY_TRUE(A.insert(data.at(i)));
+        ASSERT_TRUE(A.insert(data.at(i)));
     }
 
-    VERIFY_EQ(A.size(), data.length());
+    ASSERT_EQ(A.size(), data.length());
 
     A.clear();
-    VERIFY_TRUE(A.empty());
+    ASSERT_TRUE(A.empty());
 
     Tree<int> B;
     B.clear();
-    VERIFY_TRUE(B.empty());
-
-    return true;
+    ASSERT_TRUE(B.empty());
 }
 
-bool TreeTests::ContainsTest()
+TEST(TreeTests, ContainsTest)
 {
     const int arr[] = {10, 5, 20, 15, 8, 2, 25, 23, 1, 3, 7, 324, 90, 34, -3, -10};
     Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
@@ -165,24 +133,22 @@ bool TreeTests::ContainsTest()
 
     for (uint32_t i = 0; i < data.length(); ++i)
     {
-        VERIFY_TRUE(A.insert(data.at(i)));
+        ASSERT_TRUE(A.insert(data.at(i)));
     }
 
-    VERIFY_EQ(A.size(), data.length());
+    ASSERT_EQ(A.size(), data.length());
 
     for (uint32_t i = 0; i < data.length(); ++i)
     {
-        VERIFY_TRUE(A.contains(data.at(i)));
+        ASSERT_TRUE(A.contains(data.at(i)));
     }
 
-    VERIFY_FALSE(A.contains(100));
-    VERIFY_FALSE(A.contains(0));
-    VERIFY_FALSE(A.contains(-100));
-
-    return true;
+    ASSERT_FALSE(A.contains(100));
+    ASSERT_FALSE(A.contains(0));
+    ASSERT_FALSE(A.contains(-100));
 }
 
-bool TreeTests::SortedBalancedTreeTest()
+TEST_F(SortedTreeTests, BalancedTree)
 {
     const int arr[] = {10, 5, 20, 15, 8, 2, 25, 23, 1, 3, 7, 324, 12, 18};
 
@@ -190,15 +156,15 @@ bool TreeTests::SortedBalancedTreeTest()
 
     for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
     {
-        VERIFY_TRUE(A.insert(arr[i]));
+        ASSERT_TRUE(A.insert(arr[i]));
     }
 
     Vector<int> sorted = A.getSorted();
 
-    return IsSorted(A, sorted);
+    return validateSorted(A, sorted);
 }
 
-bool TreeTests::SortedNonBalancedTreeTest()
+TEST_F(SortedTreeTests, NonBalancedTree)
 {
     const int arr[] = {10, 5, 20, 15, 8, 2, 25, 23, 1, 3, 7, 324, 90, 34, -3, -10};
 
@@ -206,15 +172,15 @@ bool TreeTests::SortedNonBalancedTreeTest()
 
     for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
     {
-        VERIFY_TRUE(A.insert(arr[i]));
+        ASSERT_TRUE(A.insert(arr[i]));
     }
 
     Vector<int> sorted = A.getSorted();
 
-    return IsSorted(A, sorted);
+    return validateSorted(A, sorted);
 }
 
-bool TreeTests::SortedRightSkewedTreeTest()
+TEST_F(SortedTreeTests, RightSkewedTree)
 {
     const int arr[] = {10, 5, 20, 15, 25, 324, 90, 34};
 
@@ -222,15 +188,15 @@ bool TreeTests::SortedRightSkewedTreeTest()
 
     for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
     {
-        VERIFY_TRUE(A.insert(arr[i]));
+        ASSERT_TRUE(A.insert(arr[i]));
     }
 
     Vector<int> sorted = A.getSorted();
 
-    return IsSorted(A, sorted);
+    return validateSorted(A, sorted);
 }
 
-bool TreeTests::SortedLeftSkewedTreeTest()
+TEST_F(SortedTreeTests, LeftSkewedTree)
 {
     const int arr[] = {10, 5, 20, 8, 2, 1, 3, -3, -10};
 
@@ -238,24 +204,22 @@ bool TreeTests::SortedLeftSkewedTreeTest()
 
     for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
     {
-        VERIFY_TRUE(A.insert(arr[i]));
+        ASSERT_TRUE(A.insert(arr[i]));
     }
 
     Vector<int> sorted = A.getSorted();
 
-    return IsSorted(A, sorted);
+    return validateSorted(A, sorted);
 }
 
-bool TreeTests::SortedNullTreeTest()
+TEST(TreeTests, SortedNullTreeTest)
 {
     Tree<int> A;
 
-    VERIFY_TRUE(A.getSorted().empty());
-
-    return true;
+    ASSERT_TRUE(A.getSorted().empty());
 }
 
-bool TreeTests::DepthTest()
+TEST(TreeTests, DepthTest)
 {
     const int arr[] = {10, 5, 20, 15, 8, 2, 25};
     Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
@@ -264,14 +228,14 @@ bool TreeTests::DepthTest()
 
     for (uint32_t i = 0; i < data.length(); ++i)
     {
-        VERIFY_TRUE(A.insert(data.at(i)));
+        ASSERT_TRUE(A.insert(data.at(i)));
     }
 
-    VERIFY_EQ(A.depth(), 3);
+    ASSERT_EQ(A.depth(), 3);
 
     Tree<int> B;
 
-    VERIFY_EQ(B.depth(), 0);
+    ASSERT_EQ(B.depth(), 0);
 
     const int arr2[] = {10, 5, 20, 15, 8, 2, 25, 23, 1, 3, 7, 324, 90, 34, -3, -10};
     Vector<int> data2(arr2, sizeof(arr2)/sizeof(arr2[0]));
@@ -280,15 +244,13 @@ bool TreeTests::DepthTest()
 
     for (uint32_t i = 0; i < data2.length(); ++i)
     {
-        VERIFY_TRUE(C.insert(data2.at(i)));
+        ASSERT_TRUE(C.insert(data2.at(i)));
     }
 
-    VERIFY_EQ(C.depth(), 6);
-
-    return true;
+    ASSERT_EQ(C.depth(), 6);
 }
 
-bool TreeTests::PrintSimplestTreeTest()
+TEST(TreeTests, PrintSimplestTreeTest)
 {
     Tree<int> A;
 
@@ -299,12 +261,10 @@ bool TreeTests::PrintSimplestTreeTest()
 
     std::stringstream ss2;
     ss2 << A;
-    VERIFY_EQ(ss1.str(), ss2.str());
-
-    return true;
+    ASSERT_EQ(ss1.str(), ss2.str());
 }
 
-bool TreeTests::PrintBalancedTreeTest()
+TEST(TreeTests, PrintBalancedTreeTest)
 {
     const int arr[] = {4, 2, 6, 1, 3, 5, 10};
     Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
@@ -328,12 +288,10 @@ bool TreeTests::PrintBalancedTreeTest()
 
     std::stringstream ss2;
     ss2 << A;
-    VERIFY_EQ(ss1.str(), ss2.str());
-
-    return true;
+    ASSERT_EQ(ss1.str(), ss2.str());
 }
 
-bool TreeTests::PrintNonBalancedTreeTest()
+TEST(TreeTests, PrintNonBalancedTreeTest)
 {
     const int arr[] = {10, 5, 20, 8, 2, 25, 15, 23, 12, 18, 30};
     Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
@@ -360,12 +318,10 @@ bool TreeTests::PrintNonBalancedTreeTest()
 
     std::stringstream ss2;
     ss2 << A;
-    VERIFY_EQ(ss1.str(), ss2.str());
-
-    return true;
+    ASSERT_EQ(ss1.str(), ss2.str());
 }
 
-bool TreeTests::PrintBigBalancedTreeTest()
+TEST(TreeTests, PrintBigBalancedTreeTest)
 {
     const int arr[] = {50, 25, 12, 38, 6, 3, 9, 18, 15, 22, 30, 26, 35, 42, 40, 48, 100, 75, 60, 55, 65, 85, 80, 90, 150, 175, 200, 160, 125, 108, 130};
     Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
@@ -395,12 +351,10 @@ bool TreeTests::PrintBigBalancedTreeTest()
 
     std::stringstream ss2;
     ss2 << A;
-    VERIFY_EQ(ss1.str(), ss2.str());
-
-    return true;
+    ASSERT_EQ(ss1.str(), ss2.str());
 }
 
-bool TreeTests::PrintBigNonBalancedTreeTest()
+TEST(TreeTests, PrintBigNonBalancedTreeTest)
 {
     const int arr[] = {28, 12, 6, 80, 43, 586, 100, 19, 29, 81, 25, 21, 34, 15};
     Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
@@ -430,12 +384,10 @@ bool TreeTests::PrintBigNonBalancedTreeTest()
 
     std::stringstream ss2;
     ss2 << A;
-    VERIFY_EQ(ss1.str(), ss2.str());
-
-    return true;
+    ASSERT_EQ(ss1.str(), ss2.str());
 }
 
-bool TreeTests::PrintRightSkewedTreeTest()
+TEST(TreeTests, PrintRightSkewedTreeTest)
 {
     const int arr[] = {11, 12, 13, 14};
     Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
@@ -462,12 +414,10 @@ bool TreeTests::PrintRightSkewedTreeTest()
 
     std::stringstream ss2;
     ss2 << A;
-    VERIFY_EQ(ss1.str(), ss2.str());
-
-    return true;
+    ASSERT_EQ(ss1.str(), ss2.str());
 }
 
-bool TreeTests::PrintLeftSkewedTreeTest()
+TEST(TreeTests, PrintLeftSkewedTreeTest)
 {
     const int arr[] = {14, 13, 12, 11};
     Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
@@ -494,12 +444,10 @@ bool TreeTests::PrintLeftSkewedTreeTest()
 
     std::stringstream ss2;
     ss2 << A;
-    VERIFY_EQ(ss1.str(), ss2.str());
-
-    return true;
+    ASSERT_EQ(ss1.str(), ss2.str());
 }
 
-bool TreeTests::PrintNullTreeTest()
+TEST(TreeTests, PrintNullTreeTest)
 {
     Tree<int> A;
 
@@ -507,7 +455,5 @@ bool TreeTests::PrintNullTreeTest()
 
     std::stringstream ss2;
     ss2 << A;
-    VERIFY_EQ(ss1.str(), ss2.str());
-
-    return true;
+    ASSERT_EQ(ss1.str(), ss2.str());
 }

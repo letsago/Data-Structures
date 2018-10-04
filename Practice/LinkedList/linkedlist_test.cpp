@@ -1,29 +1,25 @@
-#include "linkedlist_test.h"
+#include <gtest/gtest.h>
 #include <pyu/linked_list.h>
 
-using namespace pyu;
-
-Test_Registrar<LinkedListTests> LinkedListTests::registrar;
-
-bool LinkedListTests::FindManyTest()
+TEST(LinkedListTests, FindManyTest)
 {
     // FindMany returns a vector all positions where given value occurs in linked list
-    LinkedList<int> A;
+    pyu::LinkedList<int> A;
 
     for (uint32_t i = 0; i < 5; ++i)
     {
         A.insert_back(5);
     }
 
-    Vector<int> FindIndices = A.findmany(5);
-    VERIFY_EQ(FindIndices.length(), 5);
+    pyu::Vector<int> FindIndices = A.findmany(5);
+    ASSERT_EQ(FindIndices.length(), 5);
 
     for (uint32_t i = 0; i < FindIndices.length(); ++i)
     {
-        VERIFY_EQ(FindIndices.at(i), i);
+        ASSERT_EQ(FindIndices.at(i), i);
     }
 
-    LinkedList<int> B;
+    pyu::LinkedList<int> B;
 
     for (uint32_t i = 0; i < 3; ++i)
     {
@@ -32,20 +28,18 @@ bool LinkedListTests::FindManyTest()
 
     FindIndices = B.findmany(5);
 
-    VERIFY_TRUE(FindIndices.empty());
-    VERIFY_EQ(FindIndices.length(), 0);
+    ASSERT_TRUE(FindIndices.empty());
+    ASSERT_EQ(FindIndices.length(), 0);
 
-    LinkedList<int> C;
+    pyu::LinkedList<int> C;
     C.insert_front(1);
     C.insert_back(2);
     C.insert_back(1);
 
     FindIndices = C.findmany(1);
 
-    VERIFY_EQ(FindIndices.length(), 2);
-    VERIFY_EQ(FindIndices.at(0), 0);
-    VERIFY_EQ(FindIndices.at(1), 2);
-
-    return true;
+    ASSERT_EQ(FindIndices.length(), 2);
+    ASSERT_EQ(FindIndices.at(0), 0);
+    ASSERT_EQ(FindIndices.at(1), 2);
 }
 

@@ -1,0 +1,15 @@
+ifeq ($(GTEST_DIR),)
+    $(error GTEST_DIR is not set)
+endif
+
+INCLUDE_PATH := \
+    $(INCLUDE_PATH) \
+    $(GTEST_DIR)/include \
+
+LIBRARY_PATH := \
+    $(LIBRARY_PATH) \
+    $(GTEST_DIR)/lib
+
+TARGET_LIBS := \
+    $(TARGET_LIBS) \
+    gtest \

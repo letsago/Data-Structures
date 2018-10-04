@@ -1,54 +1,21 @@
 #pragma once
 
-#include <pyu/test_lib.h>
+#include <gtest/gtest.h>
+#include <pyu/tree.h>
 
-class TreeTests : public UnitTests
+class SortedTreeTests : public ::testing::Test
 {
 protected:
-
-    void RunTests() final
+    // Functions used in the test
+    void validateSorted(const pyu::Tree<int>& other, const pyu::Vector<int>& sorted)
     {
-        ADD_TEST(InsertTest);
-        ADD_TEST(RemoveRootTest);
-        ADD_TEST(RemoveLeafTest);
-        ADD_TEST(ClearTest);
-        ADD_TEST(ContainsTest);
-        ADD_TEST(SortedBalancedTreeTest);
-        ADD_TEST(SortedNonBalancedTreeTest);
-        ADD_TEST(SortedRightSkewedTreeTest);
-        ADD_TEST(SortedLeftSkewedTreeTest);
-        ADD_TEST(SortedNullTreeTest);
-        ADD_TEST(DepthTest);
-        ADD_TEST(PrintSimplestTreeTest);
-        ADD_TEST(PrintBalancedTreeTest);
-        ADD_TEST(PrintNonBalancedTreeTest);
-        ADD_TEST(PrintBigBalancedTreeTest);
-        ADD_TEST(PrintBigNonBalancedTreeTest);
-        ADD_TEST(PrintRightSkewedTreeTest);
-        ADD_TEST(PrintLeftSkewedTreeTest);
-        ADD_TEST(PrintNullTreeTest);
+        ASSERT_EQ(other.size(), sorted.length());
+
+        ASSERT_TRUE(other.contains(sorted.at(0)));
+        for (uint32_t i = 1; i < sorted.length(); ++i)
+        {
+            ASSERT_TRUE(other.contains(sorted.at(i)));
+            ASSERT_LE(sorted.at(i - 1), sorted.at(i));
+        }
     }
-
-private:
-    bool InsertTest();
-    bool RemoveRootTest();
-    bool RemoveLeafTest();
-    bool ClearTest();
-    bool ContainsTest();
-    bool SortedBalancedTreeTest();
-    bool SortedNonBalancedTreeTest();
-    bool SortedRightSkewedTreeTest();
-    bool SortedLeftSkewedTreeTest();
-    bool SortedNullTreeTest();
-    bool DepthTest();
-    bool PrintSimplestTreeTest();
-    bool PrintBalancedTreeTest();
-    bool PrintNonBalancedTreeTest();
-    bool PrintBigBalancedTreeTest();
-    bool PrintBigNonBalancedTreeTest();
-    bool PrintRightSkewedTreeTest();
-    bool PrintLeftSkewedTreeTest();
-    bool PrintNullTreeTest();
-
-    static Test_Registrar<TreeTests> registrar;
 };

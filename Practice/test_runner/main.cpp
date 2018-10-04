@@ -1,30 +1,41 @@
-#include <pyu/test_lib.h>
-#include <lsi_test.h>
-#include <piglatin_test.h>
-#include <linkedlist_test.h>
-#include <vector_test.h>
-#include <array_test.h>
-#include <queue_test.h>
-#include <stack_test.h>
-#include <stackarray_test.h>
-#include <queuearray_test.h>
-#include <tree_test.h>
-#include <sharedptr_test.h>
+#include <gtest/gtest.h>
+#include "../test_engine/test_lib.h"
+#include <iostream>
+#include <string>
 
-int main()
+typedef void (*ForParameter)(void);
+static std::unordered_map<std::string, ForParameter> kArgMap;
+
+int main(int argc, char* argv[])
 {
-    // In order to disable a test simply call;
-    // DISABLE_TEST(VectorTests);
-    // DISABLE_TEST(LinkedListTests);
-    // DISABLE_TEST(PigLatinTests);
-    // DISABLE_TEST(ArrayTests);
-    // DISABLE_TEST(QueueTests);
-    // DISABLE_TEST(StackTests);
-    // DISABLE_TEST(StackArrayTests);
-    // DISABLE_TEST(QueueArrayTests);
-    // DISABLE_TEST(SharedPtrTests);
-    // DISABLE_TEST(TreeTests);
-    UnitTests::Run_All();
+    testing::InitGoogleTest(&argc, argv);
 
-    return 0;
+    kArgMap.emplace(std::string("--check_for_leaks"), []() {
+        testing::TestEventListeners& listeners = testing::UnitTest::GetInstance()->listeners();
+        listeners.Append(new LeakChecker);
+    });
+
+    std::string paramList = "Parameter List:\n";
+    for (auto it : kArgMap)
+    {
+        paramList += "\t" + it.first + "\n";
+    }
+    
+    for (int i = 1; i < argc; ++i)
+    {
+        auto it = kArgMap.find(argv[i]);
+        if (it == kArgMap.end())
+        {
+            std::cout << std::endl << RED << "Arguement not understood: " << argv[i] << DEFAULT << std::endl << std::endl;
+
+            std::cout << "Usage is: " << argv[0] << " [optional parameters]" << std::endl << std::endl;
+            std::cout << paramList << std::endl;
+            
+            exit(-1);
+        }
+
+        (*it->second)();
+    }
+
+    return RUN_ALL_TESTS();
 }

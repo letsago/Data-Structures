@@ -1,10 +1,7 @@
-#include <pyu/test_lib.h>
+#include "test_lib.h"
 
-uint32_t UnitTests::s_refCounters = 0;
-std::vector<UnitTests::TestStats> UnitTests::s_summary;
-typemap & UnitTests::s_registry() { static typemap impl; return impl; }
-infomap & UnitTests::s_testMetadata() { static infomap impl; return impl; }
-std::ostream* UnitTests::s_out = &std::cout;
+const uint32_t MemoryTracker::s_invalidState = 0xFFFFFFFE;
+// const uint32_t MemoryTracker::s_maxAllocations = MAX_ALLOCATIONS;
 
 MemoryTracker& getTracker()
 {

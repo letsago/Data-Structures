@@ -4,6 +4,7 @@
 #include "vector.h"
 #include "queue.h"
 #include <string>
+#include <cmath>
 #include <algorithm>
 
 namespace pyu

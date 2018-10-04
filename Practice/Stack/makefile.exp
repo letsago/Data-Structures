@@ -1,0 +1,10 @@
+TARGET_LIBS := \
+    $(TARGET_LIBS) \
+	StackTest \
+
+INCLUDE_PATH := \
+	$(INCLUDE_PATH) \
+	../LinearStorageInterface \
+	../pyu_libs \
+
+include ../gtest.exp

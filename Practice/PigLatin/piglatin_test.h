@@ -1,29 +1,18 @@
 #pragma once
 
-#include <pyu/test_lib.h>
+#include <gtest/gtest.h>
+#include <pyu/vector.h>
+#include "piglatin.h"
 
-class PigLatinTests final : public UnitTests
+class PigLatinTests : public ::testing::Test
 {
 protected:
-    void RunTests() final
+    // Functions used in the test
+    void pigLatinTester(const char input[], const int input_size, const char* output)
     {
-        ADD_TEST(CompareTest);
-        ADD_TEST(NullTest);
-        ADD_TEST(InvalidSymbolTest);
-        ADD_TEST(WordTest);
-        ADD_TEST(SentenceTest);
-        ADD_TEST(MultiplePunctuationTest);
-        ADD_TEST(MultipleSpacesTest);
+        pyu::Vector<char> A(input, input_size);
+        pyu::Vector<char> B;
+        ASSERT_TRUE(pigLatinTranslate(A, B));
+        ASSERT_STREQ(B.data(), output);
     }
-
-private:
-    bool CompareTest();
-    bool NullTest();
-    bool InvalidSymbolTest();
-    bool WordTest();
-    bool SentenceTest();
-    bool MultiplePunctuationTest();
-    bool MultipleSpacesTest();
-
-    static Test_Registrar<PigLatinTests> registrar;
-}; 
+};

@@ -1,24 +1,36 @@
-TOPTARGETS := all clean
 BASEDIRS := ./test_engine ./test_runner
 SUBDIRS := \
+	./Array \
+	./LinearStorageInterface \
 	./LinkedList \
 	./PigLatin \
 	./Queue \
-	./Stack \
-	./LinearStorageInterface \
-	./Vector \
-	./Array \
-	./Tree \
 	./Shared_Ptr \
+	./Stack \
+	./Tree \
+	./Vector \
 
-ALLDIRS := $(SUBDIRS) $(BASEDIRS)
+ifeq (run,$(firstword $(MAKECMDGOALS)))
+  # use the rest as arguments for "run"
+  RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  # ...and turn them into do-nothing targets
+  $(eval $(RUN_ARGS):;@:)
+endif
 
-$(TOPTARGETS): clearscreen $(ALLDIRS)
+all: $(SUBDIRS) $(BASEDIRS)
 
-$(ALLDIRS):
+clean: $(SUBDIRS) $(BASEDIRS)
+
+rebuild: $(SUBDIRS) $(BASEDIRS)
+
+$(BASEDIRS): $(SUBDIRS)
+	$(MAKE) -C $@ rebuild
+
+$(SUBDIRS):
 	$(MAKE) -C $@ $(MAKECMDGOALS)
 
-clearscreen:
-	clear
+.PHONY: all clean rebuild $(SUBDIRS) $(BASEDIRS)
 
-.PHONY: $(TOPTARGETS) $(ALLDIRS)
+run:
+	make -C ./test_runner $(MAKECMDGOALS)
+

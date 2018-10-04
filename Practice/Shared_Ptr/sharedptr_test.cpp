@@ -1,37 +1,31 @@
-#include "sharedptr_test.h"
+#include <gtest/gtest.h>
 #include <pyu/shared_ptr.h>
 
-using namespace pyu;
-
-Test_Registrar<SharedPtrTests> SharedPtrTests::registrar;
-
-bool SharedPtrTests::FundamentalTypeTest()
+TEST(SharedPtrTests, FundamentalTypeTest)
 {
-    shared_ptr<int> p(new int(42));
-    VERIFY_EQ(*p, 42);
+    pyu::shared_ptr<int> p(new int(42));
+    ASSERT_EQ(*p, 42);
 
-    shared_ptr<int> s(new int(21));
-    VERIFY_EQ(*s, 21);
+    pyu::shared_ptr<int> s(new int(21));
+    ASSERT_EQ(*s, 21);
 
-    shared_ptr<int> q = p;
-    VERIFY_EQ(*q, 42);
+    pyu::shared_ptr<int> q = p;
+    ASSERT_EQ(*q, 42);
 
-    shared_ptr<int> r = s;
-    VERIFY_EQ(*r, 21);
+    pyu::shared_ptr<int> r = s;
+    ASSERT_EQ(*r, 21);
 
     r = p;
-    VERIFY_EQ(*r, 42);
+    ASSERT_EQ(*r, 42);
 
     q = r;
-    VERIFY_EQ(*q, 42);
+    ASSERT_EQ(*q, 42);
 
     q.reset(new int(23));
-    VERIFY_EQ(*q, 23);
-    
-    return true;
+    ASSERT_EQ(*q, 23);
 }
 
-bool SharedPtrTests::ClassTypeTest()
+TEST(SharedPtrTests, ClassTypeTest)
 {
     class Car
     {
@@ -67,63 +61,57 @@ bool SharedPtrTests::ClassTypeTest()
             int* m_velocity = nullptr;
     };
 
-    shared_ptr<Car> p(new Car());
-    VERIFY_EQ(p->current_speed(), 0);
+    pyu::shared_ptr<Car> p(new Car());
+    ASSERT_EQ(p->current_speed(), 0);
 
     p->new_speed(80);
-    VERIFY_EQ(p->current_speed(), 80);
+    ASSERT_EQ(p->current_speed(), 80);
 
-    shared_ptr<Car> q = p;
-    VERIFY_EQ(q->current_speed(), 80);
-    
-    shared_ptr<Car> r = p;
-    VERIFY_EQ(r->current_speed(), 80);
+    pyu::shared_ptr<Car> q = p;
+    ASSERT_EQ(q->current_speed(), 80);
+
+    pyu::shared_ptr<Car> r = p;
+    ASSERT_EQ(r->current_speed(), 80);
 
     q = r;
-    VERIFY_EQ(q->current_speed(), 80);
+    ASSERT_EQ(q->current_speed(), 80);
 
     q.reset(new Car(50));
-    VERIFY_EQ(q->current_speed(), 50);
-
-    return true;
+    ASSERT_EQ(q->current_speed(), 50);
 }
 
-bool SharedPtrTests::ScopeTest()
+TEST(SharedPtrTests, ScopeTest)
 {
-    shared_ptr<int> p(new int(5));
-    VERIFY_EQ(*p, 5);
+    pyu::shared_ptr<int> p(new int(5));
+    ASSERT_EQ(*p, 5);
     {
-        shared_ptr<int> q(new int(10));
-        VERIFY_EQ(*q, 10);
+        pyu::shared_ptr<int> q(new int(10));
+        ASSERT_EQ(*q, 10);
         {
-            shared_ptr<int> r(new int(15));
+            pyu::shared_ptr<int> r(new int(15));
             p = q;
             q = r;
-            VERIFY_EQ(*r, 15);
+            ASSERT_EQ(*r, 15);
         }
-        VERIFY_EQ(*q, 15)
+        ASSERT_EQ(*q, 15);
     }
-    VERIFY_EQ(*p, 10);
-    
-    return true;
+    ASSERT_EQ(*p, 10);
 }
 
-bool SharedPtrTests::MemoryTest()
+TEST(SharedPtrTests, MemoryTest)
 {
-    shared_ptr<int> p(new int(6));
+    pyu::shared_ptr<int> p(new int(6));
     p.clear();
     p.reset(new int(8));
     p.clear();
     p.clear();
 
-    shared_ptr<int> w(new int(8));
-    shared_ptr<int> y = w;
+    pyu::shared_ptr<int> w(new int(8));
+    pyu::shared_ptr<int> y = w;
     w.clear();
-    VERIFY_EQ(*y, 8);
+    ASSERT_EQ(*y, 8);
 
-    shared_ptr<int> n(new int(8));
+    pyu::shared_ptr<int> n(new int(8));
     n.reset(new int(10));
     n.reset(new int(12));
-
-    return true;
 }

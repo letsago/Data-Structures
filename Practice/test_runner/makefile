@@ -1,33 +1,15 @@
-include ../makefile.inc
+TARGET_TYPE = program
+TARGET_NAME = test_runner
 
-OUTPUT_NAME = test_runner.out
-C_FLAGS = $(DEFAULT_FLAGS)
+include ../Array/makefile.exp
+include ../LinearStorageInterface/makefile.exp
+include ../LinkedList/makefile.exp
+include ../PigLatin/makefile.exp
+include ../Queue/makefile.exp
+include ../Shared_Ptr/makefile.exp
+include ../Stack/makefile.exp
+include ../Tree/makefile.exp
+include ../Vector/makefile.exp
 
-INCLUDE_PATH = \
-	$(INC) \
-	-I../PigLatin \
-	-I../LinkedList \
-	-I../Queue \
-	-I../Stack \
-	-I../LinearStorageInterface \
-	-I../Vector \
-	-I../Array \
-	-I../Tree \
-	-I../Shared_Ptr \
-
-OUTPUT_PATH = $(TARGET_PATH)
-OBJ_PATH = $(TARGET_PATH)/obj
-
-all: build
-	$(OUTPUT_PATH)/$(OUTPUT_NAME)
-
-build: dirmake
-	$(CC) $(C_FLAGS) $(INCLUDE_PATH) *.cpp  $(OBJ_PATH)/*.o -o $(OUTPUT_PATH)/$(OUTPUT_NAME)
-
-dirmake:
-	@mkdir -p $(OUTPUT_PATH)
-
-clean:
-	rm -f -r $(OUTPUT_PATH)
-
-rebuild: clean all
+include ../test_engine/makefile.exp
+include ../build.inc

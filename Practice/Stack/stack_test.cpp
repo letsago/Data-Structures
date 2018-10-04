@@ -1,76 +1,68 @@
 #include "stack_test.h"
+#include <pyu/vector.h>
+#include <pyu/linked_list.h>
+#include <pyu/array.h>
 #include <pyu/stack.h>
-#include <pyu/shared_ptr.h>
 
-using namespace pyu;
+typedef testing::Types<pyu::Vector<int>, pyu::LinkedList<int>, pyu::Array<int, 10>> Implementations;
+TYPED_TEST_CASE(StackTests, Implementations);
 
-Test_Registrar<StackTests> StackTests::registrar;
-
-bool StackTests::PushTest(shared_ptr<LinearStorageInterface<int>> pLsi)
+TYPED_TEST(StackTests, PushTest)
 {
-    Stack<int> A(pLsi);
+    pyu::Stack<int> A(this->CreateTestableInterface());
 
     for (uint32_t i = 0; i < 5; i++)
     {
-        VERIFY_TRUE(A.push(i));
-        VERIFY_EQ(A.top(), i);
-        VERIFY_EQ(A.length(), i + 1);
+        ASSERT_TRUE(A.push(i));
+        ASSERT_EQ(A.top(), i);
+        ASSERT_EQ(A.length(), i + 1);
     }
-    
-    return true;
 }
 
-bool StackTests::PopTest(shared_ptr<LinearStorageInterface<int>> pLsi)
+TYPED_TEST(StackTests, PopTest)
 {
-    Stack<int> A(pLsi);
-    VERIFY_FALSE(A.pop());
+    pyu::Stack<int> A(this->CreateTestableInterface());
+    ASSERT_FALSE(A.pop());
 
     for (uint32_t i = 0; i < 5; i++)
     {
-        VERIFY_TRUE(A.push(i));
-        VERIFY_EQ(A.top(), i);
-        VERIFY_EQ(A.length(), i + 1);
+        ASSERT_TRUE(A.push(i));
+        ASSERT_EQ(A.top(), i);
+        ASSERT_EQ(A.length(), i + 1);
     }
 
     for (uint32_t i = 5; i > 0; i--)
     {
-        VERIFY_EQ(A.top(), i - 1);
-        VERIFY_TRUE(A.pop());
-        VERIFY_EQ(A.length(), i - 1);
+        ASSERT_EQ(A.top(), i - 1);
+        ASSERT_TRUE(A.pop());
+        ASSERT_EQ(A.length(), i - 1);
     }
 
-    VERIFY_TRUE(A.empty());
-
-    return true;
+    ASSERT_TRUE(A.empty());
 }
 
-bool StackTests::TopTest(shared_ptr<LinearStorageInterface<int>> pLsi)
+TYPED_TEST(StackTests, TopTest)
 {
-    Stack<int> A(pLsi);
-    VERIFY_TRUE(A.push(5));
-    VERIFY_EQ(A.top(), 5);
+    pyu::Stack<int> A(this->CreateTestableInterface());
+    ASSERT_TRUE(A.push(5));
+    ASSERT_EQ(A.top(), 5);
     A.top() = 6;
-    VERIFY_EQ(A.top(), 6);
-
-    return true;
+    ASSERT_EQ(A.top(), 6);
 }
 
-bool StackTests::ClearTest(shared_ptr<LinearStorageInterface<int>> pLsi)
+TYPED_TEST(StackTests, ClearTest)
 {
-    Stack<int> A(pLsi);
+    pyu::Stack<int> A(this->CreateTestableInterface());
 
-    VERIFY_TRUE(A.empty());
+    ASSERT_TRUE(A.empty());
 
     for (uint32_t i = 0; i < 5; i++)
     {
-        VERIFY_TRUE(A.push(i));
-        VERIFY_EQ(A.top(), i);
-        VERIFY_EQ(A.length(), i + 1);
+        ASSERT_TRUE(A.push(i));
+        ASSERT_EQ(A.top(), i);
+        ASSERT_EQ(A.length(), i + 1);
     }
 
     A.clear();
-
-    VERIFY_TRUE(A.empty());
-
-    return true;
+    ASSERT_TRUE(A.empty());
 }

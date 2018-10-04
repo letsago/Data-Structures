@@ -1,74 +1,67 @@
 #include "queue_test.h"
+#include <pyu/vector.h>
+#include <pyu/linked_list.h>
+#include <pyu/rollingarray.h>
 #include <pyu/queue.h>
-#include <pyu/shared_ptr.h>
 
-using namespace pyu;
+typedef testing::Types<pyu::Vector<int>, pyu::LinkedList<int>, pyu::RollingArray<int, 10>> Implementations;
+TYPED_TEST_CASE(QueueTests, Implementations);
 
-Test_Registrar<QueueTests> QueueTests::registrar;
-
-bool QueueTests::PushTest(shared_ptr<LinearStorageInterface<int>> pLsi)
+TYPED_TEST(QueueTests, PushTest)
 {
-        Queue<int> A(pLsi);
-
-        for (uint32_t i = 0; i < 5; i++)
-        {
-            VERIFY_TRUE(A.push(i));
-            VERIFY_EQ(A.front(), 0);
-            VERIFY_EQ(A.length(), i + 1);
-        }
-    
-    return true;
-}
-
-bool QueueTests::PopTest(shared_ptr<LinearStorageInterface<int>> pLsi)
-{
-    Queue<int> A(pLsi);
-    VERIFY_FALSE(A.pop());
+    pyu::Queue<int> A(this->CreateTestableInterface());
 
     for (uint32_t i = 0; i < 5; i++)
     {
-        VERIFY_TRUE(A.push(i));
-        VERIFY_EQ(A.front(), 0);
-        VERIFY_EQ(A.length(), i + 1);
+        ASSERT_TRUE(A.push(i));
+        ASSERT_EQ(A.front(), 0);
+        ASSERT_EQ(A.length(), i + 1);
+    }
+}
+
+TYPED_TEST(QueueTests, PopTest)
+{
+    pyu::Queue<int> A(this->CreateTestableInterface());
+    ASSERT_FALSE(A.pop());
+
+    for (uint32_t i = 0; i < 5; i++)
+    {
+        ASSERT_TRUE(A.push(i));
+        ASSERT_EQ(A.front(), 0);
+        ASSERT_EQ(A.length(), i + 1);
     }
 
     for (uint32_t i = 0; i < 5; i++)
     {
-        VERIFY_EQ(A.front(), i);
-        VERIFY_TRUE(A.pop());
-        VERIFY_EQ(A.length(), 4 - i);
+        ASSERT_EQ(A.front(), i);
+        ASSERT_TRUE(A.pop());
+        ASSERT_EQ(A.length(), 4 - i);
     }
-
-    return true;
 }
 
-bool QueueTests::FrontTest(shared_ptr<LinearStorageInterface<int>> pLsi)
+TYPED_TEST(QueueTests, FrontTest)
 {
-    Queue<int> A(pLsi);
-    VERIFY_TRUE(A.push(0));
-    VERIFY_TRUE(A.push(1));
-    VERIFY_TRUE(A.push(2));
-    VERIFY_EQ(A.front(), 0);
+    pyu::Queue<int> A(this->CreateTestableInterface());
+    ASSERT_TRUE(A.push(0));
+    ASSERT_TRUE(A.push(1));
+    ASSERT_TRUE(A.push(2));
+    ASSERT_EQ(A.front(), 0);
     A.front() = 6;
-    VERIFY_EQ(A.front(), 6);
-
-    return true;
+    ASSERT_EQ(A.front(), 6);
 }
 
-bool QueueTests::ClearTest(shared_ptr<LinearStorageInterface<int>> pLsi)
+TYPED_TEST(QueueTests, ClearTest)
 {
-    Queue<int> A(pLsi);
-    VERIFY_TRUE(A.empty());
+    pyu::Queue<int> A(this->CreateTestableInterface());
+    ASSERT_TRUE(A.empty());
 
     for (uint32_t i = 0; i < 5; i++)
     {
-        VERIFY_TRUE(A.push(i));
-        VERIFY_EQ(A.front(), 0);
-        VERIFY_EQ(A.length(), i + 1);
+        ASSERT_TRUE(A.push(i));
+        ASSERT_EQ(A.front(), 0);
+        ASSERT_EQ(A.length(), i + 1);
     }
 
     A.clear();
-    VERIFY_TRUE(A.empty());
-
-    return true;
+    ASSERT_TRUE(A.empty());
 }

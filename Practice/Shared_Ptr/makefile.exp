@@ -1,0 +1,9 @@
+TARGET_LIBS := \
+    $(TARGET_LIBS) \
+	SharedPtrTest \
+
+INCLUDE_PATH := \
+	$(INCLUDE_PATH) \
+	../pyu_libs \
+
+include ../gtest.exp

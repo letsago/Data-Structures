@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ostream>
+
 namespace pyu
 {
 
@@ -45,12 +47,12 @@ class shared_ptr
             return m_pdata;
         }
 
-        bool operator!= (const shared_ptr<T>& other)
+        bool operator!= (const shared_ptr<T>& other) const
         {
             return !(*this == other);
         }
 
-        bool operator== (const shared_ptr<T>& other)
+        bool operator== (const shared_ptr<T>& other) const
         {
             return *get() == *(other.get());
         }
