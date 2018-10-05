@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "../test_engine/test_lib.h"
+#include <unordered_map>
 #include <iostream>
 #include <string>
 

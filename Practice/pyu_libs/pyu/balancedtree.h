@@ -33,10 +33,7 @@ class BalancedTree : public Tree<T>
 
     private:
 
-    void balance()
-    {
-        return true;
-    }
+    void balance() {}
 
     struct Node
     {

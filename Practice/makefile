@@ -1,5 +1,6 @@
-BASEDIRS := ./test_engine ./test_runner
+BASEDIRS := ./test_runner
 SUBDIRS := \
+	./test_engine \
 	./Array \
 	./BalancedTree \
 	./LinearStorageInterface \
