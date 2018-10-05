@@ -2,6 +2,7 @@ TARGET_TYPE = program
 TARGET_NAME = test_runner
 
 include ../Array/makefile.exp
+include ../BalancedTree/makefile.exp
 include ../LinearStorageInterface/makefile.exp
 include ../LinkedList/makefile.exp
 include ../PigLatin/makefile.exp

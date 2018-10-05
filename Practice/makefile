@@ -1,6 +1,7 @@
 BASEDIRS := ./test_engine ./test_runner
 SUBDIRS := \
 	./Array \
+	./BalancedTree \
 	./LinearStorageInterface \
 	./LinkedList \
 	./PigLatin \

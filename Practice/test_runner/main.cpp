@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
     {
         paramList += "\t" + it.first + "\n";
     }
-    
+
     for (int i = 1; i < argc; ++i)
     {
         auto it = kArgMap.find(argv[i]);
@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
 
             std::cout << "Usage is: " << argv[0] << " [optional parameters]" << std::endl << std::endl;
             std::cout << paramList << std::endl;
-            
+
             exit(-1);
         }
 

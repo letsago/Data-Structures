@@ -304,7 +304,7 @@ class Tree
         }
     }
 
-    Vector<T> getSorted()
+    Vector<T> getSorted() const
     {
         Vector<T> sorted(size());
         shared_ptr<LinearStorageInterface<Node*>> nodes(new Vector<Node*>(size()));
@@ -326,6 +326,11 @@ class Tree
         }
 
         return sorted;
+    }
+
+    bool isBalanced() const
+    {
+       return false;
     }
 
     private:
