@@ -1,8 +1,12 @@
-#include "queue_test.h"
+#include <gtest/gtest.h>
+#include <pyu_test/LinearStorageInterfaceCreator.h>
 #include <pyu/vector.h>
 #include <pyu/linked_list.h>
 #include <pyu/rollingarray.h>
 #include <pyu/queue.h>
+
+template<class T>
+class QueueTests : public ::testing::Test, public pyu::internal::LinearStorageInterfaceCreator<T> {};
 
 typedef testing::Types<pyu::Vector<int>, pyu::LinkedList<int>, pyu::RollingArray<int, 10>> Implementations;
 TYPED_TEST_CASE(QueueTests, Implementations);

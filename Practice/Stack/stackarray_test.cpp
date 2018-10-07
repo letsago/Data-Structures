@@ -1,5 +1,9 @@
-#include "stackarray_test.h"
+#include <gtest/gtest.h>
+#include <pyu_test/LinearStorageInterfaceCreator.h>
 #include <pyu/stack.h>
+#include <pyu/array.h>
+
+class StackArrayTests : public ::testing::Test, public pyu::internal::LinearStorageInterfaceCreator<pyu::Array<int, 5>> {};
 
 TEST_F(StackArrayTests, InvalidPushTest)
 {

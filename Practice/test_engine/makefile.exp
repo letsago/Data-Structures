@@ -1,9 +1,0 @@
-TARGET_LIBS := \
-    $(TARGET_LIBS) \
-	TestFramework \
-
-INCLUDE_PATH := \
-	$(INCLUDE_PATH) \
-	../pyu_libs \
-
-include ../gtest.exp

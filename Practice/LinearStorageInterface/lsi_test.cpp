@@ -1,10 +1,14 @@
-#include "lsi_test.h"
+#include <gtest/gtest.h>
+#include <pyu_test/LinearStorageInterfaceCreator.h>
 #include <pyu/vector.h>
 #include <pyu/linked_list.h>
 #include <pyu/array.h>
 #include <pyu/iterator.h>
 
 using namespace pyu;
+
+template<class T>
+class LinearStorageInterfaceTests : public ::testing::Test, public internal::LinearStorageInterfaceCreator<T> {};
 
 typedef testing::Types<pyu::Vector<int>, pyu::LinkedList<int>, pyu::Array<int, 10>> Implementations;
 TYPED_TEST_CASE(LinearStorageInterfaceTests, Implementations);

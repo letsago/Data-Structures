@@ -1,0 +1,3 @@
+--leak-check=full 
+--show-leak-kinds=all 
+--log-file=%q{PROJECT_DIR}/outputs/valgrind.log

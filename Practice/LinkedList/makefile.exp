@@ -2,8 +2,4 @@ TARGET_LIBS := \
     $(TARGET_LIBS) \
 	LinkedListTest \
 
-INCLUDE_PATH := \
-	$(INCLUDE_PATH) \
-	../pyu_libs \
-
-include ../gtest.exp
+include $(PROJECT_DIR)/common.exp

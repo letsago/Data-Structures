@@ -1,38 +1,27 @@
-BASEDIRS := ./test_runner
-SUBDIRS := \
-	./test_engine \
-	./Array \
-	./BalancedTree \
-	./LinearStorageInterface \
-	./LinkedList \
-	./PigLatin \
-	./Queue \
-	./Shared_Ptr \
-	./Stack \
-	./Tree \
-	./Vector \
+TARGET_TYPE = program
+TARGET_NAME = test_runner
 
-ifeq (run,$(firstword $(MAKECMDGOALS)))
-  # use the rest as arguments for "run"
-  RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-  # ...and turn them into do-nothing targets
-  $(eval $(RUN_ARGS):;@:)
-endif
+DIRS := \
+	Array \
+	BalancedTree \
+	LinearStorageInterface \
+	LinkedList \
+	PigLatin \
+	Queue \
+	Shared_Ptr \
+	Stack \
+	Tree \
+	Vector \
 
-all: $(SUBDIRS) $(BASEDIRS)
+include Array/makefile.exp
+include BalancedTree/makefile.exp
+include LinearStorageInterface/makefile.exp
+include LinkedList/makefile.exp
+include PigLatin/makefile.exp
+include Queue/makefile.exp
+include Shared_Ptr/makefile.exp
+include Stack/makefile.exp
+include Tree/makefile.exp
+include Vector/makefile.exp
 
-clean: $(SUBDIRS) $(BASEDIRS)
-
-rebuild: $(SUBDIRS) $(BASEDIRS)
-
-$(BASEDIRS): $(SUBDIRS)
-	$(MAKE) -C $@ rebuild
-
-$(SUBDIRS):
-	$(MAKE) -C $@ $(MAKECMDGOALS)
-
-.PHONY: all clean rebuild $(SUBDIRS) $(BASEDIRS)
-
-run:
-	make -C ./test_runner $(MAKECMDGOALS)
-
+include build.inc

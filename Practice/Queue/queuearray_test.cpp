@@ -1,5 +1,9 @@
-#include "queuearray_test.h"
+#include <gtest/gtest.h>
+#include <pyu_test/LinearStorageInterfaceCreator.h>
 #include <pyu/queue.h>
+#include <pyu/rollingarray.h>
+
+class QueueArrayTests : public ::testing::Test, public pyu::internal::LinearStorageInterfaceCreator<pyu::RollingArray<int, 5>> {};
 
 TEST_F(QueueArrayTests, InvalidPushTest)
 {

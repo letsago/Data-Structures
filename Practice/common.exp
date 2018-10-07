@@ -2,6 +2,10 @@ ifeq ($(GTEST_DIR),)
     $(error GTEST_DIR is not set)
 endif
 
+INCLUDE_PATH := \
+	$(INCLUDE_PATH) \
+	$(PROJECT_DIR)/pyu_libs \
+
 RAW_INCLUDE_PATH := \
     $(RAW_INCLUDE_PATH) \
     -isystem $(GTEST_DIR)/include \
@@ -13,3 +17,8 @@ LIBRARY_PATH := \
 TARGET_LIBS := \
     $(TARGET_LIBS) \
     gtest \
+    gtest_main \
+
+ifeq ($(shell uname -s),Darwin)
+LINKER_FLAGS := $(LINKER_FLAGS) -Wl,-rpath,$(GTEST_DIR)/lib
+endif
