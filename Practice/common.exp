@@ -1,3 +1,7 @@
+ifeq ($(PROJECT_DIR),)
+    $(error PROJECT_DIR is not set)
+endif
+
 ifeq ($(GTEST_DIR),)
     $(error GTEST_DIR is not set)
 endif
@@ -19,6 +23,3 @@ TARGET_LIBS := \
     gtest \
     gtest_main \
 
-ifeq ($(shell uname -s),Darwin)
-LINKER_FLAGS := $(LINKER_FLAGS) -Wl,-rpath,$(GTEST_DIR)/lib
-endif

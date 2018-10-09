@@ -1,7 +1,3 @@
-ifeq ($(PROJECT_DIR),)
-    $(error PROJECT_DIR is not set)
-endif
-
 ifeq ($(shell uname -s),Linux)
 OS = Linux
 LIB_EXT = so
@@ -23,8 +19,8 @@ C_FLAGS := $(C_FLAGS) $(DEBUG_FLAGS)
 endif
 
 TARGET_PATH ?= $(PROJECT_DIR)/outputs
-TARGET_OBJECTS_PATH := $(TARGET_PATH)/obj
-TARGET_LIBRARY_PATH := $(TARGET_PATH)/lib
+TARGET_OBJECTS_PATH ?= $(TARGET_PATH)/obj
+TARGET_LIBRARY_PATH ?= $(TARGET_PATH)/lib
 LIBRARY_PATH := $(LIBRARY_PATH) $(TARGET_LIBRARY_PATH)
 
 SOURCES ?= $(wildcard *.cpp)
@@ -40,18 +36,17 @@ C_FLAGS := $(sort $(C_FLAGS))
 RAW_INCLUDE_PATH := $(sort $(RAW_INCLUDE_PATH))
 RAW_LIBRARY_PATH := $(sort $(RAW_LIBRARY_PATH))
 RAW_TARGET_LIBS := $(sort $(RAW_TARGET_LIBS))
+rpath_base = -Wl,-rpath=
+R_PATH := $(addprefix $(rpath_base),$(LIBRARY_PATH))
 
 TARGET_LIBS := $(filter-out $(TARGET_NAME), $(TARGET_LIBS))
 TARGET_LIBS := $(addprefix -l, $(TARGET_LIBS))
 RAW_INCLUDE_PATH := $(RAW_INCLUDE_PATH) $(addprefix -I, $(INCLUDE_PATH))
 RAW_TARGET_LIBS := $(RAW_TARGET_LIBS) $(TARGET_LIBS)
 RAW_LIBRARY_PATH := $(RAW_LIBRARY_PATH) $(addprefix -L , $(LIBRARY_PATH))
+LINKER_FLAGS += $(R_PATH)
 
-ifeq ($(OS),Linux)
-LIBRARY_COMPILER := $(RAW_LIBRARY_PATH) -Wl,--whole-archive $(RAW_TARGET_LIBS) -Wl,--no-whole-archive $(LINKER_FLAGS)
-else
 LIBRARY_COMPILER := $(RAW_LIBRARY_PATH) $(RAW_TARGET_LIBS) $(LINKER_FLAGS)
-endif
 
 BASE_CMD = $(CC) $(RAW_INCLUDE_PATH) $(C_FLAGS)
 
