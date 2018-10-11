@@ -1,3 +1,5 @@
+include common.exp
+
 TARGET_TYPE = program
 TARGET_NAME = test_runner
 

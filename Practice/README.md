@@ -8,13 +8,13 @@ This project now depends on googletest. Installation instructions below.
 
 Once installed, `make` for the project will complain until the shell has environment variable `GTEST_DIR` and `PROJECT_DIR` set.
 
-You make set it via the following command in terminal: 
+You make set it via the following command in terminal:
 ```bash
 export GTEST_DIR=~/gtest/build
-export PROJECT_DIR=/path/to/your/project
+export PROJECT_DIR=/ *insert path to your project*
 ```
 
-To avoid doing this each time you open terminal, you can modify your **workspace settings** in vscode with the following setting.
+To avoid doing this each time you open a vscode terminal, you can modify your **workspace settings** in vscode with the following setting.
 > Preferences: Open Workspace Settings
 ```json
 		"terminal.integrated.env.linux": {
@@ -39,7 +39,7 @@ rm -rf ~/googletest
 # Compiling the test
 > `make`
 
-Make handles all dependencies and won't do any more work than it needs to! That means if you change any files, it will only rebuild the necessary items. 
+Make handles all dependencies and won't do any more work than it needs to! That means if you change any files, it will only rebuild the necessary items.
 
 ## Compile Issues
 If you run into build errors that you think are not caused by you, use `make rebuild`. This will clean, and then rebuild everything.

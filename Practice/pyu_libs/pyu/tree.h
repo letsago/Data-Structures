@@ -4,7 +4,6 @@
 #include "vector.h"
 #include "queue.h"
 #include <string>
-#include <cmath>
 #include <algorithm>
 
 namespace pyu
@@ -13,8 +12,20 @@ namespace pyu
 template <typename T>
 class Tree
 {
-    public:
+private:
+    struct Node
+    {
+        Node(const T& value)
+        {
+            memset(m_children, 0, sizeof(m_children));
+            m_value = value;
+        }
 
+        T m_value;
+        Node* m_children[2];
+    };
+
+public:
     Tree()
     {
         m_root = nullptr;
@@ -38,33 +49,18 @@ class Tree
 
     bool insert(const T& val)
     {
-        Node* next = m_root;
-        Node* curr = nullptr;
+        Node* prev = nullptr;
+        Node* curr = find(val, &prev);
 
-        while (next != nullptr)
-        {
-            curr = next;
+        if (curr)
+            return false;
 
-            if (curr->m_value == val)
-                return false;
+        Node* node = createNode(val);
 
-            if (curr->m_value < val)
-                next = curr->m_right;
-            else
-                next = curr->m_left;
-        }
-
-        Node* node = new Node(val, nullptr, nullptr);
-
-        if (curr == nullptr)
+        if (!m_root)
             m_root = node;
         else
-        {
-            if (curr->m_value < val)
-                curr->m_right = node;
-            else
-                curr->m_left = node;
-        }
+            prev->m_children[(prev->m_value < val)] = node;
 
         ++m_size;
         return true;
@@ -72,45 +68,27 @@ class Tree
 
     bool remove(const T& val)
     {
-        if (empty())
+        Node* prev = nullptr;
+        Node* curr = find(val, &prev);
+
+        if (!curr)
             return false;
 
-        Node* prev = nullptr;
-        Node* curr = m_root;
-        Node* next = nullptr;
-
-        while (curr->m_value != val)
-        {
-            if (curr->m_left == nullptr && curr->m_right == nullptr)
-                return false;
-
-            prev = curr;
-            if (val > prev->m_value)
-                curr = prev->m_right;
-            else
-                curr = prev->m_left;
-        }
-
-        next = curr->m_left;
+        Node* next = curr->m_children[LEFT];
 
         if (curr != m_root)
-        {
-            if (prev->m_value > curr->m_value)
-                prev->m_left = next;
-            else
-                prev->m_right = next;
-        }
+            prev->m_children[(prev->m_value < curr->m_value)] = next;
         else
             m_root = next;
 
-        while (next != nullptr)
+        while (next)
         {
             prev = next;
-            next = prev->m_right;
+            next = prev->m_children[RIGHT];
         }
 
-        if (curr->m_right != nullptr)
-            prev->m_right = curr->m_right;
+        if (curr->m_children[RIGHT])
+            prev->m_children[RIGHT] = curr->m_children[RIGHT];
 
         delete curr;
         --m_size;
@@ -119,10 +97,8 @@ class Tree
 
     uint32_t depth() const
     {
-        if (m_root == nullptr)
-        {
+        if (!m_root)
             return 0;
-        }
 
         shared_ptr<LinearStorageInterface<Metadata>> pData(new Vector<Metadata>(size()));
         Queue<Metadata> order(pData);
@@ -135,14 +111,10 @@ class Tree
             d = order.front().m_val;
             order.pop();
 
-            if (curr->m_left != nullptr)
+            for (uint32_t i = 0; i < sizeof(curr->m_children)/sizeof(curr->m_children[0]); ++i)
             {
-                order.push({curr->m_left, d + 1});
-            }
-
-            if (curr->m_right != nullptr)
-            {
-                order.push({curr->m_right, d + 1});
+                if (curr->m_children[i])
+                    order.push({curr->m_children[i], d + 1});
             }
         }
 
@@ -151,7 +123,7 @@ class Tree
 
     friend std::ostream& operator<< (std::ostream& os, const Tree& tree)
     {
-        if (tree.m_root != nullptr)
+        if (tree.m_root)
         {
             Vector<PrintMetadata> printData(tree.size());
             shared_ptr<LinearStorageInterface<uint32_t>> pPrintPos(new Vector<uint32_t>(tree.size()));
@@ -162,7 +134,8 @@ class Tree
             double minRelCol = 0;
             double maxRelCol = 0;
 
-            auto addNode = [&printData, &order, &numSpaces](const PrintMetadata& obj, Node* next, double colDelta) {
+            auto addNode = [&printData, &order, &numSpaces](const PrintMetadata& obj, Node* next, double colDelta)
+            {
                 printData.insert_back({
                         next,
                         std::to_string(next->m_value),
@@ -180,15 +153,11 @@ class Tree
                 minRelCol = std::min(minRelCol, obj.m_relCol);
                 maxRelCol = std::max(maxRelCol, obj.m_relCol);
 
-                if (obj.m_node->m_right)
-                {
-                    addNode(obj, obj.m_node->m_right, relColDiff);
-                }
+                if (obj.m_node->m_children[RIGHT])
+                    addNode(obj, obj.m_node->m_children[RIGHT], relColDiff);
 
-                if (obj.m_node->m_left)
-                {
-                    addNode(obj, obj.m_node->m_left, -relColDiff);
-                }
+                if (obj.m_node->m_children[LEFT])
+                    addNode(obj, obj.m_node->m_children[LEFT], -relColDiff);
             }
 
             uint32_t depth = (printData.back().m_row + 2) / 3;
@@ -222,7 +191,7 @@ class Tree
                 uint32_t pos = (printData.at(i).m_relCol * normFactor + transFactor) * numSpaces + (numSpaces - printData.at(i).m_str.length()) / 2;
                 output.replace(pos, printData.at(i).m_str.length(), printData.at(i).m_str);
 
-                if (printData.at(i).m_node->m_left || printData.at(i).m_node->m_right)
+                if (printData.at(i).m_node->m_children[LEFT] || printData.at(i).m_node->m_children[RIGHT])
                 {
                     uint32_t arrowPos = (numSpaces * (maxCol + 1) + 1) + (printData.at(i).m_relCol * normFactor + transFactor) * numSpaces + numSpaces / 2;
                     output.replace(arrowPos, 1, "|");
@@ -235,13 +204,13 @@ class Tree
 
                     const uint32_t position = (numSpaces * (maxCol + 1) + 1) + arrowPos;
 
-                    if (printData.at(i).m_node->m_left)
+                    if (printData.at(i).m_node->m_children[LEFT])
                     {
                         output.replace(arrowPos - numLines, numLines, lines);
                         output.replace(position - numLines - 1, 1, "/");
                     }
 
-                    if (printData.at(i).m_node->m_right)
+                    if (printData.at(i).m_node->m_children[RIGHT])
                     {
                         output.replace(arrowPos + 1, numLines, lines);
                         output.replace(position + numLines + 1, 1, "\\");
@@ -260,7 +229,7 @@ class Tree
 
     void clear()
     {
-        if (m_root != nullptr)
+        if (m_root)
         {
             shared_ptr<LinearStorageInterface<Node*>> pdata(new Vector<Node*>(size()));
             Stack<Node*> deleteorder(pdata);
@@ -271,11 +240,11 @@ class Tree
                 Node* curr = deleteorder.top();
                 deleteorder.pop();
 
-                if (curr->m_left)
-                    deleteorder.push(curr->m_left);
+                if (curr->m_children[LEFT])
+                    deleteorder.push(curr->m_children[LEFT]);
 
-                if (curr->m_right)
-                    deleteorder.push(curr->m_right);
+                if (curr->m_children[RIGHT])
+                    deleteorder.push(curr->m_children[RIGHT]);
 
                 delete curr;
             }
@@ -287,21 +256,7 @@ class Tree
 
     bool contains(const T& val) const
     {
-        Node* curr = m_root;
-
-        while (true)
-        {
-            if (curr == nullptr)
-                return false;
-
-            if (val == curr->m_value)
-                return true;
-
-            if (val > curr->m_value)
-                curr = curr->m_right;
-            else
-                curr = curr->m_left;
-        }
+        return find(val);
     }
 
     Vector<T> getSorted() const
@@ -311,18 +266,18 @@ class Tree
         Stack<Node*> stack(nodes);
         Node* curr = m_root;
 
-        while (!stack.empty() || curr != nullptr)
+        while (!stack.empty() || curr)
         {
-            while (curr != nullptr)
+            while (curr)
             {
                 stack.push(curr);
-                curr = curr->m_left;
+                curr = curr->m_children[LEFT];
             }
 
             curr = stack.top();
             stack.pop();
             sorted.insert_back(curr->m_value);
-            curr = curr->m_right;
+            curr = curr->m_children[RIGHT];
         }
 
         return sorted;
@@ -333,22 +288,19 @@ class Tree
        return false;
     }
 
-    private:
-
-    struct Node
+protected:
+    enum Direction
     {
-        Node(const T& value, Node* right, Node* left)
-        {
-            m_value = value;
-            m_right = right;
-            m_left = left;
-        }
-
-        T m_value;
-        Node* m_right;
-        Node* m_left;
+        LEFT,
+        RIGHT
     };
 
+    Node* createNode(const T& value)
+    {
+        return new Node(value);
+    }
+
+private:
     struct Metadata
     {
         Node* m_node;
@@ -367,6 +319,21 @@ class Tree
         uint32_t m_row;
         double m_relCol;
     };
+
+    Node* find(const T& val, Node** pPrev = nullptr) const
+    {
+        Node* curr = m_root;
+
+        while (curr && curr->m_value != val)
+        {
+            if (pPrev)
+                *pPrev = curr;
+
+            curr = curr->m_children[(val > curr->m_value)];
+        }
+
+        return curr;
+    }
 
     Node* m_root;
     uint32_t m_size;
