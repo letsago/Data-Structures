@@ -12,25 +12,8 @@ namespace pyu
 template <typename T>
 class Tree
 {
-private:
-    struct Node
-    {
-        Node(const T& value)
-        {
-            memset(m_children, 0, sizeof(m_children));
-            m_value = value;
-        }
-
-        T m_value;
-        Node* m_children[2];
-    };
-
 public:
-    Tree()
-    {
-        m_root = nullptr;
-        m_size = 0;
-    }
+    Tree() : m_root(nullptr), m_size(0) {};
 
     ~Tree()
     {
@@ -49,21 +32,7 @@ public:
 
     bool insert(const T& val)
     {
-        Node* prev = nullptr;
-        Node* curr = find(val, &prev);
-
-        if (curr)
-            return false;
-
-        Node* node = createNode(val);
-
-        if (!m_root)
-            m_root = node;
-        else
-            prev->m_children[(prev->m_value < val)] = node;
-
-        ++m_size;
-        return true;
+        return insertNode(val);
     }
 
     bool remove(const T& val)
@@ -240,11 +209,11 @@ public:
                 Node* curr = deleteorder.top();
                 deleteorder.pop();
 
-                if (curr->m_children[LEFT])
-                    deleteorder.push(curr->m_children[LEFT]);
-
-                if (curr->m_children[RIGHT])
-                    deleteorder.push(curr->m_children[RIGHT]);
+                for (uint32_t i = 0; i < sizeof(curr->m_children)/sizeof(curr->m_children[0]); ++i)
+                {
+                    if (curr->m_children[i])
+                        deleteorder.push(curr->m_children[i]);
+                }
 
                 delete curr;
             }
@@ -283,24 +252,35 @@ public:
         return sorted;
     }
 
-    bool isBalanced() const
+    bool isBalanced(uint32_t depth) const
     {
-       return false;
+        if (empty())
+            return true;
+
+        return (static_cast<uint32_t>(1 << (depth - 1)) <= size());
     }
 
 protected:
+    struct Node
+    {
+        Node(const T& value)
+        {
+            memset(m_children, 0, sizeof(m_children));
+            m_value = value;
+        }
+
+        virtual ~Node() {}
+
+        T m_value;
+        Node* m_children[2];
+    };
+
     enum Direction
     {
         LEFT,
         RIGHT
     };
 
-    Node* createNode(const T& value)
-    {
-        return new Node(value);
-    }
-
-private:
     struct Metadata
     {
         Node* m_node;
@@ -320,23 +300,57 @@ private:
         double m_relCol;
     };
 
-    Node* find(const T& val, Node** pPrev = nullptr) const
+    Node* find(const T& val, Node** pPrev = nullptr, uint32_t* pDepth = nullptr) const
     {
         Node* curr = m_root;
+        uint32_t dummyDepth = 1;
+        Node* dummyPrev = nullptr;
 
         while (curr && curr->m_value != val)
         {
-            if (pPrev)
-                *pPrev = curr;
-
+            dummyPrev = curr;
             curr = curr->m_children[(val > curr->m_value)];
+            ++dummyDepth;
         }
+
+        if (pDepth)
+            *pDepth = dummyDepth;
+
+        if (pPrev)
+            *pPrev = dummyPrev;
 
         return curr;
     }
 
+    Node* insertNode(const T& val, Node** pPrev = nullptr, uint32_t* pDepth = nullptr)
+    {
+        Node* dummyPrev = nullptr;
+
+        if (find(val, &dummyPrev, pDepth))
+            return nullptr;
+
+        Node* node = createNode(val);
+
+        if (!m_root)
+            m_root = node;
+        else
+            dummyPrev->m_children[(dummyPrev->m_value < val)] = node;
+
+        if (pPrev)
+            *pPrev = dummyPrev;
+
+        ++m_size;
+        return node;
+    }
+
     Node* m_root;
     uint32_t m_size;
+
+private:
+    virtual Node* createNode(const T& value)
+    {
+        return new Node(value);
+    }
 };
 
 }
