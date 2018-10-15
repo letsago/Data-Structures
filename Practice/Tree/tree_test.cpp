@@ -28,14 +28,259 @@ TEST(TreeTests, InsertTest)
     ASSERT_FALSE(A.insert(2));
 }
 
-TEST(TreeTests, RemoveRootTest)
+TEST(TreeTests, RemoveFailTest)
 {
-    const int arr[] = {10, 5, 20, 15, 8, 2, 25};
+    const int arr[] = {10, 5, 20};
     Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
 
     Tree<int> A;
 
     ASSERT_FALSE(A.remove(8));
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.insert(data.at(i)));
+    }
+
+    ASSERT_FALSE(A.remove(15));
+}
+
+TEST(TreeTests, RemoveLastLeafTest)
+{
+    const int arr[] = {10, 11, 12};
+    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.insert(data.at(i)));
+    }
+
+    ASSERT_EQ(A.size(), data.length());
+    ASSERT_TRUE(A.remove(12));
+    data.remove(data.find(12));
+    ASSERT_EQ(A.size(), data.length());
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.contains(data.at(i)));
+    }
+}
+
+TEST(TreeTests, RemoveRightSkewedMiddleLeafTest)
+{
+    const int arr[] = {10, 11, 12};
+    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.insert(data.at(i)));
+    }
+
+    ASSERT_EQ(A.size(), data.length());
+    ASSERT_TRUE(A.remove(11));
+    data.remove(data.find(11));
+    ASSERT_EQ(A.size(), data.length());
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.contains(data.at(i)));
+    }
+}
+
+TEST(TreeTests, RemoveRightAngularMiddleLeafTest)
+{
+    const int arr[] = {10, 12, 11};
+    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.insert(data.at(i)));
+    }
+
+    ASSERT_EQ(A.size(), data.length());
+    ASSERT_TRUE(A.remove(12));
+    data.remove(data.find(12));
+    ASSERT_EQ(A.size(), data.length());
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.contains(data.at(i)));
+    }
+}
+
+TEST(TreeTests, RemoveLeftAngularMiddleLeafTest)
+{
+    const int arr[] = {10, 8, 9};
+    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.insert(data.at(i)));
+    }
+
+    ASSERT_EQ(A.size(), data.length());
+    ASSERT_TRUE(A.remove(8));
+    data.remove(data.find(8));
+    ASSERT_EQ(A.size(), data.length());
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.contains(data.at(i)));
+    }
+}
+
+TEST(TreeTests, RemoveLeftSkewedMiddleLeafTest)
+{
+    const int arr[] = {10, 9, 8};
+    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.insert(data.at(i)));
+    }
+
+    ASSERT_EQ(A.size(), data.length());
+    ASSERT_TRUE(A.remove(9));
+    data.remove(data.find(9));
+    ASSERT_EQ(A.size(), data.length());
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.contains(data.at(i)));
+    }
+}
+
+TEST(TreeTests, RemoveRightSkewedRootTest)
+{
+    const int arr[] = {10, 11, 12};
+    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.insert(data.at(i)));
+    }
+
+    ASSERT_EQ(A.size(), data.length());
+    ASSERT_TRUE(A.remove(10));
+    data.remove(data.find(10));
+    ASSERT_EQ(A.size(), data.length());
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.contains(data.at(i)));
+    }
+}
+
+TEST(TreeTests, RemoveRightAngularRootTest)
+{
+    const int arr[] = {10, 12, 11};
+    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.insert(data.at(i)));
+    }
+
+    ASSERT_EQ(A.size(), data.length());
+    ASSERT_TRUE(A.remove(10));
+    data.remove(data.find(10));
+    ASSERT_EQ(A.size(), data.length());
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.contains(data.at(i)));
+    }
+}
+
+TEST(TreeTests, RemoveLeftAngularRootTest)
+{
+    const int arr[] = {10, 8, 9};
+    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.insert(data.at(i)));
+    }
+
+    ASSERT_EQ(A.size(), data.length());
+    ASSERT_TRUE(A.remove(10));
+    data.remove(data.find(10));
+    ASSERT_EQ(A.size(), data.length());
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.contains(data.at(i)));
+    }
+}
+
+TEST(TreeTests, RemoveLeftSkewedRootTest)
+{
+    const int arr[] = {10, 9, 8};
+    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.insert(data.at(i)));
+    }
+
+    ASSERT_EQ(A.size(), data.length());
+    ASSERT_TRUE(A.remove(10));
+    data.remove(data.find(10));
+    ASSERT_EQ(A.size(), data.length());
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.contains(data.at(i)));
+    }
+}
+
+TEST(TreeTests, RemoveSimpleRootTest)
+{
+    const int arr[] = {10, 8, 12};
+    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.insert(data.at(i)));
+    }
+
+    ASSERT_EQ(A.size(), data.length());
+    ASSERT_TRUE(A.remove(10));
+    data.remove(data.find(10));
+    ASSERT_EQ(A.size(), data.length());
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.contains(data.at(i)));
+    }
+}
+
+TEST(TreeTests, RemoveMultipleRootsBalancedTest)
+{
+    const int arr[] = {10, 5, 20, 15, 8, 2, 25};
+    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+
+    Tree<int> A;
 
     for (uint32_t i = 0; i < data.length(); ++i)
     {
@@ -57,6 +302,52 @@ TEST(TreeTests, RemoveRootTest)
     ASSERT_FALSE(A.remove(10));
 
     // tests for another iteration of removing root
+    ASSERT_TRUE(A.remove(8));
+    data.remove(data.find(8));
+    ASSERT_EQ(A.size(), data.length());
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.contains(data.at(i)));
+    }
+}
+
+TEST(TreeTests, RemoveRootNonBalancedTest)
+{
+    const int arr[] = {10, 5, 15, 3, 7, 12, 20, 9, 11, 13, 8};
+    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.insert(data.at(i)));
+    }
+
+    ASSERT_EQ(A.size(), data.length());
+    ASSERT_TRUE(A.remove(10));
+    data.remove(data.find(10));
+    ASSERT_EQ(A.size(), data.length());
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.contains(data.at(i)));
+    }
+}
+
+TEST(TreeTests, RemoveRootLeftChildNonBalancedTest)
+{
+    const int arr[] = {10, 5, 15, 3, 7, 12, 20, 9, 11, 13, 8};
+    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.insert(data.at(i)));
+    }
+
+    ASSERT_EQ(A.size(), data.length());
     ASSERT_TRUE(A.remove(5));
     data.remove(data.find(5));
     ASSERT_EQ(A.size(), data.length());
@@ -67,9 +358,9 @@ TEST(TreeTests, RemoveRootTest)
     }
 }
 
-TEST(TreeTests, RemoveLeafTest)
+TEST(TreeTests, RemoveRootRightChildNonBalancedTest)
 {
-    const int arr[] = {10, 5, 20, 15, 8, 2, 25};
+    const int arr[] = {10, 5, 15, 3, 7, 12, 20, 9, 11, 13, 8};
     Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
 
     Tree<int> A;
@@ -79,19 +370,7 @@ TEST(TreeTests, RemoveLeafTest)
         ASSERT_TRUE(A.insert(data.at(i)));
     }
 
-    ASSERT_EQ(A.size(), 7);
-
-    // removes a middle leaf
-    ASSERT_TRUE(A.remove(5));
-    data.remove(data.find(5));
     ASSERT_EQ(A.size(), data.length());
-
-    for (uint32_t i = 0; i < data.length(); ++i)
-    {
-        ASSERT_TRUE(A.contains(data.at(i)));
-    }
-
-    // removes an end leaf
     ASSERT_TRUE(A.remove(15));
     data.remove(data.find(15));
     ASSERT_EQ(A.size(), data.length());
