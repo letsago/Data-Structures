@@ -36,8 +36,14 @@ C_FLAGS := $(sort $(C_FLAGS))
 RAW_INCLUDE_PATH := $(sort $(RAW_INCLUDE_PATH))
 RAW_LIBRARY_PATH := $(sort $(RAW_LIBRARY_PATH))
 RAW_TARGET_LIBS := $(sort $(RAW_TARGET_LIBS))
+
+ifeq ($(OS), Mac)
+rpath_base = -Wl,-rpath
+R_PATH := $(addprefix $(rpath_base) ,$(LIBRARY_PATH))
+else
 rpath_base = -Wl,-rpath=
 R_PATH := $(addprefix $(rpath_base),$(LIBRARY_PATH))
+endif 
 
 TARGET_LIBS := $(filter-out $(TARGET_NAME), $(TARGET_LIBS))
 TARGET_LIBS := $(addprefix -l, $(TARGET_LIBS))

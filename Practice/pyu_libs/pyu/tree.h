@@ -5,6 +5,7 @@
 #include "queue.h"
 #include <string>
 #include <algorithm>
+#include <cmath>
 
 namespace pyu
 {
@@ -37,31 +38,7 @@ public:
 
     bool remove(const T& val)
     {
-        Node* prev = nullptr;
-        Node* curr = find(val, &prev);
-
-        if (!curr)
-            return false;
-
-        Node* next = curr->m_children[LEFT];
-
-        if (curr != m_root)
-            prev->m_children[(prev->m_value < curr->m_value)] = next;
-        else
-            m_root = next;
-
-        while (next)
-        {
-            prev = next;
-            next = prev->m_children[RIGHT];
-        }
-
-        if (curr->m_children[RIGHT])
-            prev->m_children[RIGHT] = curr->m_children[RIGHT];
-
-        delete curr;
-        --m_size;
-        return true;
+        return removeNode(val);
     }
 
     uint32_t depth() const
@@ -69,8 +46,7 @@ public:
         if (!m_root)
             return 0;
 
-        shared_ptr<LinearStorageInterface<Metadata>> pData(new Vector<Metadata>(size()));
-        Queue<Metadata> order(pData);
+        Queue<Metadata> order(new Vector<Metadata>(size()));
         order.push({m_root, 1});
         uint32_t d;
 
@@ -95,8 +71,7 @@ public:
         if (tree.m_root)
         {
             Vector<PrintMetadata> printData(tree.size());
-            shared_ptr<LinearStorageInterface<uint32_t>> pPrintPos(new Vector<uint32_t>(tree.size()));
-            Queue<uint32_t> order(pPrintPos);
+            Queue<uint32_t> order(new Vector<uint32_t>(tree.size()));
             printData.insert_back({tree.m_root, std::to_string(tree.m_root->m_value), 1, 0});
             order.push(printData.length() - 1);
             uint32_t numSpaces = 3;
@@ -200,8 +175,7 @@ public:
     {
         if (m_root)
         {
-            shared_ptr<LinearStorageInterface<Node*>> pdata(new Vector<Node*>(size()));
-            Stack<Node*> deleteorder(pdata);
+            Stack<Node*> deleteorder(new Vector<Node*>(size()));
             deleteorder.push(m_root);
 
             while (deleteorder.length() > 0)
@@ -231,8 +205,7 @@ public:
     Vector<T> getSorted() const
     {
         Vector<T> sorted(size());
-        shared_ptr<LinearStorageInterface<Node*>> nodes(new Vector<Node*>(size()));
-        Stack<Node*> stack(nodes);
+        Stack<Node*> stack(new Vector<Node*>(size()));
         Node* curr = m_root;
 
         while (!stack.empty() || curr)
@@ -261,6 +234,12 @@ public:
     }
 
 protected:
+    enum Direction
+    {
+        LEFT,
+        RIGHT
+    };
+
     struct Node
     {
         Node(const T& value)
@@ -271,14 +250,29 @@ protected:
 
         virtual ~Node() {}
 
+        virtual void reset()
+        {
+            memset(m_children, 0, sizeof(m_children));
+        }
+
+        virtual void connect(Node* conNode, Direction dir)
+        {
+            m_children[dir] = conNode;
+        }
+
+        virtual void replace(Node* node, Node* parent)
+        {
+            if (parent)
+                parent->connect(m_children[m_value > node->m_value], static_cast<Direction>(m_value > parent->m_value));
+
+            this->reset();
+
+            for (uint32_t i = 0; i < sizeof(m_children)/sizeof(m_children[0]); ++i)
+                m_children[i] = node->m_children[i];
+        }
+
         T m_value;
         Node* m_children[2];
-    };
-
-    enum Direction
-    {
-        LEFT,
-        RIGHT
     };
 
     struct Metadata
@@ -334,13 +328,66 @@ protected:
         if (!m_root)
             m_root = node;
         else
-            dummyPrev->m_children[(dummyPrev->m_value < val)] = node;
+            dummyPrev->connect(node, static_cast<Direction>(val > dummyPrev->m_value));
 
         if (pPrev)
             *pPrev = dummyPrev;
 
         ++m_size;
         return node;
+    }
+
+    void nodeSwap(Node* oldRoot, Node* oldRootParent, Node* newRoot, Node* newRootParent)
+    {
+        if (newRoot)
+            newRoot->replace(oldRoot, newRootParent);
+
+        oldRoot->reset();
+
+        if (oldRoot == m_root)
+            m_root = newRoot;
+        else
+            oldRootParent->connect(newRoot, static_cast<Direction>(oldRoot->m_value > oldRootParent->m_value));
+    }
+
+    Node* findNewRoot(const Node* oldRoot, Node*& newRootParent) const
+    {
+        Node* newRoot = nullptr;
+        newRootParent = const_cast<Node*>(oldRoot);
+
+        auto setNewRoot = [&newRootParent, &newRoot, &oldRoot](const Direction dir)
+        {
+            newRoot = oldRoot->m_children[dir];
+            while (newRoot->m_children[!dir])
+            {
+                newRootParent = newRoot;
+                newRoot = newRoot->m_children[!dir];
+            }
+        };
+
+        if (oldRoot->m_children[LEFT])
+            setNewRoot(LEFT);
+        else if (oldRoot->m_children[RIGHT])
+            setNewRoot(RIGHT);
+
+        return newRoot;
+    }
+
+    bool removeNode(const T& val)
+    {
+        Node* oldRootParent = nullptr;
+        Node* oldRoot = find(val, &oldRootParent);
+
+        if (!oldRoot)
+            return false;
+
+        Node* newRootParent = nullptr;
+        Node* newRoot = findNewRoot(oldRoot, newRootParent);
+        nodeSwap(oldRoot, oldRootParent, newRoot, newRootParent);
+        delete oldRoot;
+        --m_size;
+
+        return true;
     }
 
     Node* m_root;

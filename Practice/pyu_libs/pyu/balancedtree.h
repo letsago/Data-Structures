@@ -32,11 +32,49 @@ public:
     }
 
 private:
+    typedef typename Tree<T>::Direction Direction;
     struct BNode : Tree<T>::Node
     {
         BNode(const T& value) : Tree<T>::Node(value)
         {
             m_parent = nullptr;
+        }
+
+        void reset()
+        {
+            Tree<T>::Node::reset();
+            m_parent = nullptr;
+        }
+
+        void connect(Node* conBnode, const Direction dir)
+        {
+            Tree<T>::Node::m_children[dir] = conBnode;
+
+            if (conBnode)
+                dynamic_cast<BNode*>(conBnode)->m_parent = this;
+        }
+
+        void replace(Node* bnode, Node* parent)
+        {
+            if (parent)
+                dynamic_cast<BNode*>(parent)->connect(Tree<T>::Node::m_children[Tree<T>::Node::m_value > bnode->m_value], static_cast<Direction>(Tree<T>::Node::m_value > parent->m_value));
+
+            this->reset();
+
+            for (uint32_t i = 0; i < sizeof(Tree<T>::Node::m_children)/sizeof(Tree<T>::Node::m_children[0]); ++i)
+            {
+                Tree<T>::Node::m_children[i] = bnode->m_children[i];
+
+                if (bnode->m_children[i])
+                    dynamic_cast<BNode*>(bnode->m_children[i])->m_parent = this;
+            }
+
+            m_parent = dynamic_cast<BNode*>(bnode)->m_parent;
+        }
+
+        BNode* getChild(const Direction dir) const
+        {
+            return dynamic_cast<BNode*>(Tree<T>::Node::m_children[dir]);
         }
 
         BNode* m_parent;
@@ -47,78 +85,11 @@ private:
         return new BNode(value);
     }
 
-    void nodeSwitch(BNode* root, BNode* target, uint32_t& rootDepth, uint32_t& imbalDepth)
-    {
-        ++rootDepth;
-
-        if (target->m_parent == root)
-        {
-            target->m_children[root->m_value > target->m_value] = root;
-            target->m_parent = root->m_parent;
-            memset(root->m_children, 0, sizeof(root->m_children));
-
-            if (root->m_parent)
-                root->m_parent->m_children[root->m_value > root->m_parent->m_value] = target;
-
-            root->m_parent = target;
-        }
-        else
-        {
-            target->m_parent->m_children[(target->m_value > target->m_parent->m_value)] = target->m_children[!(target->m_value > target->m_parent->m_value)];
-
-            if (target->m_children[!(target->m_value > target->m_parent->m_value)])
-            {
-                dynamic_cast<BNode*>(target->m_children[!(target->m_value > target->m_parent->m_value)])->m_parent = target->m_parent;
-                --imbalDepth;
-            }
-
-            target->m_parent = root->m_parent;
-
-            if (root->m_parent)
-                root->m_parent->m_children[target->m_value > root->m_parent->m_value] = target;
-
-            for (uint32_t i = 0; i < sizeof(target->m_children)/sizeof(target->m_children[0]); ++i)
-            {
-                target->m_children[i] = root->m_children[i];
-
-                if (root->m_children[i])
-                    dynamic_cast<BNode*>(root->m_children[i])->m_parent = target;
-            }
-
-            if (root->m_children[(root->m_value > target->m_value)])
-            {
-                ++rootDepth;
-                BNode* rootParent = dynamic_cast<BNode*>(root->m_children[(root->m_value > target->m_value)]);
-
-                while (rootParent->m_children[!(root->m_value > target->m_value)])
-                {
-                    ++rootDepth;
-                    rootParent = dynamic_cast<BNode*>(rootParent->m_children[!(root->m_value > target->m_value)]);
-                }
-
-                root->m_parent = rootParent;
-                rootParent->m_children[!(root->m_value > target->m_value)] = root;
-            }
-            else
-            {
-                root->m_parent = target;
-                target->m_children[(root->m_value > target->m_value)] = root;
-            }
-
-            memset(root->m_children, 0, sizeof(root->m_children));
-        }
-
-        if (root == Tree<T>::m_root)
-            Tree<T>::m_root = target;
-    }
-
     typedef typename Tree<T>::Metadata Metadata;
-    bool isFull(BNode* root, BNode* imbal, uint32_t treeDepth, uint32_t rootDepth)
+    bool isFull(BNode* root, BNode* imbal, uint32_t treeDepth, uint32_t rootDepth) const
     {
-        shared_ptr<LinearStorageInterface<Metadata>> pNodes(new Vector<Metadata>(Tree<T>::size()));
-        Queue<Metadata> queue(pNodes);
-        BNode* rootChild;
-        rootChild = dynamic_cast<BNode*>(root->m_children[root->m_value > imbal->m_value]);
+        Queue<Metadata> queue(new Vector<Metadata>(Tree<T>::size()));
+        BNode* rootChild = root->getChild(static_cast<Direction>(root->m_value > imbal->m_value));
 
         if (!rootChild)
             return false;
@@ -144,45 +115,73 @@ private:
         return true;
     }
 
-    void balance(BNode* node, uint32_t treeDepth)
+    BNode* getTargetChild(const BNode* parent, const Direction dir, uint32_t* pCounter = nullptr) const
     {
-        if (!Tree<T>::isBalanced(treeDepth))
+        BNode* targetChild = parent->getChild(dir);
+        uint32_t dummyCounter = 0;
+
+        while (targetChild && targetChild->getChild(static_cast<Direction>(!dir)))
         {
-            shared_ptr<LinearStorageInterface<BNode*>> pData(new Vector<BNode*>(Tree<T>::size() / 2));
-            Queue<BNode*> queue(pData);
-            queue.push(node);
+            targetChild = targetChild->getChild(static_cast<Direction>(!dir));
+            ++dummyCounter;
+        }
 
-            while (!queue.empty())
+        if (pCounter)
+            *pCounter = dummyCounter;
+
+        return targetChild;
+    }
+
+    void balance(BNode* node, const uint32_t treeDepth)
+    {
+        if (Tree<T>::isBalanced(treeDepth)) return;
+
+        Queue<BNode*> queue(new Vector<BNode*>(Tree<T>::size() / 2));
+        queue.push(node);
+
+        while (!queue.empty())
+        {
+            BNode* imbal = queue.front();
+            BNode* subRoot = imbal->m_parent->m_parent;
+            bool doesSubRootChange = false;
+            uint32_t subRootDepth = treeDepth - 2;
+            uint32_t imbalDepth = treeDepth;
+            while (isFull(subRoot, imbal, treeDepth, subRootDepth))
             {
-                BNode* imbal = queue.front();
-                BNode* root = imbal->m_parent->m_parent;
-                bool enter = false;
-                uint32_t rootDepth = treeDepth - 2;
-                uint32_t imbalDepth = treeDepth;
-                while (isFull(root, imbal, treeDepth, rootDepth))
-                {
-                    root = root->m_parent;
-                    enter = true;
-                    --rootDepth;
-                }
-
-                BNode* target;
-                target = dynamic_cast<BNode*>(root->m_children[(imbal->m_value > root->m_value)]);
-
-                while (target->m_children[!(imbal->m_value > root->m_value)])
-                    target = dynamic_cast<BNode*>(target->m_children[!(imbal->m_value > root->m_value)]);
-
-                if (target->m_value == imbal->m_value)
-                    imbalDepth = rootDepth;
-
-                nodeSwitch(root, target, rootDepth, imbalDepth);
-
-                if (rootDepth == treeDepth)
-                    queue.push(root);
-
-                if (!enter || imbalDepth != treeDepth)
-                    queue.pop();
+                subRoot = subRoot->m_parent;
+                doesSubRootChange = true;
+                --subRootDepth;
             }
+
+            BNode* newRoot = getTargetChild(subRoot, static_cast<Direction>(imbal->m_value > subRoot->m_value));
+
+            if (newRoot->m_value == imbal->m_value)
+                imbalDepth = subRootDepth;
+
+            if (newRoot->getChild(static_cast<Direction>(newRoot->m_parent->m_value > newRoot->m_value)))
+                --imbalDepth;
+
+            ++subRootDepth;
+            Tree<T>::nodeSwap(subRoot, subRoot->m_parent, newRoot, newRoot->m_parent);
+
+            Direction targetDir = static_cast<Direction>(subRoot->m_value > newRoot->m_value);
+
+            if (newRoot->getChild(targetDir))
+            {
+                ++subRootDepth;
+                uint32_t counter = 0;
+                BNode* rootNewParent = getTargetChild(newRoot, static_cast<Direction>(targetDir), &counter);
+                subRootDepth += counter;
+                rootNewParent->connect(subRoot, static_cast<Direction>(subRoot->m_value > rootNewParent->m_value));
+            }
+            else
+                newRoot->connect(subRoot, static_cast<Direction>(subRoot->m_value > newRoot->m_value));
+
+            if (subRootDepth == treeDepth)
+                queue.push(subRoot);
+
+            if (!doesSubRootChange || imbalDepth != treeDepth)
+                queue.pop();
         }
     }
 };
