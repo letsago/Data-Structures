@@ -288,8 +288,6 @@ TEST(TreeTests, RemoveMultipleRootsBalancedTest)
     }
 
     ASSERT_EQ(A.size(), data.length());
-
-    // tests for removing root
     ASSERT_TRUE(A.remove(10));
     data.remove(data.find(10));
     ASSERT_EQ(A.size(), data.length());
@@ -300,8 +298,6 @@ TEST(TreeTests, RemoveMultipleRootsBalancedTest)
     }
 
     ASSERT_FALSE(A.remove(10));
-
-    // tests for another iteration of removing root
     ASSERT_TRUE(A.remove(8));
     data.remove(data.find(8));
     ASSERT_EQ(A.size(), data.length());
@@ -498,11 +494,10 @@ TEST(TreeTests, SortedNullTreeTest)
     ASSERT_TRUE(A.getSorted().empty());
 }
 
-TEST(TreeTests, DepthTest)
+TEST(TreeTests, DepthInsertTest)
 {
     const int arr[] = {10, 5, 20, 15, 8, 2, 25};
     Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
-
     Tree<int> A;
 
     for (uint32_t i = 0; i < data.length(); ++i)
@@ -511,14 +506,70 @@ TEST(TreeTests, DepthTest)
     }
 
     ASSERT_EQ(A.depth(), 3);
+    ASSERT_TRUE(A.insert(30));
+    ASSERT_EQ(A.depth(), 4);
+    ASSERT_TRUE(A.insert(1));
+    ASSERT_EQ(A.depth(), 4);
+    ASSERT_TRUE(A.insert(28));
+    ASSERT_EQ(A.depth(), 5);
+}
 
+TEST(TreeTests, BottomTopDepthRemoveTest)
+{
+    const int arr[] = {10, 15, 5};
+    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.insert(data.at(i)));
+    }
+
+    ASSERT_EQ(A.depth(), 2);
+    ASSERT_TRUE(A.remove(5));
+    ASSERT_EQ(A.depth(), 2);
+    ASSERT_TRUE(A.remove(15));
+    ASSERT_EQ(A.depth(), 1);
+    ASSERT_TRUE(A.remove(10));
+    ASSERT_EQ(A.depth(), 0);
+}
+
+TEST(TreeTests, TopBottomDepthRemoveTest)
+{
+    const int arr[] = {10, 5, 20, 2, 8, 15};
+    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Tree<int> A;
+
+    for (uint32_t i = 0; i < data.length(); ++i)
+    {
+        ASSERT_TRUE(A.insert(data.at(i)));
+    }
+
+    ASSERT_EQ(A.depth(), 3);
+    ASSERT_TRUE(A.remove(10));
+    ASSERT_EQ(A.depth(), 3);
+    ASSERT_TRUE(A.remove(8));
+    ASSERT_EQ(A.depth(), 3);
+    ASSERT_TRUE(A.remove(5));
+    ASSERT_EQ(A.depth(), 3);
+    ASSERT_TRUE(A.remove(2));
+    ASSERT_EQ(A.depth(), 2);
+    ASSERT_TRUE(A.remove(15));
+    ASSERT_EQ(A.depth(), 1);
+    ASSERT_TRUE(A.remove(20));
+    ASSERT_EQ(A.depth(), 0);
+}
+
+TEST(TreeTests, DepthNullTreeTest)
+{
     Tree<int> B;
-
     ASSERT_EQ(B.depth(), 0);
+}
 
+TEST(TreeTests, DepthClearTest)
+{
     const int arr2[] = {10, 5, 20, 15, 8, 2, 25, 23, 1, 3, 7, 324, 90, 34, -3, -10};
     Vector<int> data2(arr2, sizeof(arr2)/sizeof(arr2[0]));
-
     Tree<int> C;
 
     for (uint32_t i = 0; i < data2.length(); ++i)
@@ -527,6 +578,8 @@ TEST(TreeTests, DepthTest)
     }
 
     ASSERT_EQ(C.depth(), 6);
+    C.clear();
+    ASSERT_EQ(C.depth(), 0);
 }
 
 TEST(TreeTests, PrintSimplestTreeTest)

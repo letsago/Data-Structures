@@ -14,7 +14,7 @@ template <typename T>
 class Tree
 {
 public:
-    Tree() : m_root(nullptr), m_size(0) {};
+    Tree() : m_root(nullptr), m_size(0), m_depth(0), m_depthCounter(0) {};
 
     ~Tree()
     {
@@ -43,27 +43,7 @@ public:
 
     uint32_t depth() const
     {
-        if (!m_root)
-            return 0;
-
-        Queue<Metadata> order(new Vector<Metadata>(size()));
-        order.push({m_root, 1});
-        uint32_t d;
-
-        while (order.length() > 0)
-        {
-            Node* curr = order.front().m_node;
-            d = order.front().m_val;
-            order.pop();
-
-            for (uint32_t i = 0; i < sizeof(curr->m_children)/sizeof(curr->m_children[0]); ++i)
-            {
-                if (curr->m_children[i])
-                    order.push({curr->m_children[i], d + 1});
-            }
-        }
-
-        return d;
+        return m_depth;
     }
 
     friend std::ostream& operator<< (std::ostream& os, const Tree& tree)
@@ -194,6 +174,8 @@ public:
         }
 
         m_size = 0;
+        m_depth = 0;
+        m_depthCounter = 0;
         m_root = nullptr;
     }
 
@@ -316,12 +298,21 @@ protected:
         return curr;
     }
 
-    Node* insertNode(const T& val, Node** pPrev = nullptr, uint32_t* pDepth = nullptr)
+    Node* insertNode(const T& val, Node** pPrev = nullptr)
     {
         Node* dummyPrev = nullptr;
+        uint32_t newNodeDepth = 0;
 
-        if (find(val, &dummyPrev, pDepth))
+        if (find(val, &dummyPrev, &newNodeDepth))
             return nullptr;
+
+        if (newNodeDepth == m_depth)
+            ++m_depthCounter;
+        else if (newNodeDepth > m_depth)
+        {
+            m_depthCounter = 1;
+            m_depth = newNodeDepth;
+        }
 
         Node* node = createNode(val);
 
@@ -350,18 +341,20 @@ protected:
             oldRootParent->connect(newRoot, static_cast<Direction>(oldRoot->m_value > oldRootParent->m_value));
     }
 
-    Node* findNewRoot(const Node* oldRoot, Node*& newRootParent) const
+    Node* findNewRoot(const Node* oldRoot, Node*& newRootParent, uint32_t& newRootDepth) const
     {
         Node* newRoot = nullptr;
         newRootParent = const_cast<Node*>(oldRoot);
 
-        auto setNewRoot = [&newRootParent, &newRoot, &oldRoot](const Direction dir)
+        auto setNewRoot = [&newRootParent, &newRoot, &oldRoot, &newRootDepth](const Direction dir)
         {
             newRoot = oldRoot->m_children[dir];
+            ++newRootDepth;
             while (newRoot->m_children[!dir])
             {
                 newRootParent = newRoot;
                 newRoot = newRoot->m_children[!dir];
+                ++newRootDepth;
             }
         };
 
@@ -376,22 +369,67 @@ protected:
     bool removeNode(const T& val)
     {
         Node* oldRootParent = nullptr;
-        Node* oldRoot = find(val, &oldRootParent);
+        uint32_t oldRootDepth = 0;
+        Node* oldRoot = find(val, &oldRootParent, &oldRootDepth);
 
         if (!oldRoot)
             return false;
 
         Node* newRootParent = nullptr;
-        Node* newRoot = findNewRoot(oldRoot, newRootParent);
+        uint32_t newRootDepth = oldRootDepth;
+        Node* newRoot = findNewRoot(oldRoot, newRootParent, newRootDepth);
         nodeSwap(oldRoot, oldRootParent, newRoot, newRootParent);
+
+        if ((newRootDepth == m_depth || oldRootDepth == m_depth) && (m_depthCounter != 1))
+            --m_depthCounter;
+        else
+            depthUpdate();
+
         delete oldRoot;
         --m_size;
 
         return true;
     }
 
+    void depthUpdate()
+    {
+        m_depth = 0;
+        m_depthCounter = 0;
+
+        if (!m_root)
+        {
+            return;
+        }
+
+        Queue<Metadata> order(new Vector<Metadata>(size()));
+        order.push({m_root, 1});
+
+        while (order.length() > 0)
+        {
+            Node* curr = order.front().m_node;
+            uint32_t d = order.front().m_val;
+            order.pop();
+
+            if (d == m_depth)
+                ++m_depthCounter;
+            else if (d > m_depth)
+            {
+                m_depth = d;
+                m_depthCounter = 1;
+            }
+
+            for (uint32_t i = 0; i < sizeof(curr->m_children)/sizeof(curr->m_children[0]); ++i)
+            {
+                if (curr->m_children[i])
+                    order.push({curr->m_children[i], d + 1});
+            }
+        }
+    }
+
     Node* m_root;
     uint32_t m_size;
+    uint32_t m_depth;
+    uint32_t m_depthCounter;
 
 private:
     virtual Node* createNode(const T& value)

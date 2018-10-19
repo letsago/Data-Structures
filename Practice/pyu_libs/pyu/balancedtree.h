@@ -15,14 +15,12 @@ public:
     bool insert(const T& val)
     {
         Node* prev;
-        uint32_t depth;
-        BNode* node = dynamic_cast<BNode*>(Tree<T>::insertNode(val, &prev, &depth));
+        BNode* node = dynamic_cast<BNode*>(Tree<T>::insertNode(val, &prev));
 
         if (!node)
             return false;
 
-        node->m_parent = dynamic_cast<BNode*>(prev);
-        balance(node, depth);
+        balance(node, Tree<T>::m_depth);
         return true;
     }
 
@@ -183,6 +181,8 @@ private:
             if (!doesSubRootChange || imbalDepth != treeDepth)
                 queue.pop();
         }
+
+        --Tree<T>::m_depth;
     }
 };
 
