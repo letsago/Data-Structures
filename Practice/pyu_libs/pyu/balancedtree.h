@@ -132,7 +132,7 @@ private:
 
     void balance(BNode* node, const uint32_t treeDepth)
     {
-        if (Tree<T>::isBalanced(treeDepth)) return;
+        if (Tree<T>::isBalanced()) return;
 
         Queue<BNode*> queue(new Vector<BNode*>(Tree<T>::size() / 2));
         queue.push(node);

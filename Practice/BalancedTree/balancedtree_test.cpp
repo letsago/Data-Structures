@@ -14,8 +14,7 @@ TEST(BalancedTreeTests, BalancedTest)
         A.insert(arr[i]);
     }
 
-    uint32_t depth = A.depth();
-    ASSERT_TRUE(A.isBalanced(depth));
+    ASSERT_TRUE(A.isBalanced());
 }
 
 TEST(BalancedTreeTests, NonBalancedTest)
@@ -29,8 +28,7 @@ TEST(BalancedTreeTests, NonBalancedTest)
         A.insert(arr[i]);
     }
 
-    uint32_t depth = A.depth();
-    ASSERT_FALSE(A.isBalanced(depth));
+    ASSERT_FALSE(A.isBalanced());
 }
 
 TEST(BalancedTreeTests, RightSkewedTest)
@@ -44,8 +42,7 @@ TEST(BalancedTreeTests, RightSkewedTest)
         A.insert(arr[i]);
     }
 
-    uint32_t depth = A.depth();
-    ASSERT_FALSE(A.isBalanced(depth));
+    ASSERT_FALSE(A.isBalanced());
 }
 
 TEST(BalancedTreeTests, LeftSkewedTest)
@@ -59,8 +56,7 @@ TEST(BalancedTreeTests, LeftSkewedTest)
         A.insert(arr[i]);
     }
 
-    uint32_t depth = A.depth();
-    ASSERT_FALSE(A.isBalanced(depth));
+    ASSERT_FALSE(A.isBalanced());
 }
 
 TEST(BalancedTreeTests, BigBalancedTest)
@@ -74,8 +70,7 @@ TEST(BalancedTreeTests, BigBalancedTest)
         A.insert(arr[i]);
     }
 
-    uint32_t depth = A.depth();
-    ASSERT_TRUE(A.isBalanced(depth));
+    ASSERT_TRUE(A.isBalanced());
 }
 
 TEST(BalancedTreeTests, BigNonBalancedTest)
@@ -89,15 +84,14 @@ TEST(BalancedTreeTests, BigNonBalancedTest)
         ASSERT_TRUE(A.insert(arr[i]));
     }
 
-    uint32_t depth = A.depth();
-    ASSERT_FALSE(A.isBalanced(depth));
+    ASSERT_FALSE(A.isBalanced());
 }
 
 TEST(BalancedTreeTests, NullTest)
 {
     Tree<int> A;
-    uint32_t depth = A.depth();
-    ASSERT_TRUE(A.isBalanced(depth));
+
+    ASSERT_TRUE(A.isBalanced());
 }
 
 TEST(BalancedTreeTests, InsertRightSkewedTest)
@@ -109,8 +103,7 @@ TEST(BalancedTreeTests, InsertRightSkewedTest)
     for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
     {
         A.insert(arr[i]);
-        uint32_t depth = A.depth();
-        ASSERT_TRUE(A.isBalanced(depth));
+        ASSERT_TRUE(A.isBalanced());
     }
 }
 
@@ -123,8 +116,7 @@ TEST(BalancedTreeTests, InsertLeftSkewedTest)
     for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
     {
         A.insert(arr[i]);
-        uint32_t depth = A.depth();
-        ASSERT_TRUE(A.isBalanced(depth));
+        ASSERT_TRUE(A.isBalanced());
     }
 }
 
@@ -137,8 +129,7 @@ TEST(BalancedTreeTests, InsertLeftAngleTest)
     for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
     {
         A.insert(arr[i]);
-        uint32_t depth = A.depth();
-        ASSERT_TRUE(A.isBalanced(depth));
+        ASSERT_TRUE(A.isBalanced());
     }
 }
 
@@ -151,8 +142,7 @@ TEST(BalancedTreeTests, InsertRightAngleTest)
     for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
     {
         A.insert(arr[i]);
-        uint32_t depth = A.depth();
-        ASSERT_TRUE(A.isBalanced(depth));
+        ASSERT_TRUE(A.isBalanced());
     }
 }
 
@@ -165,8 +155,7 @@ TEST(BalancedTreeTests, InsertLeftSubtreeLeftSkewedTest)
     for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
     {
         A.insert(arr[i]);
-        uint32_t depth = A.depth();
-        ASSERT_TRUE(A.isBalanced(depth));
+        ASSERT_TRUE(A.isBalanced());
     }
 }
 
@@ -179,8 +168,7 @@ TEST(BalancedTreeTests, InsertLeftSubtreeLeftAngleTest)
     for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
     {
         A.insert(arr[i]);
-        uint32_t depth = A.depth();
-        ASSERT_TRUE(A.isBalanced(depth));
+        ASSERT_TRUE(A.isBalanced());
     }
 }
 
@@ -193,8 +181,7 @@ TEST(BalancedTreeTests, InsertLeftSubtreeRightAngleTest)
     for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
     {
         A.insert(arr[i]);
-        uint32_t depth = A.depth();
-        ASSERT_TRUE(A.isBalanced(depth));
+        ASSERT_TRUE(A.isBalanced());
     }
 }
 
@@ -207,8 +194,7 @@ TEST(BalancedTreeTests, InsertLeftSubtreeRightSkewedTest)
     for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
     {
         A.insert(arr[i]);
-        uint32_t depth = A.depth();
-        ASSERT_TRUE(A.isBalanced(depth));
+        ASSERT_TRUE(A.isBalanced());
     }
 }
 
@@ -221,8 +207,7 @@ TEST(BalancedTreeTests, InsertRightSubtreeLeftSkewedTest)
     for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
     {
         A.insert(arr[i]);
-        uint32_t depth = A.depth();
-        ASSERT_TRUE(A.isBalanced(depth));
+        ASSERT_TRUE(A.isBalanced());
     }
 }
 
@@ -235,8 +220,7 @@ TEST(BalancedTreeTests, InsertRightSubtreeLeftAngleTest)
     for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
     {
         A.insert(arr[i]);
-        uint32_t depth = A.depth();
-        ASSERT_TRUE(A.isBalanced(depth));
+        ASSERT_TRUE(A.isBalanced());
     }
 }
 
@@ -249,8 +233,7 @@ TEST(BalancedTreeTests, InsertRightSubtreeRightAngleTest)
     for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
     {
         A.insert(arr[i]);
-        uint32_t depth = A.depth();
-        ASSERT_TRUE(A.isBalanced(depth));
+        ASSERT_TRUE(A.isBalanced());
     }
 }
 
@@ -263,8 +246,7 @@ TEST(BalancedTreeTests, InsertRightSubtreeRightSkewedTest)
     for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
     {
         A.insert(arr[i]);
-        uint32_t depth = A.depth();
-        ASSERT_TRUE(A.isBalanced(depth));
+        ASSERT_TRUE(A.isBalanced());
     }
 }
 
@@ -277,7 +259,173 @@ TEST(BalancedTreeTests, InsertBigNonBalancedTest)
     for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
     {
         ASSERT_TRUE(A.insert(arr[i]));
-        uint32_t depth = A.depth();
-        ASSERT_TRUE(A.isBalanced(depth));
+        ASSERT_TRUE(A.isBalanced());
     }
+}
+
+TEST(BalancedTreeTests, RemoveLeftSkewedTest)
+{
+    const int arr[] = {20, 10, 30, 5};
+
+    BalancedTree<int> A;
+
+    for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
+    {
+        ASSERT_TRUE(A.insert(arr[i]));
+        ASSERT_TRUE(A.isBalanced());
+    }
+
+    ASSERT_TRUE(A.remove(30));
+    ASSERT_TRUE(A.isBalanced());
+}
+
+TEST(BalancedTreeTests, RemoveLeftAngleTest)
+{
+    const int arr[] = {20, 10, 30, 15};
+
+    BalancedTree<int> A;
+
+    for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
+    {
+        ASSERT_TRUE(A.insert(arr[i]));
+
+        ASSERT_TRUE(A.isBalanced());
+    }
+
+    ASSERT_TRUE(A.remove(30));
+    ASSERT_TRUE(A.isBalanced());
+}
+
+TEST(BalancedTreeTests, RemoveRightAngleTest)
+{
+    const int arr[] = {20, 10, 30, 25};
+
+    BalancedTree<int> A;
+
+    for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
+    {
+        ASSERT_TRUE(A.insert(arr[i]));
+
+        ASSERT_TRUE(A.isBalanced());
+    }
+
+    ASSERT_TRUE(A.remove(10));
+    ASSERT_TRUE(A.isBalanced());
+}
+
+TEST(BalancedTreeTests, RemoveRightSkewedTest)
+{
+    const int arr[] = {20, 10, 30, 35};
+
+    BalancedTree<int> A;
+
+    for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
+    {
+        ASSERT_TRUE(A.insert(arr[i]));
+
+        ASSERT_TRUE(A.isBalanced());
+    }
+
+    ASSERT_TRUE(A.remove(10));
+    ASSERT_TRUE(A.isBalanced());
+}
+
+TEST(BalancedTreeTests, RemoveLeftSubtreeTest)
+{
+    const int arr[] = {20, 10, 30, 5, 15, 25, 35, 22, 28, 38};
+
+    BalancedTree<int> A;
+
+    for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
+    {
+        ASSERT_TRUE(A.insert(arr[i]));
+
+        ASSERT_TRUE(A.isBalanced());
+    }
+
+    ASSERT_TRUE(A.remove(10));
+    ASSERT_TRUE(A.isBalanced());
+    ASSERT_TRUE(A.remove(15));
+    ASSERT_TRUE(A.isBalanced());
+    ASSERT_TRUE(A.remove(5));
+    ASSERT_TRUE(A.isBalanced());
+}
+
+TEST(BalancedTreeTests, RemoveRightSubtreeTest)
+{
+    const int arr[] = {20, 10, 30, 5, 15, 25, 35, 2, 8, 18};
+
+    BalancedTree<int> A;
+
+    for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
+    {
+        ASSERT_TRUE(A.insert(arr[i]));
+
+        ASSERT_TRUE(A.isBalanced());
+    }
+
+    ASSERT_TRUE(A.remove(30));
+    ASSERT_TRUE(A.isBalanced());
+    ASSERT_TRUE(A.remove(35));
+    ASSERT_TRUE(A.isBalanced());
+    ASSERT_TRUE(A.remove(25));
+    ASSERT_TRUE(A.isBalanced());
+}
+
+TEST(BalancedTreeTests, RemoveBiggerRightSubtreeTest)
+{
+    const int arr[] = {20, 10, 30, 5, 15, 25, 35, 2, 8, 12, 18, 22, 28, 32, 40, 1, 3, 9, 11, 13, 17, 19};
+
+    BalancedTree<int> A;
+
+    for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
+    {
+        ASSERT_TRUE(A.insert(arr[i]));
+
+        ASSERT_TRUE(A.isBalanced());
+    }
+
+    ASSERT_TRUE(A.remove(30));
+    ASSERT_TRUE(A.isBalanced());
+    ASSERT_TRUE(A.remove(28));
+    ASSERT_TRUE(A.isBalanced());
+    ASSERT_TRUE(A.remove(25));
+    ASSERT_TRUE(A.isBalanced());
+    ASSERT_TRUE(A.remove(22));
+    ASSERT_TRUE(A.isBalanced());
+    ASSERT_TRUE(A.remove(32));
+    ASSERT_TRUE(A.isBalanced());
+    ASSERT_TRUE(A.remove(35));
+    ASSERT_TRUE(A.isBalanced());
+    ASSERT_TRUE(A.remove(40));
+    ASSERT_TRUE(A.isBalanced());
+}
+
+TEST(BalancedTreeTests, RemoveBiggerLeftSubtreeTest)
+{
+    const int arr[] = {20, 10, 30, 5, 15, 25, 35, 2, 8, 12, 18, 22, 28, 32, 40, 21, 23, 26, 29, 31, 33, 38};
+
+    BalancedTree<int> A;
+
+    for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
+    {
+        ASSERT_TRUE(A.insert(arr[i]));
+
+        ASSERT_TRUE(A.isBalanced());
+    }
+
+    ASSERT_TRUE(A.remove(10));
+    ASSERT_TRUE(A.isBalanced());
+    ASSERT_TRUE(A.remove(8));
+    ASSERT_TRUE(A.isBalanced());
+    ASSERT_TRUE(A.remove(5));
+    ASSERT_TRUE(A.isBalanced());
+    ASSERT_TRUE(A.remove(2));
+    ASSERT_TRUE(A.isBalanced());
+    ASSERT_TRUE(A.remove(12));
+    ASSERT_TRUE(A.isBalanced());
+    ASSERT_TRUE(A.remove(15));
+    ASSERT_TRUE(A.isBalanced());
+    ASSERT_TRUE(A.remove(18));
+    ASSERT_TRUE(A.isBalanced());
 }

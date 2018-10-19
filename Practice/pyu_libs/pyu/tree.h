@@ -207,12 +207,12 @@ public:
         return sorted;
     }
 
-    bool isBalanced(uint32_t depth) const
+    bool isBalanced() const
     {
         if (empty())
             return true;
 
-        return (static_cast<uint32_t>(1 << (depth - 1)) <= size());
+        return (static_cast<uint32_t>(1 << (depth() - 1)) <= size());
     }
 
 protected:
