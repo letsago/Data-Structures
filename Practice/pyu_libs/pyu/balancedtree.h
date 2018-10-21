@@ -28,13 +28,13 @@ public:
 
     bool remove(const T& val)
     {
-        Node* targetRoot;
+        BNode* targetRoot;
 
-        if (!Tree<T>::removeNode(val, &targetRoot))
+        if (!Tree<T>::removeNode(val, reinterpret_cast<Node**>(&targetRoot)))
             return false;
 
-        while (findImbalance(dynamic_cast<BNode*>(targetRoot)))
-            balance(findImbalance(dynamic_cast<BNode*>(targetRoot)), Tree<T>::m_depth);
+        while (findImbalance(targetRoot))
+            balance(findImbalance(targetRoot), Tree<T>::m_depth);
 
         return true;
     }
@@ -193,12 +193,11 @@ private:
         {
             int leftSubTreeDepth = 0;
             int rightSubTreeDepth = 0;
-            uint32_t depth = 0;
             Queue<Metadata> queue(new Vector<Metadata>(Tree<T>::size() / 2));
 
-            auto findSubtreeDepth = [&targetRoot, &queue, &depth](const Direction dir)
+            auto findSubtreeDepth = [&targetRoot, &queue](const Direction dir) -> int
             {
-                depth = 1;
+                uint32_t depth = 1;
                 queue.push({targetRoot->getChild(dir), depth});
 
                 while (!(queue.empty()))
@@ -213,19 +212,15 @@ private:
                             queue.push({curr->getChild(static_cast<Direction>(i)), depth + 1});
                     }
                 }
+
+                return static_cast<int>(depth);
             };
 
             if (targetRoot->getChild(Direction::LEFT))
-            {
-                findSubtreeDepth(Direction::LEFT);
-                leftSubTreeDepth = depth;
-            }
+                leftSubTreeDepth = findSubtreeDepth(Direction::LEFT);
 
             if (targetRoot->getChild(Direction::RIGHT))
-            {
-                findSubtreeDepth(Direction::RIGHT);
-                rightSubTreeDepth = depth;
-            }
+                rightSubTreeDepth = findSubtreeDepth(Direction::RIGHT);
 
             if (std::abs(leftSubTreeDepth - rightSubTreeDepth) > 1)
                 return false;
