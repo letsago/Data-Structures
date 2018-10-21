@@ -366,7 +366,7 @@ protected:
         return newRoot;
     }
 
-    bool removeNode(const T& val)
+    bool removeNode(const T& val, Node** pTargetRoot = nullptr)
     {
         Node* oldRootParent = nullptr;
         uint32_t oldRootDepth = 0;
@@ -387,6 +387,14 @@ protected:
 
         delete oldRoot;
         --m_size;
+
+        if (pTargetRoot)
+        {
+            if (newRoot)
+                *pTargetRoot = newRoot;
+            else
+                *pTargetRoot = oldRootParent;
+        }
 
         return true;
     }
