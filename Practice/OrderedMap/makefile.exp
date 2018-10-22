@@ -1,0 +1,5 @@
+TARGET_LIBS := \
+    $(TARGET_LIBS) \
+	OrderedMapTest \
+
+include $(PROJECT_DIR)/common.exp

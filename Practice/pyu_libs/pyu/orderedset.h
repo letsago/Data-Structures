@@ -12,11 +12,6 @@ class OrderedSet
 public:
     OrderedSet() : m_btree(BalancedTree<T>()) {}
 
-    ~OrderedSet()
-    {
-        clear();
-    }
-
     size_t size() const
     {
         return 0;

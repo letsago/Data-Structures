@@ -53,9 +53,9 @@ TEST(OrderedSetTests, ClearTest)
 
     OrderedSet<int> A;
 
-    ASSERT_EQ(A.size(), 0);
+    ASSERT_TRUE(A.empty());
     A.clear();
-    ASSERT_EQ(A.size(), 0);
+    ASSERT_TRUE(A.empty());
 
     for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
         ASSERT_TRUE(A.insert(arr[i]));
@@ -66,10 +66,18 @@ TEST(OrderedSetTests, ClearTest)
         ASSERT_TRUE(A.contains(arr[i]));
 
     A.clear();
-    ASSERT_EQ(A.size(), 0);
+    ASSERT_TRUE(A.empty());
 
     for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
         ASSERT_FALSE(A.contains(arr[i]));
+
+    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+        ASSERT_TRUE(A.insert(arr[i]));
+
+    ASSERT_EQ(A.size(), ARRAYSIZE(arr));
+
+    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+        ASSERT_TRUE(A.contains(arr[i]));
 }
 
 TEST(OrderedSetTests, ContainsTest)

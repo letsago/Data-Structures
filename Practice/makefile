@@ -8,6 +8,7 @@ DIRS := \
 	BalancedTree \
 	LinearStorageInterface \
 	LinkedList \
+	OrderedMap \
 	OrderedSet \
 	PigLatin \
 	Queue \
@@ -20,6 +21,7 @@ include Array/makefile.exp
 include BalancedTree/makefile.exp
 include LinearStorageInterface/makefile.exp
 include LinkedList/makefile.exp
+include OrderedMap/makefile.exp
 include OrderedSet/makefile.exp
 include PigLatin/makefile.exp
 include Queue/makefile.exp
