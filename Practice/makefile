@@ -8,6 +8,7 @@ DIRS := \
 	BalancedTree \
 	LinearStorageInterface \
 	LinkedList \
+	OrderedSet \
 	PigLatin \
 	Queue \
 	Shared_Ptr \
@@ -19,6 +20,7 @@ include Array/makefile.exp
 include BalancedTree/makefile.exp
 include LinearStorageInterface/makefile.exp
 include LinkedList/makefile.exp
+include OrderedSet/makefile.exp
 include PigLatin/makefile.exp
 include Queue/makefile.exp
 include Shared_Ptr/makefile.exp
