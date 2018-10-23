@@ -5,7 +5,7 @@
 
 using namespace pyu;
 
-TEST(OrderedSetTests, InsertTest)
+TEST(OrderedSetTests, PrimitiveTypeInsertTest)
 {
     const int arr[] = {10, 20, 15, 8, 2, 5};
 
@@ -21,7 +21,7 @@ TEST(OrderedSetTests, InsertTest)
         ASSERT_TRUE(A.contains(arr[i]));
 }
 
-TEST(OrderedSetTests, RemoveTest)
+TEST(OrderedSetTests, PrimitiveTypeRemoveTest)
 {
     const int arr[] = {10, 20, 15, 8, 2, 5};
     Vector<int> data(arr, ARRAYSIZE(arr));
@@ -47,7 +47,7 @@ TEST(OrderedSetTests, RemoveTest)
     ASSERT_EQ(A.size(), ARRAYSIZE(arr));
 }
 
-TEST(OrderedSetTests, ClearTest)
+TEST(OrderedSetTests, PrimitiveTypeClearTest)
 {
     const int arr[] = {10, 20, 15, 8, 2, 5};
 
@@ -80,7 +80,7 @@ TEST(OrderedSetTests, ClearTest)
         ASSERT_TRUE(A.contains(arr[i]));
 }
 
-TEST(OrderedSetTests, ContainsTest)
+TEST(OrderedSetTests, PrimitiveTypeContainsTest)
 {
     const int arr[] = {10, 20, 15, 8, 2, 5};
 
@@ -98,7 +98,7 @@ TEST(OrderedSetTests, ContainsTest)
     ASSERT_FALSE(A.contains(0));
 }
 
-TEST(OrderedSetTests, ComparisonTest)
+TEST(OrderedSetTests, PrimitiveTypeComparisonTest)
 {
     const int arr[] = {10, 20, 15, 8, 2, 5};
     const int arr2[] = {10, 20, 8};
@@ -125,7 +125,7 @@ TEST(OrderedSetTests, ComparisonTest)
     ASSERT_TRUE(A == B);
 }
 
-TEST(OrderedSetTests, IteratorTest)
+TEST(OrderedSetTests, PrimitiveTypeIteratorTest)
 {
     const int arr[] = {10, 20, 15, 8, 2, 5};
 
@@ -151,7 +151,7 @@ TEST(OrderedSetTests, IteratorTest)
     }
 }
 
-TEST(OrderedSetTests, IteratorFindTest)
+TEST(OrderedSetTests, PrimitiveTypeIteratorFindTest)
 {
     const int arr[] = {10, 20, 15, 8, 2, 5};
 
@@ -168,4 +168,81 @@ TEST(OrderedSetTests, IteratorFindTest)
 
     Iterator<int> it = A.find(0);
     ASSERT_TRUE(it == A.end());
+}
+
+struct ComplexType
+{
+    ComplexType(uint32_t val)
+    {
+        m_value = val;
+    }
+
+    bool operator> (const ComplexType& other)
+    {
+        return m_value > other.m_value;
+    }
+
+    bool operator== (const ComplexType& other)
+    {
+        return m_value == other.m_value;
+    }
+
+    uint32_t m_value;
+};
+
+TEST(OrderedSetTests, NonPrimitiveInsertTest)
+{
+    OrderedSet<ComplexType> A;
+
+    ASSERT_TRUE(A.empty());
+    ComplexType val(0);
+    uint32_t size = 8;
+
+    for (uint32_t i = 0; i < size; ++i)
+    {
+        val.m_value = i;
+        ASSERT_TRUE(A.insert(val));
+    }
+
+    for (uint32_t i = 0; i < size; ++i)
+    {
+        val.m_value = i;
+        ASSERT_TRUE(A.contains(val));
+    }
+
+    ASSERT_EQ(A.size(), size);
+}
+
+TEST(OrderedSetTests, NonPrimitiveRemoveTest)
+{
+    OrderedSet<ComplexType> A;
+
+    ASSERT_TRUE(A.empty());
+    ComplexType val(0);
+    ASSERT_FALSE(A.remove(val));
+    uint32_t size = 8;
+
+    for (uint32_t i = 0; i < size; ++i)
+    {
+        val.m_value = i;
+        ASSERT_TRUE(A.insert(val));
+    }
+
+    for (uint32_t i = 0; i < size; ++i)
+    {
+        val.m_value = i;
+        ASSERT_TRUE(A.contains(val));
+    }
+
+    ASSERT_EQ(A.size(), size);
+    val.m_value = 0;
+    ASSERT_TRUE(A.remove(val));
+    ASSERT_FALSE(A.remove(val));
+    ASSERT_EQ(A.size(), size - 1);
+
+    for (uint32_t i = 0; i < size - 1; ++i)
+    {
+        val.m_value = i + 1;
+        ASSERT_TRUE(A.contains(val));
+    }
 }
