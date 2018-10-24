@@ -6,6 +6,7 @@
 #include <string>
 #include <algorithm>
 #include <cmath>
+#include "common.h"
 
 namespace pyu
 {
@@ -163,7 +164,7 @@ public:
                 Node* curr = deleteorder.top();
                 deleteorder.pop();
 
-                for (uint32_t i = 0; i < sizeof(curr->m_children)/sizeof(curr->m_children[0]); ++i)
+                for (uint32_t i = 0; i < ARRAYSIZE(curr->m_children); ++i)
                 {
                     if (curr->m_children[i])
                         deleteorder.push(curr->m_children[i]);
@@ -249,7 +250,7 @@ protected:
 
             this->reset();
 
-            for (uint32_t i = 0; i < sizeof(m_children)/sizeof(m_children[0]); ++i)
+            for (uint32_t i = 0; i < ARRAYSIZE(m_children); ++i)
                 m_children[i] = node->m_children[i];
         }
 
@@ -399,39 +400,47 @@ protected:
         return true;
     }
 
-    void depthUpdate()
+    uint32_t findDepth(Node* subRoot, uint32_t* pDepthCounter = nullptr) const
     {
-        m_depth = 0;
-        m_depthCounter = 0;
+        if (!subRoot)
+            return 0;
 
-        if (!m_root)
-        {
-            return;
-        }
-
+        uint32_t dummyDepthCounter = 0;
+        uint32_t depth = 1;
         Queue<Metadata> order(new Vector<Metadata>(size()));
-        order.push({m_root, 1});
+        order.push({subRoot, depth});
 
-        while (order.length() > 0)
+        while (!(order.empty()))
         {
+            uint32_t nextDepth = order.front().m_val;
+
+            if (depth == nextDepth)
+                ++dummyDepthCounter;
+            else if (nextDepth > depth)
+                dummyDepthCounter = 1;
+
             Node* curr = order.front().m_node;
-            uint32_t d = order.front().m_val;
+            depth = order.front().m_val;
             order.pop();
 
-            if (d == m_depth)
-                ++m_depthCounter;
-            else if (d > m_depth)
-            {
-                m_depth = d;
-                m_depthCounter = 1;
-            }
-
-            for (uint32_t i = 0; i < sizeof(curr->m_children)/sizeof(curr->m_children[0]); ++i)
+            for (uint32_t i = 0; i < ARRAYSIZE(curr->m_children); ++i)
             {
                 if (curr->m_children[i])
-                    order.push({curr->m_children[i], d + 1});
+                    order.push({curr->m_children[i], depth + 1});
             }
         }
+
+        if (pDepthCounter)
+            *pDepthCounter = dummyDepthCounter;
+
+        return depth;
+    }
+
+    void depthUpdate()
+    {
+        uint32_t depthCounter = 0;
+        m_depth = findDepth(m_root, &depthCounter);
+        m_depthCounter = depthCounter;
     }
 
     Node* m_root;

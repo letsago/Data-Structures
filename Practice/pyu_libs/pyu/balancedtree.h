@@ -33,8 +33,14 @@ public:
         if (!Tree<T>::removeNode(val, reinterpret_cast<Node**>(&targetRoot)))
             return false;
 
-        while (findImbalance(targetRoot))
+        while (!isRemoveBalanced(targetRoot))
+        {
             balance(findImbalance(targetRoot), Tree<T>::m_depth);
+            targetRoot = targetRoot->m_parent;
+        }
+
+        if (static_cast<int>(Tree<T>::size()) == (1 << (Tree<T>::depth() - 1)) - 1)
+            fullBalance();
 
         return true;
     }
@@ -145,33 +151,33 @@ private:
         if (isRemoveBalanced(targetRoot) && Tree<T>::isBalanced())
             return nullptr;
 
-        BNode* start;
-
-        if (targetRoot->m_parent)
-            start = targetRoot->m_parent;
-        else
-            start = targetRoot;
-
+        BNode* start = targetRoot;
         BNode* imbal = nullptr;
         Queue<Metadata> queue(new Vector<Metadata>(Tree<T>::size() / 2));
-        const uint32_t treeDepth = Tree<T>::depth();
+        uint32_t treeDepth = Tree<T>::depth();
+        uint32_t imbalDepth;
 
-        auto setImbal = [&start, &imbal, &queue, &treeDepth](const Direction dir)
+        if (start == Tree<T>::m_root)
+            imbalDepth = treeDepth - 1;
+        else
+            imbalDepth = 2;
+
+        auto setImbal = [&start, &imbal, &queue, &imbalDepth](const Direction dir)
         {
-            uint32_t subRootDepth = 2;
-            queue.push({start->getChild(dir), subRootDepth});
+            uint32_t subRootRelDepth = 1;
+            queue.push({start->getChild(dir), subRootRelDepth});
 
-            while (queue.front().m_val != treeDepth && !(queue.empty()))
+            while (queue.front().m_val != imbalDepth && !(queue.empty()))
             {
                 BNode* curr = dynamic_cast<BNode*>(queue.front().m_node);
-                subRootDepth = queue.front().m_val + 1;
+                subRootRelDepth = queue.front().m_val + 1;
                 queue.pop();
 
                 if (curr->getChild(static_cast<Direction>(!dir)))
-                    queue.push({curr->getChild(static_cast<Direction>(!dir)), subRootDepth});
+                    queue.push({curr->getChild(static_cast<Direction>(!dir)), subRootRelDepth});
 
                 if (curr->getChild(static_cast<Direction>(dir)))
-                    queue.push({curr->getChild(static_cast<Direction>(dir)), subRootDepth});
+                    queue.push({curr->getChild(static_cast<Direction>(dir)), subRootRelDepth});
             }
 
             if (!(queue.empty()))
@@ -193,34 +199,12 @@ private:
         {
             int leftSubTreeDepth = 0;
             int rightSubTreeDepth = 0;
-            Queue<Metadata> queue(new Vector<Metadata>(Tree<T>::size() / 2));
-
-            auto findSubtreeDepth = [&targetRoot, &queue](const Direction dir) -> int
-            {
-                uint32_t depth = 1;
-                queue.push({targetRoot->getChild(dir), depth});
-
-                while (!(queue.empty()))
-                {
-                    BNode* curr = dynamic_cast<BNode*>(queue.front().m_node);
-                    depth = queue.front().m_val;
-                    queue.pop();
-
-                    for (uint32_t i = 0; i < sizeof(curr->m_children)/sizeof(curr->m_children[0]); ++i)
-                    {
-                        if (curr->getChild(static_cast<Direction>(i)))
-                            queue.push({curr->getChild(static_cast<Direction>(i)), depth + 1});
-                    }
-                }
-
-                return static_cast<int>(depth);
-            };
 
             if (targetRoot->getChild(Direction::LEFT))
-                leftSubTreeDepth = findSubtreeDepth(Direction::LEFT);
+                leftSubTreeDepth = static_cast<int>(Tree<T>::findDepth(targetRoot->getChild(Direction::LEFT)));
 
             if (targetRoot->getChild(Direction::RIGHT))
-                rightSubTreeDepth = findSubtreeDepth(Direction::RIGHT);
+                rightSubTreeDepth = static_cast<int>(Tree<T>::findDepth(targetRoot->getChild(Direction::RIGHT)));
 
             if (std::abs(leftSubTreeDepth - rightSubTreeDepth) > 1)
                 return false;
@@ -290,6 +274,65 @@ private:
             Tree<T>::depthUpdate();
         else
             --Tree<T>::m_depthCounter;
+    }
+
+    Vector<BNode*> getSortedBNodes() const
+    {
+        Vector<BNode*> sortedBNodes(Tree<T>::size());
+        Stack<BNode*> stack(new Vector<BNode*>(Tree<T>::size()));
+        BNode* curr = dynamic_cast<BNode*>(Tree<T>::m_root);
+
+        while (!stack.empty() || curr)
+        {
+            while (curr)
+            {
+                stack.push(curr);
+                curr = curr->getChild(Direction::LEFT);
+            }
+
+            curr = stack.top();
+            stack.pop();
+            sortedBNodes.insert_back(curr);
+            curr = curr->getChild(Direction::RIGHT);
+        }
+
+        return sortedBNodes;
+    }
+
+    void fullBalance()
+    {
+        Vector<BNode*> sortedBNodes = getSortedBNodes();
+        Vector<uint32_t> relationCounters(Tree<T>::size() / 2);
+        uint32_t index = 0;
+        uint32_t relationCounter = 1;
+
+        for (uint32_t i = 0; i < Tree<T>::size(); ++i)
+        {
+            sortedBNodes.at(i)->reset();
+
+            if (i % 2 == 1)
+            {
+                if ((i - 1) / 2 == relationCounter - 1)
+                {
+                    relationCounters.insert_back(relationCounter);
+                    relationCounter *= 2;
+                    index = 0;
+                }
+                else
+                {
+                    uint32_t prevRelationCounter = relationCounters.at(index);
+                    relationCounters.insert_back(prevRelationCounter);
+                    ++index;
+                }
+
+                (sortedBNodes.at(i))->connect(sortedBNodes.at(i - relationCounters.back()), Direction::LEFT);
+                (sortedBNodes.at(i))->connect(sortedBNodes.at(i + relationCounters.back()), Direction::RIGHT);
+            }
+        }
+
+        Tree<T>::m_root = sortedBNodes.at(Tree<T>::size() / 2);
+        --Tree<T>::m_depth;
+        Tree<T>::m_depthCounter = 1 << (Tree<T>::m_depth - 1);
     }
 };
 
