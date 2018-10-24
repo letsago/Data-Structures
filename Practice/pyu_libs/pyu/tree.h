@@ -225,10 +225,9 @@ protected:
 
     struct Node
     {
-        Node(const T& value)
+        Node(const T& value) : m_value(value)
         {
             memset(m_children, 0, sizeof(m_children));
-            m_value = value;
         }
 
         virtual ~Node() {}

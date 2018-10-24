@@ -1,0 +1,5 @@
+TARGET_LIBS := \
+    $(TARGET_LIBS) \
+	OrderedSetTest \
+
+include $(PROJECT_DIR)/common.exp
