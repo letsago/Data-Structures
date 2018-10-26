@@ -152,9 +152,9 @@ class Array : public LinearStorageInterface<T>
                     return *this;
                 }
 
-                bool operator!= (IteratorNode<T>& other) const
+                bool operator!= (const IteratorNode<T>& other) const
                 {
-                    return m_addr != dynamic_cast<ArrayIteratorNode&>(other).m_addr;
+                    return m_addr != dynamic_cast<const ArrayIteratorNode&>(other).m_addr;
                 }
 
             private:

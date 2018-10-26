@@ -13,7 +13,7 @@ class IteratorNode
         // this functionality will then be implemented in class Iterator
         virtual T& value() const = 0;
         virtual IteratorNode& next() = 0;
-        virtual bool operator!= (IteratorNode& other) const = 0;
+        virtual bool operator!= (const IteratorNode& other) const = 0;
         virtual ~IteratorNode() {};
 };
 

@@ -221,9 +221,9 @@ class LinkedList : public LinearStorageInterface<T>
                     return *this;
                 }
 
-                bool operator!= (IteratorNode<T>& other) const
+                bool operator!= (const IteratorNode<T>& other) const
                 {
-                    return m_curr != dynamic_cast<LLIteratorNode&>(other).m_curr;
+                    return m_curr != dynamic_cast<const LLIteratorNode&>(other).m_curr;
                 }
 
             private:

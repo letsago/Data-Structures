@@ -148,9 +148,9 @@ private:
             return *this;
         }
 
-        bool operator!= (IteratorNode<T>& other) const
+        bool operator!= (const IteratorNode<T>& other) const
         {
-            return m_curr != dynamic_cast<BTreeIteratorNode&>(other).m_curr;
+            return m_curr != dynamic_cast<const BTreeIteratorNode&>(other).m_curr;
         }
 
     private:
