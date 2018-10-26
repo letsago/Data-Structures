@@ -14,7 +14,7 @@ public:
 
     size_t size() const
     {
-        return 0;
+        return m_btree.size();
     }
 
     bool empty() const
@@ -24,45 +24,55 @@ public:
 
     bool insert(const T& val)
     {
-        return false;
+        return m_btree.insert(val);
     }
 
     bool remove(const T& val)
     {
-        return false;
+        return m_btree.remove(val);
     }
 
     void clear()
     {
-
+        m_btree.clear();
     }
 
     bool contains(const T& val) const
     {
-        return false;
+        return m_btree.contains(val);
     }
 
     bool operator== (const OrderedSet& other)
     {
-        return false;
+        if (size() != other.size())
+            return false;
+
+        for (Iterator<T> it = other.begin(); it != other.end(); ++it)
+        {
+            if (!contains(*it))
+                return false;
+        }
+
+        return true;
     }
 
     Iterator<T> find(const T& val) const
     {
-        return Iterator<T>(nullptr);
+        return m_btree.find(val);
     }
 
     Iterator<T> begin() const
     {
-        return Iterator<T>(nullptr);
+        return m_btree.begin();
     }
 
     Iterator<T> end() const
     {
-        return Iterator<T>(nullptr);
+        return m_btree.end();
     }
 
 private:
+
     BalancedTree<T> m_btree;
 };
 

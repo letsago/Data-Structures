@@ -2,6 +2,7 @@
 
 #include "iterator.h"
 #include "balancedtree.h"
+#include <stdexcept>
 
 namespace pyu
 {
@@ -39,22 +40,22 @@ public:
 
     V& at(const K& key)
     {
-        return 0;
+        throw std::out_of_range("key not found");
     }
 
     V& operator[] (const K& key)
     {
-        return 0;
+        throw std::out_of_range("key not found");
     }
 
     const V& at(const K& key) const
     {
-        return 0;
+        throw std::out_of_range("key not found");
     }
 
     const V& operator[] (const K& key) const
     {
-        return 0;
+        throw std::out_of_range("key not found");
     }
 
     bool contains(const K& key) const

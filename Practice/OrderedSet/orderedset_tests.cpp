@@ -41,10 +41,10 @@ TEST(OrderedSetTests, PrimitiveTypeRemoveTest)
     ASSERT_FALSE(A.remove(10));
     data.remove(data.find(10));
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
-        ASSERT_TRUE(A.contains(arr[i]));
+    for (uint32_t i = 0; i < data.length(); ++i)
+        ASSERT_TRUE(A.contains(data.at(i)));
 
-    ASSERT_EQ(A.size(), ARRAYSIZE(arr));
+    ASSERT_EQ(A.size(), data.length());
 }
 
 TEST(OrderedSetTests, PrimitiveTypeClearTest)
@@ -177,14 +177,19 @@ struct ComplexType
         m_value = val;
     }
 
-    bool operator> (const ComplexType& other)
+    bool operator> (const ComplexType& other) const
     {
         return m_value > other.m_value;
     }
 
-    bool operator== (const ComplexType& other)
+    bool operator== (const ComplexType& other) const
     {
         return m_value == other.m_value;
+    }
+
+    bool operator!= (const ComplexType& other) const
+    {
+        return !(*this == other);
     }
 
     uint32_t m_value;

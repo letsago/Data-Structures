@@ -39,6 +39,30 @@ public:
         return true;
     }
 
+    Iterator<T> find(const T& val) const
+    {
+        BNode* target = dynamic_cast<BNode*>(Tree<T>::find(val));
+        shared_ptr<IteratorNode<T>> node(new BTreeIteratorNode(target));
+        return Iterator<T>(node);
+    }
+
+    Iterator<T> begin() const
+    {
+        BNode* curr = dynamic_cast<BNode*>(Tree<T>::m_root);
+
+        while (curr && curr->getChild(Direction::LEFT))
+            curr = curr->getChild(Direction::LEFT);
+
+        shared_ptr<IteratorNode<T>> node(new BTreeIteratorNode(curr));
+        return Iterator<T>(node);
+    }
+
+    Iterator<T> end() const
+    {
+        shared_ptr<IteratorNode<T>> node(new BTreeIteratorNode(nullptr));
+        return Iterator<T>(node);
+    }
+
 private:
     typedef typename Tree<T>::Direction Direction;
     struct BNode : Tree<T>::Node
@@ -86,6 +110,51 @@ private:
         }
 
         BNode* m_parent;
+    };
+
+    class BTreeIteratorNode : public IteratorNode<T>
+    {
+    public:
+        BTreeIteratorNode(BNode* node)
+        {
+            m_curr = node;
+        }
+
+        T& value() const
+        {
+            return m_curr->m_value;
+        }
+
+        BTreeIteratorNode& next()
+        {
+            if (m_curr)
+            {
+                if (m_curr->getChild(Direction::RIGHT))
+                {
+                    m_curr = m_curr->getChild(Direction::RIGHT);
+
+                    while (m_curr->getChild(Direction::LEFT))
+                        m_curr = m_curr->getChild(Direction::LEFT);
+                }
+                else
+                {
+                    while (m_curr->m_parent && (m_curr->m_value > m_curr->m_parent->m_value))
+                        m_curr = m_curr->m_parent;
+
+                    m_curr = m_curr->m_parent;
+                }
+            }
+
+            return *this;
+        }
+
+        bool operator!= (IteratorNode<T>& other) const
+        {
+            return m_curr != dynamic_cast<BTreeIteratorNode&>(other).m_curr;
+        }
+
+    private:
+        BNode* m_curr;
     };
 
     BNode* createNode(const T& value)
