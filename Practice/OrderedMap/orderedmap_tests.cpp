@@ -5,7 +5,7 @@
 
 using namespace pyu;
 
-TEST(OrderedMapTests, PrimitiveTypeInsertTest)
+TEST(OrderedMapTests, PrimitiveTypeInsertSuccessTest)
 {
     const int values[] = {10, 20, 15, 8, 2, 5};
 
@@ -14,11 +14,41 @@ TEST(OrderedMapTests, PrimitiveTypeInsertTest)
     for (uint32_t i = 0; i < ARRAYSIZE(values); ++i)
         ASSERT_TRUE(A.insert(i, values[i]));
 
-    ASSERT_FALSE(A.insert(0, 10));
     ASSERT_EQ(A.size(), ARRAYSIZE(values));
 
     for (uint32_t i = 0; i < ARRAYSIZE(values); ++i)
         ASSERT_TRUE(A.contains(i));
+}
+
+TEST(OrderedMapTests, PrimitiveTypeInsertFailTest)
+{
+    const int values[] = {10, 20, 15, 8, 2, 5};
+
+    OrderedMap<int, int> A;
+
+    for (uint32_t i = 0; i < ARRAYSIZE(values); ++i)
+        ASSERT_TRUE(A.insert(i, values[i]));
+
+    ASSERT_EQ(A.size(), ARRAYSIZE(values));
+
+    for (uint32_t i = 0; i < ARRAYSIZE(values); ++i)
+    {
+        ASSERT_TRUE(A.contains(i));
+        Iterator<int> it = A.find(i);
+        ASSERT_EQ(A.at(*it), values[i]);
+    }
+
+    for (uint32_t i = 0; i < ARRAYSIZE(values); ++i)
+        ASSERT_FALSE(A.insert(i, values[i] * 2));
+
+    ASSERT_EQ(A.size(), ARRAYSIZE(values));
+
+    for (uint32_t i = 0; i < ARRAYSIZE(values); ++i)
+    {
+        ASSERT_TRUE(A.contains(i));
+        Iterator<int> it = A.find(i);
+        ASSERT_EQ(A.at(*it), values[i] * 2);
+    }
 }
 
 TEST(OrderedMapTests, PrimitiveTypeRemoveTest)
@@ -41,10 +71,10 @@ TEST(OrderedMapTests, PrimitiveTypeRemoveTest)
     ASSERT_FALSE(A.remove(0));
     data.remove(data.find(10));
 
-    for (uint32_t i = 0; i < ARRAYSIZE(values); ++i)
-        ASSERT_TRUE(A.contains(i));
+    for (uint32_t i = 0; i < data.length(); ++i)
+        ASSERT_TRUE(A.contains(i + 1));
 
-    ASSERT_EQ(A.size(), ARRAYSIZE(values));
+    ASSERT_EQ(A.size(), data.length());
 }
 
 TEST(OrderedMapTests, PrimitiveTypeClearTest)
@@ -101,7 +131,7 @@ TEST(OrderedMapTests, PrimitiveTypeContainsTest)
 TEST(OrderedMapTests, PrimitiveTypeComparisonTest)
 {
     const int values[] = {10, 20, 15, 8, 2, 5};
-    const int values2[] = {10, 20, 8};
+    const int values2[] = {10, 20, 8, 2, 15, 5};
 
     OrderedMap<int, int> A;
     OrderedMap<int, int> B;
@@ -126,12 +156,12 @@ TEST(OrderedMapTests, PrimitiveTypeComparisonTest)
     B.clear();
     ASSERT_FALSE(A == B);
 
-    const int keys[] = {1, 1, 2, 3, 5, 8};
+    const int keys[] = {1, 4, 2, 3, 5, 8};
 
     for (uint32_t i = 0; i < ARRAYSIZE(values); ++i)
         ASSERT_TRUE(B.insert(keys[i], values[i]));
 
-    ASSERT_TRUE(A == B);
+    ASSERT_FALSE(A == B);
 }
 
 TEST(OrderedMapTests, PrimitiveTypeIteratorTest)
@@ -193,6 +223,18 @@ TEST(OrderedMapTests, PrimitiveTypeAtTest)
         Iterator<int> it = A.find(keys[i]);
         ASSERT_EQ(A.at(*it), i);
     }
+
+    for (uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
+    {
+        Iterator<int> it = A.find(keys[i]);
+        A.at(*it) = i * 2;
+    }
+
+    for (uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
+    {
+        Iterator<int> it = A.find(keys[i]);
+        ASSERT_EQ(A.at(*it), i * 2);
+    }
 }
 
 TEST(OrderedMapTests, PrimitiveTypeBracketOperatorTest)
@@ -209,21 +251,32 @@ TEST(OrderedMapTests, PrimitiveTypeBracketOperatorTest)
         Iterator<int> it = A.find(keys[i]);
         ASSERT_EQ(A[*it], i);
     }
+
+    for (uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
+    {
+        Iterator<int> it = A.find(keys[i]);
+        A[*it] = i * 2;
+    }
+
+    for (uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
+    {
+        Iterator<int> it = A.find(keys[i]);
+        ASSERT_EQ(A[*it], i * 2);
+    }
 }
 
 struct ComplexType
 {
-    ComplexType(uint32_t val)
-    {
-        m_value = val;
-    }
+    ComplexType() {};
 
-    bool operator> (const ComplexType& other)
+    ComplexType(uint32_t val) : m_value(val) {};
+
+    bool operator> (const ComplexType& other) const
     {
         return m_value > other.m_value;
     }
 
-    bool operator== (const ComplexType& other)
+    bool operator== (const ComplexType& other) const
     {
         return m_value == other.m_value;
     }
@@ -293,19 +346,38 @@ TEST(OrderedMapTests, NonPrimitiveValueInsertTest)
     OrderedMap<uint32_t, ComplexType> A;
 
     ASSERT_TRUE(A.empty());
-    ComplexType key(0);
+    ComplexType value(0);
     uint32_t size = 8;
 
     for (uint32_t i = 0; i < size; ++i)
     {
-        key.m_value = i;
-        ASSERT_TRUE(A.insert(i, key));
+        value.m_value = i;
+        ASSERT_TRUE(A.insert(i, value));
     }
 
     for (uint32_t i = 0; i < size; ++i)
+    {
         ASSERT_TRUE(A.contains(i));
+        Iterator<uint32_t> it = A.find(i);
+        ASSERT_EQ(A.at(*it), i);
+    }
 
     ASSERT_EQ(A.size(), size);
+
+    for (uint32_t i = 0; i < size; ++i)
+    {
+        value.m_value = i * 3;
+        ASSERT_FALSE(A.insert(i, value));
+    }
+
+    ASSERT_EQ(A.size(), size);
+
+    for (uint32_t i = 0; i < size; ++i)
+    {
+        ASSERT_TRUE(A.contains(i));
+        Iterator<uint32_t> it = A.find(i);
+        ASSERT_EQ(A.at(*it), i * 3);
+    }
 }
 
 TEST(OrderedMapTests, NonPrimitiveValueRemoveTest)
@@ -313,14 +385,14 @@ TEST(OrderedMapTests, NonPrimitiveValueRemoveTest)
     OrderedMap<uint32_t, ComplexType> A;
 
     ASSERT_TRUE(A.empty());
-    ComplexType key(0);
+    ComplexType value(0);
     ASSERT_FALSE(A.remove(0));
     uint32_t size = 8;
 
     for (uint32_t i = 0; i < size; ++i)
     {
-        key.m_value = i;
-        ASSERT_TRUE(A.insert(i, key));
+        value.m_value = i;
+        ASSERT_TRUE(A.insert(i, value));
     }
 
     for (uint32_t i = 0; i < size; ++i)

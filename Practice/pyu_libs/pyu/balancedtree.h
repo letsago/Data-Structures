@@ -11,6 +11,8 @@ class BalancedTree : public Tree<T>
 public:
     BalancedTree() : Tree<T>() {};
 
+    BalancedTree(const BalancedTree&) = delete;
+
     typedef typename Tree<T>::Node Node;
     bool insert(const T& val)
     {
@@ -35,6 +37,24 @@ public:
 
         while (findImbalance(targetRoot))
             balance(findImbalance(targetRoot), Tree<T>::m_depth);
+
+        return true;
+    }
+
+    bool operator== (const BalancedTree& other) const
+    {
+        if (Tree<T>::size() != other.size())
+            return false;
+
+        Iterator<T> compare = other.begin();
+
+        for (Iterator<T> it = begin(); it != end(); ++it)
+        {
+            if (*it != *compare)
+                return false;
+
+            ++compare;
+        }
 
         return true;
     }

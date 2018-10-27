@@ -10,8 +10,6 @@ template <typename T>
 class OrderedSet
 {
 public:
-    OrderedSet() : m_btree(BalancedTree<T>()) {}
-
     size_t size() const
     {
         return m_btree.size();
@@ -44,16 +42,7 @@ public:
 
     bool operator== (const OrderedSet& other)
     {
-        if (size() != other.size())
-            return false;
-
-        for (Iterator<T> it = other.begin(); it != other.end(); ++it)
-        {
-            if (!contains(*it))
-                return false;
-        }
-
-        return true;
+        return m_btree.operator==(other.m_btree);
     }
 
     Iterator<T> find(const T& val) const

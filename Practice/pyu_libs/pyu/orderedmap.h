@@ -2,7 +2,7 @@
 
 #include "iterator.h"
 #include "balancedtree.h"
-#include <stdexcept>
+#include "shared_ptr.h"
 
 namespace pyu
 {
@@ -10,12 +10,51 @@ namespace pyu
 template <typename K, typename V>
 class OrderedMap
 {
-public:
-    OrderedMap() : m_btree(BalancedTree<K>()) {}
+private:
+    struct KeyValuePair
+    {
+        KeyValuePair(const K& key, const V& value) : m_key(key), m_pValue(shared_ptr<V>(new V(value))) {};
 
+        KeyValuePair(const K& key) : m_key(key), m_pValue(nullptr) {};
+
+        bool operator> (const KeyValuePair& other) const
+        {
+            return (m_key > other.m_key);
+        }
+
+        bool operator< (const KeyValuePair& other) const
+        {
+            return (m_key < other.m_key);
+        }
+
+        bool operator== (const KeyValuePair& other) const
+        {
+            return (m_key == other.m_key);
+        }
+
+        bool operator!= (const KeyValuePair& other) const
+        {
+            return !(m_key == other.m_key);
+        }
+
+        bool operator>= (const KeyValuePair& other) const
+        {
+            return (m_key >= other.m_key);
+        }
+
+        bool operator<= (const KeyValuePair& other) const
+        {
+            return (m_key <= other.m_key);
+        }
+
+        K m_key;
+        shared_ptr<V> m_pValue;
+    };
+
+public:
     size_t size() const
     {
-        return 0;
+        return m_btree.size();
     }
 
     bool empty() const
@@ -25,66 +64,116 @@ public:
 
     bool insert(const K& key, const V& val)
     {
-        return false;
+        if (!m_btree.insert(KeyValuePair(key, val)))
+        {
+            at(key) = val;
+            return false;
+        }
+        else
+            return true;
     }
 
     bool remove(const K& key)
     {
-        return false;
+        return m_btree.remove(KeyValuePair(key));
     }
 
     void clear()
     {
-
+        m_btree.clear();
     }
 
     V& at(const K& key)
     {
-        throw std::out_of_range("key not found");
+        return *((*(m_btree.find(KeyValuePair(key)))).m_pValue);
     }
 
     V& operator[] (const K& key)
     {
-        throw std::out_of_range("key not found");
+        return at(key);
     }
 
     const V& at(const K& key) const
     {
-        throw std::out_of_range("key not found");
+        return *((*(m_btree.find(KeyValuePair(key)))).m_pValue);
     }
 
     const V& operator[] (const K& key) const
     {
-        throw std::out_of_range("key not found");
+        return at(key);
     }
 
     bool contains(const K& key) const
     {
-        return false;
+        return m_btree.contains(KeyValuePair(key));
     }
 
-    bool operator== (const OrderedMap& other)
+    bool operator== (const OrderedMap& other) const
     {
-        return false;
+        if (size() != other.size())
+            return false;
+
+        Iterator<K> compare = other.begin();
+
+        for (Iterator<K> it = begin(); it != end(); ++it)
+        {
+            if (*it != *compare)
+                return false;
+
+            if (at(*it) != other.at(*it))
+                return false;
+
+            ++compare;
+        }
+
+        return true;
     }
 
     Iterator<K> find(const K& key) const
     {
-        return Iterator<K>(nullptr);
+        shared_ptr<IteratorNode<K>> node(new OrderedMapIteratorNode(m_btree.find(KeyValuePair(key))));
+        return node;
     }
 
     Iterator<K> begin() const
     {
-        return Iterator<K>(nullptr);
+        shared_ptr<IteratorNode<K>> node(new OrderedMapIteratorNode(m_btree.begin()));
+        return node;
     }
 
     Iterator<K> end() const
     {
-        return Iterator<K>(nullptr);
+        shared_ptr<IteratorNode<K>> node(new OrderedMapIteratorNode(m_btree.end()));
+        return node;
     }
 
 private:
-    BalancedTree<K> m_btree;
+    class OrderedMapIteratorNode : public IteratorNode<K>
+    {
+    public:
+        OrderedMapIteratorNode(Iterator<KeyValuePair> node) : m_curr(node) {};
+
+        K& value() const
+        {
+            return (*m_curr).m_key;
+        }
+
+        OrderedMapIteratorNode& next()
+        {
+            ++m_curr;
+            return *this;
+        }
+
+        bool operator!= (const IteratorNode<K>& other) const
+        {
+            return m_curr != (dynamic_cast<const OrderedMapIteratorNode&>(other).m_curr);
+        }
+
+    private:
+        Iterator<KeyValuePair> m_curr;
+    };
+
+    BalancedTree<KeyValuePair> m_btree;
 };
 
 }
