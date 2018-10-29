@@ -61,7 +61,6 @@ public:
     }
 
 private:
-
     BalancedTree<T> m_btree;
 };
 
