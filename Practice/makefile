@@ -6,6 +6,7 @@ TARGET_NAME = test_runner
 DIRS := \
 	Array \
 	BalancedTree \
+	Graph \
 	LinearStorageInterface \
 	LinkedList \
 	Map \
@@ -19,6 +20,7 @@ DIRS := \
 
 include Array/makefile.exp
 include BalancedTree/makefile.exp
+include Graph/makefile.exp
 include LinearStorageInterface/makefile.exp
 include LinkedList/makefile.exp
 include Map/makefile.exp
