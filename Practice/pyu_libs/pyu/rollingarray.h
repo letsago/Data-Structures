@@ -128,53 +128,71 @@ class RollingArray : public LinearStorageInterface<T>
             m_head = 0;
         }
 
-        Iterator<T> begin() const
+        Iterator<T> begin()
         {
-            shared_ptr<IteratorNode<T>> node(new RollingArrayIteratorNode(m_data + m_head, const_cast<RollingArray*>(this)));
+            shared_ptr<IteratorNode<T>> node(new RollingArrayIteratorNode(m_data + m_head, this));
             return Iterator<T>(node);
         }
 
-        Iterator<T> end() const
+        Iterator<T> end()
         {
-            return begin() + m_size;
+            shared_ptr<IteratorNode<T>> node(new RollingArrayIteratorNode(m_data + ((m_head + m_size) % N), this));
+            return Iterator<T>(node);
+        }
+
+        const Iterator<T> begin() const
+        {
+            shared_ptr<IteratorNode<T>> node(new RollingArrayIteratorNode(m_data + m_head, this));
+            return Iterator<T>(node);
+        }
+
+        const Iterator<T> end() const
+        {
+            shared_ptr<IteratorNode<T>> node(new RollingArrayIteratorNode(m_data + ((m_head + m_size) % N), this));
+            return Iterator<T>(node);
         }
 
     private:
         class RollingArrayIteratorNode : public IteratorNode<T>
         {
-            public:
-                RollingArrayIteratorNode(T* address, RollingArray* rollingarray)
-                {
-                    m_addr = address;
-                    m_src = rollingarray;
-                }
+        public:
+            RollingArrayIteratorNode(T* address, const RollingArray* rollingarray)
+            {
+                m_addr = address;
+                m_src = rollingarray;
+            }
 
-                T& value() const
-                {
-                    return *m_addr;
-                }
+            T& value()
+            {
+                return *m_addr;
+            }
 
-                RollingArrayIteratorNode& next()
-                {
-                    ++m_addr;
+            const T& value() const
+            {
+                return *m_addr;
+            }
 
-                    if (m_addr > m_src->m_data + N - 1)
-                        m_addr = m_src->m_data;
+            RollingArrayIteratorNode& next()
+            {
+                ++m_addr;
 
-                    if (m_addr > m_src->m_data + ((m_src->m_size + m_src->m_head) % N) && m_addr < m_src->m_data + m_src->m_head)
-                        m_addr = m_src->m_data + ((m_src->m_size + m_src->m_head) % N);
+                if (m_addr > m_src->m_data + N - 1)
+                    m_addr = m_src->m_data;
 
-                    return *this;
-                }
+                if (m_addr > m_src->m_data + ((m_src->m_size + m_src->m_head) % N) && m_addr < m_src->m_data + m_src->m_head)
+                    m_addr = m_src->m_data + ((m_src->m_size + m_src->m_head) % N);
 
-                bool operator!= (const IteratorNode<T>& other) const
-                {
-                    return m_addr != dynamic_cast<const RollingArrayIteratorNode&>(other).m_addr;
-                }
+                return *this;
+            }
 
-            private:
-                T* m_addr;
-                RollingArray* m_src;
+            bool operator!= (const IteratorNode<T>& other) const
+            {
+                return m_addr != dynamic_cast<const RollingArrayIteratorNode&>(other).m_addr;
+            }
+
+        private:
+            T* m_addr;
+            const RollingArray* m_src;
         };
 
         // Member Variables

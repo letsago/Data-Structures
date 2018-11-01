@@ -59,14 +59,14 @@ public:
         return true;
     }
 
-    Iterator<T> find(const T& val) const
+    Iterator<T> find(const T& val)
     {
         BNode* target = dynamic_cast<BNode*>(Tree<T>::find(val));
         shared_ptr<IteratorNode<T>> node(new BTreeIteratorNode(target));
         return Iterator<T>(node);
     }
 
-    Iterator<T> begin() const
+    Iterator<T> begin()
     {
         BNode* curr = dynamic_cast<BNode*>(Tree<T>::m_root);
 
@@ -77,7 +77,31 @@ public:
         return Iterator<T>(node);
     }
 
-    Iterator<T> end() const
+    Iterator<T> end()
+    {
+        shared_ptr<IteratorNode<T>> node(new BTreeIteratorNode(nullptr));
+        return Iterator<T>(node);
+    }
+
+    const Iterator<T> find(const T& val) const
+    {
+        BNode* target = dynamic_cast<BNode*>(Tree<T>::find(val));
+        shared_ptr<IteratorNode<T>> node(new BTreeIteratorNode(target));
+        return Iterator<T>(node);
+    }
+
+    const Iterator<T> begin() const
+    {
+        BNode* curr = dynamic_cast<BNode*>(Tree<T>::m_root);
+
+        while (curr && curr->getChild(Direction::LEFT))
+            curr = curr->getChild(Direction::LEFT);
+
+        shared_ptr<IteratorNode<T>> node(new BTreeIteratorNode(curr));
+        return Iterator<T>(node);
+    }
+
+    const Iterator<T> end() const
     {
         shared_ptr<IteratorNode<T>> node(new BTreeIteratorNode(nullptr));
         return Iterator<T>(node);
@@ -140,7 +164,12 @@ private:
             m_curr = node;
         }
 
-        T& value() const
+        T& value()
+        {
+            return m_curr->m_value;
+        }
+
+        const T& value() const
         {
             return m_curr->m_value;
         }

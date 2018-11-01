@@ -115,51 +115,68 @@ class Array : public LinearStorageInterface<T>
             m_size = 0;
         }
 
-        Iterator<T> begin() const
+        Iterator<T> begin()
         {
-            shared_ptr<IteratorNode<T>> node(new ArrayIteratorNode(m_data, const_cast<Array*>(this)));
+            shared_ptr<IteratorNode<T>> node(new ArrayIteratorNode(m_data, this));
             return Iterator<T>(node);
         }
 
-        Iterator<T> end() const
+        Iterator<T> end()
         {
-            shared_ptr<IteratorNode<T>> node(new ArrayIteratorNode(m_data + length(), const_cast<Array*>(this)));
+            shared_ptr<IteratorNode<T>> node(new ArrayIteratorNode(m_data + length(), this));
+            return Iterator<T>(node);
+        }
+
+        const Iterator<T> begin() const
+        {
+            shared_ptr<IteratorNode<T>> node(new ArrayIteratorNode(m_data, this));
+            return Iterator<T>(node);
+        }
+
+        const Iterator<T> end() const
+        {
+            shared_ptr<IteratorNode<T>> node(new ArrayIteratorNode(m_data + length(), this));
             return Iterator<T>(node);
         }
 
     private:
         class ArrayIteratorNode : public IteratorNode<T>
         {
-            public:
-                ArrayIteratorNode(T* address, Array* array)
-                {
-                    m_addr = address;
-                    m_src = array;
-                }
+        public:
+            ArrayIteratorNode(T* address, const Array* array)
+            {
+                m_addr = address;
+                m_src = array;
+            }
 
-                T& value() const
-                {
-                    return *m_addr;
-                }
+            T& value()
+            {
+                return *m_addr;
+            }
 
-                ArrayIteratorNode& next()
-                {
-                    ++m_addr;
+            const T& value() const
+            {
+                return *m_addr;
+            }
 
-                    if (m_addr > m_src->m_data + m_src->m_size)
-                        m_addr = m_src->m_data + m_src->m_size;
+            ArrayIteratorNode& next()
+            {
+                ++m_addr;
 
-                    return *this;
-                }
+                if (m_addr > m_src->m_data + m_src->m_size)
+                    m_addr = m_src->m_data + m_src->m_size;
 
-                bool operator!= (const IteratorNode<T>& other) const
-                {
-                    return m_addr != dynamic_cast<const ArrayIteratorNode&>(other).m_addr;
-                }
+                return *this;
+            }
 
-            private:
-                T* m_addr;
-                Array* m_src;
+            bool operator!= (const IteratorNode<T>& other) const
+            {
+                return m_addr != dynamic_cast<const ArrayIteratorNode&>(other).m_addr;
+            }
+
+        private:
+            T* m_addr;
+            const Array* m_src;
         };
 
         // Member Variables

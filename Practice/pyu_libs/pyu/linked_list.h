@@ -14,11 +14,7 @@ class LinkedList : public LinearStorageInterface<T>
     private:
         struct LLNode
         {
-            LLNode(T value, LLNode* next)
-            {
-                m_value = value;
-                m_next = next;
-            }
+            LLNode(T value, LLNode* next) : m_value(value), m_next(next) {};
 
             T m_value;
             LLNode* m_next;
@@ -155,7 +151,7 @@ class LinkedList : public LinearStorageInterface<T>
             return value;
         }
 
-        Vector<int> findmany(const T value) const
+        const Vector<int> findmany(const T& value) const
         {
             Vector<int> indices;
             uint32_t counter = 0;
@@ -187,47 +183,107 @@ class LinkedList : public LinearStorageInterface<T>
             m_size = 0;
         }
 
-        Iterator<T> begin() const
+        Iterator<T> findIterator(const T& val)
+        {
+            for (Iterator<T> it = begin(); it != end(); ++it)
+            {
+                if (*it == val)
+                    return it;
+            }
+
+            return end();
+        }
+
+        Iterator<T> begin()
         {
             shared_ptr<IteratorNode<T>> node(new LLIteratorNode(m_head));
             return Iterator<T>(node);
         }
 
-        Iterator<T> end() const
+        Iterator<T> end()
         {
             shared_ptr<IteratorNode<T>> node(new LLIteratorNode(nullptr));
             return Iterator<T>(node);
         }
 
+        const Iterator<T> findIterator(const T& val) const
+        {
+            for (Iterator<T> it = begin(); it != end(); ++it)
+            {
+                if (*it == val)
+                    return it;
+            }
+
+            return end();
+        }
+
+        const Iterator<T> begin() const
+        {
+            shared_ptr<IteratorNode<T>> node(new LLIteratorNode(m_head));
+            return Iterator<T>(node);
+        }
+
+        const Iterator<T> end() const
+        {
+            shared_ptr<IteratorNode<T>> node(new LLIteratorNode(nullptr));
+            return Iterator<T>(node);
+        }
+
+        void addHead(LLNode*& node)
+        {
+            if (node)
+            {
+                node->m_next = m_head;
+                ++m_size;
+                m_head = node;
+            }
+        }
+
+        void spliceFront(LinkedList& target)
+        {
+            if (m_head)
+            {
+                LLNode* oldHead = m_head;
+                m_head = m_head->m_next;
+                --m_size;
+                target.addHead(oldHead);
+            }
+        }
+
     private:
         class LLIteratorNode : public IteratorNode<T>
         {
-            public:
-                LLIteratorNode(LLNode* node)
-                {
-                    m_curr = node;
-                }
+        public:
+            LLIteratorNode(LLNode* node)
+            {
+                m_curr = node;
+            }
 
-                T& value() const
-                {
-                    return m_curr->m_value;
-                }
+            T& value()
+            {
+                return m_curr->m_value;
+            }
 
-                LLIteratorNode& next()
-                {
-                    if (m_curr != nullptr)
-                        m_curr = m_curr->m_next;
+            const T& value() const
+            {
+                return m_curr->m_value;
+            }
 
-                    return *this;
-                }
+            LLIteratorNode& next()
+            {
+                if (m_curr != nullptr)
+                    m_curr = m_curr->m_next;
 
-                bool operator!= (const IteratorNode<T>& other) const
-                {
-                    return m_curr != dynamic_cast<const LLIteratorNode&>(other).m_curr;
-                }
+                return *this;
+            }
 
-            private:
-                LLNode* m_curr;
+            bool operator!= (const IteratorNode<T>& other) const
+            {
+                return m_curr != dynamic_cast<const LLIteratorNode&>(other).m_curr;
+            }
+
+        private:
+            LLNode* m_curr;
         };
 
         uint32_t m_size;

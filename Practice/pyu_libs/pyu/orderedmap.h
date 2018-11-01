@@ -22,11 +22,6 @@ private:
             return (m_key > other.m_key);
         }
 
-        bool operator< (const KeyValuePair& other) const
-        {
-            return (m_key < other.m_key);
-        }
-
         bool operator== (const KeyValuePair& other) const
         {
             return (m_key == other.m_key);
@@ -35,16 +30,6 @@ private:
         bool operator!= (const KeyValuePair& other) const
         {
             return !(m_key == other.m_key);
-        }
-
-        bool operator>= (const KeyValuePair& other) const
-        {
-            return (m_key >= other.m_key);
-        }
-
-        bool operator<= (const KeyValuePair& other) const
-        {
-            return (m_key <= other.m_key);
         }
 
         K m_key;
@@ -129,19 +114,37 @@ public:
         return true;
     }
 
-    Iterator<K> find(const K& key) const
+    Iterator<K> find(const K& key)
     {
         shared_ptr<IteratorNode<K>> node(new OrderedMapIteratorNode(m_btree.find(KeyValuePair(key))));
         return node;
     }
 
-    Iterator<K> begin() const
+    Iterator<K> begin()
     {
         shared_ptr<IteratorNode<K>> node(new OrderedMapIteratorNode(m_btree.begin()));
         return node;
     }
 
-    Iterator<K> end() const
+    Iterator<K> end()
+    {
+        shared_ptr<IteratorNode<K>> node(new OrderedMapIteratorNode(m_btree.end()));
+        return node;
+    }
+
+    const Iterator<K> find(const K& key) const
+    {
+        shared_ptr<IteratorNode<K>> node(new OrderedMapIteratorNode(m_btree.find(KeyValuePair(key))));
+        return node;
+    }
+
+    const Iterator<K> begin() const
+    {
+        shared_ptr<IteratorNode<K>> node(new OrderedMapIteratorNode(m_btree.begin()));
+        return node;
+    }
+
+    const Iterator<K> end() const
     {
         shared_ptr<IteratorNode<K>> node(new OrderedMapIteratorNode(m_btree.end()));
         return node;
@@ -153,7 +156,12 @@ private:
     public:
         OrderedMapIteratorNode(Iterator<KeyValuePair> node) : m_curr(node) {};
 
-        K& value() const
+        K& value()
+        {
+            return (*m_curr).m_key;
+        }
+
+        const K& value() const
         {
             return (*m_curr).m_key;
         }

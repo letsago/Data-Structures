@@ -36,7 +36,7 @@ struct ComplexType
 
 typedef testing::Types<OrderedMap<int, int>, UnorderedMap<int, int>> PrimitiveTypeImplementations;
 typedef testing::Types<OrderedMap<int, ComplexType>, UnorderedMap<int, ComplexType>> NonPrimitiveValueImplementations;
-typedef testing::Types<OrderedMap<ComplexType, int>, UnorderedMap<ComplexType, int>> NonPrimitiveKeyImplementations;
+typedef testing::Types<OrderedMap<ComplexType, int>> NonPrimitiveKeyImplementations;
 TYPED_TEST_CASE(MapPrimitiveTypeTests, PrimitiveTypeImplementations);
 TYPED_TEST_CASE(MapNonPrimitiveValueTests, NonPrimitiveValueImplementations);
 TYPED_TEST_CASE(MapNonPrimitiveKeyTests, NonPrimitiveKeyImplementations);
@@ -198,32 +198,6 @@ TYPED_TEST(MapPrimitiveTypeTests, PrimitiveTypeComparisonTest)
         ASSERT_TRUE(B.insert(keys[i], values[i]));
 
     ASSERT_FALSE(A == B);
-}
-
-TYPED_TEST(MapPrimitiveTypeTests, PrimitiveTypeIteratorTest)
-{
-    const int keys[] = {10, 20, 15, 8, 2, 5};
-
-    Tree<int> T;
-
-    for (uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
-        ASSERT_TRUE(T.insert(keys[i]));
-
-    Vector<int> sorted = T.getSorted();
-
-    TypeParam A;
-
-    for (uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
-        ASSERT_TRUE(A.insert(keys[i], i));
-
-    ASSERT_EQ(A.size(), sorted.length());
-    uint32_t index = 0;
-
-    for (Iterator<int> it = A.begin(); it != A.end(); ++it)
-    {
-        ASSERT_EQ(*it, sorted.at(index));
-        ++index;
-    }
 }
 
 TYPED_TEST(MapPrimitiveTypeTests, PrimitiveTypeIteratorFindTest)

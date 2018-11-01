@@ -109,8 +109,10 @@ class LinearStorageInterface
         virtual const T& at(const uint32_t position) const = 0;
         virtual uint32_t length() const = 0;
         virtual void clear() = 0;
-        virtual Iterator<T> begin() const = 0;
-        virtual Iterator<T> end() const = 0;
+        virtual Iterator<T> begin() = 0;
+        virtual Iterator<T> end() = 0;
+        virtual const Iterator<T> begin() const = 0;
+        virtual const Iterator<T> end() const = 0;
         virtual LinearStorageInterface& operator= (LinearStorageInterface& other) = 0;
         virtual ~LinearStorageInterface() {}; // This enables parent class deconstructor to have priority over child class deconstructors
 };
