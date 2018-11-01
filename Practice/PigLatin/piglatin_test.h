@@ -1,12 +1,12 @@
 #pragma once
 
+#include "piglatin.h"
 #include <gtest/gtest.h>
 #include <pyu/vector.h>
-#include "piglatin.h"
 
 class PigLatinTests : public ::testing::Test
 {
-protected:
+  protected:
     // Functions used in the test
     void pigLatinTester(const char input[], const int input_size, const char* output)
     {

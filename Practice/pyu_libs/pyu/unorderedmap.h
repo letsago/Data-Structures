@@ -1,9 +1,9 @@
 #pragma once
 
-#include "vector.h"
-#include "linked_list.h"
 #include "iterator.h"
+#include "linked_list.h"
 #include "shared_ptr.h"
+#include "vector.h"
 #include <stdexcept>
 
 namespace pyu
@@ -12,47 +12,32 @@ namespace pyu
 template <typename K, typename V>
 class UnorderedMap
 {
-private:
+  private:
     struct KeyValuePair
     {
-        KeyValuePair(const K& key, const V& value) : m_key(key), m_pValue(shared_ptr<V>(new V(value))) {};
+        KeyValuePair(const K& key, const V& value) : m_key(key), m_pValue(shared_ptr<V>(new V(value))){};
 
-        KeyValuePair(const K& key) : m_key(key), m_pValue(nullptr) {};
+        KeyValuePair(const K& key) : m_key(key), m_pValue(nullptr){};
 
-        bool operator== (const KeyValuePair& other) const
-        {
-            return (m_key == other.m_key);
-        }
+        bool operator==(const KeyValuePair& other) const { return (m_key == other.m_key); }
 
         K m_key;
         shared_ptr<V> m_pValue;
     };
 
-public:
-    UnorderedMap() : m_bucketSize(1), m_size(0)
-    {
-        m_map.resize(m_bucketSize);
-    }
+  public:
+    UnorderedMap() : m_bucketSize(1), m_size(0) { m_map.resize(m_bucketSize); }
 
-    size_t bucket_size() const
-    {
-        return m_bucketSize;
-    }
-    size_t size() const
-    {
-        return m_size;
-    }
+    size_t bucket_size() const { return m_bucketSize; }
+    size_t size() const { return m_size; }
 
-    bool empty() const
-    {
-        return (size() == 0);
-    }
+    bool empty() const { return (size() == 0); }
 
     bool insert(const K& key, const V& val)
     {
         uint64_t bucket = getBucket(key);
 
-        if ((m_map.at(bucket)).contains(KeyValuePair(key)))
+        if((m_map.at(bucket)).contains(KeyValuePair(key)))
         {
             at(key) = val;
             return false;
@@ -60,7 +45,7 @@ public:
 
         (m_map.at(bucket)).insert_front(KeyValuePair(key, val));
 
-        while ((m_map.at(bucket)).length() > kBucketDepth)
+        while((m_map.at(bucket)).length() > kBucketDepth)
         {
             rebalance();
             bucket = getBucket(key);
@@ -75,7 +60,7 @@ public:
         uint64_t bucket = getBucket(key);
         int keyPosition = (m_map.at(bucket)).find(KeyValuePair(key));
 
-        if (keyPosition == -1)
+        if(keyPosition == -1)
             return false;
 
         (m_map.at(bucket)).remove(keyPosition);
@@ -91,42 +76,30 @@ public:
         m_map.resize(m_bucketSize);
     }
 
-    V& at(const K& key)
-    {
-        return *((*((m_map.at(getBucket(key))).findIterator(KeyValuePair(key)))).m_pValue);
-    }
+    V& at(const K& key) { return *((*((m_map.at(getBucket(key))).findIterator(KeyValuePair(key)))).m_pValue); }
 
-    V& operator[] (const K& key)
-    {
-        return at(key);
-    }
+    V& operator[](const K& key) { return at(key); }
 
     const V& at(const K& key) const
     {
         return *((*((m_map.at(getBucket(key))).findIterator(KeyValuePair(key)))).m_pValue);
     }
 
-    const V& operator[] (const K& key) const
-    {
-        return at(key);
-    }
+    const V& operator[](const K& key) const { return at(key); }
 
-    bool contains(const K& key) const
-    {
-        return (find(key) != end());
-    }
+    bool contains(const K& key) const { return (find(key) != end()); }
 
-    bool operator== (const UnorderedMap& other) const
+    bool operator==(const UnorderedMap& other) const
     {
-        if (size() != other.size())
+        if(size() != other.size())
             return false;
 
-        for (Iterator<K> it = begin(); it != end(); ++it)
+        for(Iterator<K> it = begin(); it != end(); ++it)
         {
-            if (!other.contains(*it))
+            if(!other.contains(*it))
                 return false;
 
-            if (at(*it) != other.at(*it))
+            if(at(*it) != other.at(*it))
                 return false;
         }
 
@@ -154,7 +127,7 @@ public:
 
     Iterator<K> begin(uint32_t bucketNumber)
     {
-        if (bucketNumber >= m_bucketSize)
+        if(bucketNumber >= m_bucketSize)
             throw std::out_of_range("bucket out of range");
 
         shared_ptr<IteratorNode<K>> node(new BucketIteratorNode((m_map.at(bucketNumber)).begin()));
@@ -163,7 +136,7 @@ public:
 
     Iterator<K> end(uint32_t bucketNumber)
     {
-        if (bucketNumber >= m_bucketSize)
+        if(bucketNumber >= m_bucketSize)
             throw std::out_of_range("bucket out of range");
 
         shared_ptr<IteratorNode<K>> node(new BucketIteratorNode((m_map.at(bucketNumber)).end()));
@@ -191,7 +164,7 @@ public:
 
     const Iterator<K> begin(uint32_t bucketNumber) const
     {
-        if (bucketNumber >= m_bucketSize)
+        if(bucketNumber >= m_bucketSize)
             throw std::out_of_range("bucket out of range");
 
         shared_ptr<IteratorNode<K>> node(new BucketIteratorNode((m_map.at(bucketNumber)).begin()));
@@ -200,33 +173,24 @@ public:
 
     const Iterator<K> end(uint32_t bucketNumber) const
     {
-        if (bucketNumber >= m_bucketSize)
+        if(bucketNumber >= m_bucketSize)
             throw std::out_of_range("bucket out of range");
 
         shared_ptr<IteratorNode<K>> node(new BucketIteratorNode((m_map.at(bucketNumber)).end()));
         return node;
     }
 
-    static const uint32_t getBucketDepth()
-    {
-        return kBucketDepth;
-    }
+    static const uint32_t getBucketDepth() { return kBucketDepth; }
 
-private:
+  private:
     class BucketIteratorNode : public IteratorNode<K>
     {
-    public:
-        BucketIteratorNode(Iterator<KeyValuePair> node) : m_curr(node) {};
+      public:
+        BucketIteratorNode(Iterator<KeyValuePair> node) : m_curr(node){};
 
-        K& value()
-        {
-            return (*m_curr).m_key;
-        }
+        K& value() { return (*m_curr).m_key; }
 
-        const K& value() const
-        {
-            return (*m_curr).m_key;
-        }
+        const K& value() const { return (*m_curr).m_key; }
 
         BucketIteratorNode& next()
         {
@@ -234,57 +198,51 @@ private:
             return *this;
         }
 
-        bool operator!= (const IteratorNode<K>& other) const
+        bool operator!=(const IteratorNode<K>& other) const
         {
             return m_curr != (dynamic_cast<const BucketIteratorNode&>(other).m_curr);
         }
 
-    private:
+      private:
         Iterator<KeyValuePair> m_curr;
     };
 
     class MapIteratorNode : public IteratorNode<K>
     {
-    public:
+      public:
         MapIteratorNode(Iterator<KeyValuePair> node, const UnorderedMap* map) : m_curr(node), m_src(map)
         {
             m_bucketCounter = 0;
             m_depth = 0;
         }
 
-        K& value()
-        {
-            return (*m_curr).m_key;
-        }
+        K& value() { return (*m_curr).m_key; }
 
-        const K& value() const
-        {
-            return (*m_curr).m_key;
-        }
+        const K& value() const { return (*m_curr).m_key; }
 
         MapIteratorNode& next()
         {
             ++m_curr;
             ++m_depth;
 
-            if (m_depth > ((m_src->m_map).at(m_bucketCounter)).length() - 1)
+            if(m_depth > ((m_src->m_map).at(m_bucketCounter)).length() - 1)
             {
                 ++m_bucketCounter;
                 m_depth = 0;
 
-                if (m_bucketCounter < m_src->m_bucketSize)
+                if(m_bucketCounter < m_src->m_bucketSize)
                     m_curr = ((m_src->m_map).at(m_bucketCounter)).begin();
             }
 
             return *this;
         }
 
-        bool operator!= (const IteratorNode<K>& other) const
+        bool operator!=(const IteratorNode<K>& other) const
         {
             return m_curr != (dynamic_cast<const MapIteratorNode&>(other).m_curr);
         }
 
-    private:
+      private:
         Iterator<KeyValuePair> m_curr;
         const UnorderedMap* m_src;
         size_t m_bucketCounter;
@@ -301,14 +259,14 @@ private:
         m_bucketSize *= 2;
         Vector<LinkedList<KeyValuePair>> newMap(m_bucketSize);
 
-        for (uint32_t i = 0; i < m_bucketSize; ++i)
+        for(uint32_t i = 0; i < m_bucketSize; ++i)
             newMap.insert_back(LinkedList<KeyValuePair>());
 
-        for (uint32_t bucket = 0; bucket < m_bucketSize / 2; ++bucket)
+        for(uint32_t bucket = 0; bucket < m_bucketSize / 2; ++bucket)
         {
             uint32_t bucketDepth = (m_map.at(bucket)).length();
 
-            for (uint32_t i = 0; i < bucketDepth; ++i)
+            for(uint32_t i = 0; i < bucketDepth; ++i)
             {
                 const K& key = ((m_map.at(bucket)).front()).m_key;
                 (m_map.at(bucket)).spliceFront(newMap.at(getBucket(key)));
@@ -318,16 +276,9 @@ private:
         m_map = newMap;
     }
 
-    uint64_t getBucket(const K& key) const
-    {
-        return hashFunction(key) & (m_bucketSize - 1);
-    }
+    uint64_t getBucket(const K& key) const { return hashFunction(key) & (m_bucketSize - 1); }
 
-    static uint64_t hashFunction(const K& key)
-    {
-        return static_cast<const uint64_t>(key);
-    }
-
+    static uint64_t hashFunction(const K& key) { return static_cast<const uint64_t>(key); }
 };
 
-}
+} // namespace pyu

@@ -29,36 +29,27 @@ TEST(SharedPtrTests, ClassTypeTest)
 {
     class Car
     {
-        public:
-            Car()
-            {
-                m_velocity = new int();
-                *m_velocity = 0;
-            }
+      public:
+        Car()
+        {
+            m_velocity = new int();
+            *m_velocity = 0;
+        }
 
-            Car(int initial_v)
-            {
-                m_velocity = new int();
-                *m_velocity = initial_v;
-            }
+        Car(int initial_v)
+        {
+            m_velocity = new int();
+            *m_velocity = initial_v;
+        }
 
-            ~Car()
-            {
-                delete m_velocity;
-            }
+        ~Car() { delete m_velocity; }
 
-            int current_speed()
-            {
-                return *m_velocity;
-            }
+        int current_speed() { return *m_velocity; }
 
-            void new_speed(int new_speed)
-            {
-                *m_velocity = new_speed;
-            }
+        void new_speed(int new_speed) { *m_velocity = new_speed; }
 
-        private:
-            int* m_velocity = nullptr;
+      private:
+        int* m_velocity = nullptr;
     };
 
     pyu::shared_ptr<Car> p(new Car());

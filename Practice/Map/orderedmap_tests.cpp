@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include <pyu/orderedmap.h>
-#include <pyu/iterator.h>
 #include <pyu/common.h>
+#include <pyu/iterator.h>
+#include <pyu/orderedmap.h>
 
 using namespace pyu;
 
@@ -11,20 +11,20 @@ TEST(OrderedMapTests, IteratorTest)
 
     Tree<int> T;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
         ASSERT_TRUE(T.insert(keys[i]));
 
     Vector<int> sorted = T.getSorted();
 
     OrderedMap<int, int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
         ASSERT_TRUE(A.insert(keys[i], i));
 
     ASSERT_EQ(A.size(), sorted.length());
     uint32_t index = 0;
 
-    for (Iterator<int> it = A.begin(); it != A.end(); ++it)
+    for(Iterator<int> it = A.begin(); it != A.end(); ++it)
     {
         ASSERT_EQ(*it, sorted.at(index));
         ++index;

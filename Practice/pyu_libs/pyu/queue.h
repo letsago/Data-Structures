@@ -9,52 +9,25 @@ namespace pyu
 template <typename T>
 class Queue
 {
+  public:
+    Queue(shared_ptr<LinearStorageInterface<T>> pLsi) { m_pLsi = pLsi; }
 
-public:
+    bool pop() { return m_pLsi->remove_front(); }
 
-    Queue(shared_ptr<LinearStorageInterface<T>> pLsi)
-    {
-        m_pLsi = pLsi;
-    }
+    bool push(T value) { return m_pLsi->insert_back(value); }
 
-    bool pop()
-    {   
-        return m_pLsi->remove_front();
-    }
+    T& front() { return m_pLsi->front(); }
 
-    bool push(T value)
-    {
-        return m_pLsi->insert_back(value);
-    }
+    const T& front() const { return m_pLsi->front(); }
 
-    T& front()
-    {
-        return m_pLsi->front();
-    }
+    int length() const { return m_pLsi->length(); }
 
-    const T& front() const
-    {
-        return m_pLsi->front();
-    }  
+    bool empty() { return m_pLsi->empty(); }
 
-    int length() const
-    {
-        return m_pLsi->length();
-    }
+    void clear() { m_pLsi->clear(); }
 
-    bool empty()
-    {
-        return m_pLsi->empty();
-    }
-
-    void clear()
-    {
-        m_pLsi->clear();
-    } 
-
-private:
-
+  private:
     shared_ptr<LinearStorageInterface<T>> m_pLsi;
 };
 
-}
+} // namespace pyu

@@ -10,11 +10,11 @@ TEST_F(PigLatinTests, NullTest)
 TEST_F(PigLatinTests, InvalidSymbolTest)
 {
     int counter = 0; // will keep track of all possible number of invalid chars
-    for (uint32_t i = 0; i < 256; ++i)
+    for(uint32_t i = 0; i < 256; ++i)
     {
         char sym[] = {static_cast<char>(i)};
         pyu::Vector<char> A(sym, sizeof(sym));
-        if (doInvalidCharsExist(A))
+        if(doInvalidCharsExist(A))
             ++counter;
     }
 

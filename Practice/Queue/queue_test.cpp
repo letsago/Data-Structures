@@ -1,12 +1,14 @@
 #include <gtest/gtest.h>
-#include <pyu_test/LinearStorageInterfaceCreator.h>
-#include <pyu/vector.h>
 #include <pyu/linked_list.h>
-#include <pyu/rollingarray.h>
 #include <pyu/queue.h>
+#include <pyu/rollingarray.h>
+#include <pyu/vector.h>
+#include <pyu_test/LinearStorageInterfaceCreator.h>
 
-template<class T>
-class QueueTests : public ::testing::Test, public pyu::internal::LinearStorageInterfaceCreator<T> {};
+template <class T>
+class QueueTests : public ::testing::Test, public pyu::internal::LinearStorageInterfaceCreator<T>
+{
+};
 
 typedef testing::Types<pyu::Vector<int>, pyu::LinkedList<int>, pyu::RollingArray<int, 10>> Implementations;
 TYPED_TEST_CASE(QueueTests, Implementations);
@@ -15,7 +17,7 @@ TYPED_TEST(QueueTests, PushTest)
 {
     pyu::Queue<int> A(this->CreateTestableInterface());
 
-    for (uint32_t i = 0; i < 5; i++)
+    for(uint32_t i = 0; i < 5; i++)
     {
         ASSERT_TRUE(A.push(i));
         ASSERT_EQ(A.front(), 0);
@@ -28,14 +30,14 @@ TYPED_TEST(QueueTests, PopTest)
     pyu::Queue<int> A(this->CreateTestableInterface());
     ASSERT_FALSE(A.pop());
 
-    for (uint32_t i = 0; i < 5; i++)
+    for(uint32_t i = 0; i < 5; i++)
     {
         ASSERT_TRUE(A.push(i));
         ASSERT_EQ(A.front(), 0);
         ASSERT_EQ(A.length(), i + 1);
     }
 
-    for (uint32_t i = 0; i < 5; i++)
+    for(uint32_t i = 0; i < 5; i++)
     {
         ASSERT_EQ(A.front(), i);
         ASSERT_TRUE(A.pop());
@@ -59,7 +61,7 @@ TYPED_TEST(QueueTests, ClearTest)
     pyu::Queue<int> A(this->CreateTestableInterface());
     ASSERT_TRUE(A.empty());
 
-    for (uint32_t i = 0; i < 5; i++)
+    for(uint32_t i = 0; i < 5; i++)
     {
         ASSERT_TRUE(A.push(i));
         ASSERT_EQ(A.front(), 0);

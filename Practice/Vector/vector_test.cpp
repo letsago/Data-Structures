@@ -4,7 +4,7 @@
 TEST(VectorTests, ResizeTest)
 {
     const int arr[] = {8, 8, 8};
-    pyu::Vector<int> A(arr, sizeof(arr)/sizeof(arr[0]));
+    pyu::Vector<int> A(arr, sizeof(arr) / sizeof(arr[0]));
     ASSERT_EQ(A.capacity(), 3);
     ASSERT_EQ(A.length(), 3);
 
@@ -25,7 +25,7 @@ TEST(VectorTests, ResizeTest)
     ASSERT_EQ(A.length(), 3);
 
     const int arr2[10] = {0};
-    pyu::Vector<int> B(arr2, sizeof(arr2)/sizeof(arr2[0]));
+    pyu::Vector<int> B(arr2, sizeof(arr2) / sizeof(arr2[0]));
     ASSERT_EQ(B.capacity(), 10);
     ASSERT_EQ(B.length(), 10);
 

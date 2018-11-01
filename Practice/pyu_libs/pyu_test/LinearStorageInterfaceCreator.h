@@ -7,19 +7,20 @@ namespace pyu
 {
 namespace internal
 {
-    template<class T>
+    template <class T>
     class LinearStorageInterfaceCreator
     {
-    protected:
+      protected:
         virtual pyu::shared_ptr<pyu::LinearStorageInterface<int>> CreateTestableInterface()
         {
             return pyu::shared_ptr<pyu::LinearStorageInterface<int>>(new T());
         };
 
-        virtual pyu::shared_ptr<pyu::LinearStorageInterface<int>> CreateTestableInterface(pyu::shared_ptr<pyu::LinearStorageInterface<int>>& other)
+        virtual pyu::shared_ptr<pyu::LinearStorageInterface<int>>
+        CreateTestableInterface(pyu::shared_ptr<pyu::LinearStorageInterface<int>>& other)
         {
             return pyu::shared_ptr<pyu::LinearStorageInterface<int>>(new T(dynamic_cast<const T&>(*other)));
         };
     };
-}
-}
+} // namespace internal
+} // namespace pyu

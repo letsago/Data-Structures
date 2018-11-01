@@ -10,7 +10,7 @@ TEST(BalancedTreeTests, BalancedTest)
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         A.insert(arr[i]);
     }
@@ -24,7 +24,7 @@ TEST(BalancedTreeTests, NonBalancedTest)
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         A.insert(arr[i]);
     }
@@ -38,7 +38,7 @@ TEST(BalancedTreeTests, RightSkewedTest)
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         A.insert(arr[i]);
     }
@@ -52,7 +52,7 @@ TEST(BalancedTreeTests, LeftSkewedTest)
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         A.insert(arr[i]);
     }
@@ -62,11 +62,12 @@ TEST(BalancedTreeTests, LeftSkewedTest)
 
 TEST(BalancedTreeTests, BigBalancedTest)
 {
-    const int arr[] = {50, 25, 12, 38, 6, 3, 9, 18, 15, 22, 30, 26, 35, 42, 40, 48, 100, 75, 60, 55, 65, 85, 80, 90, 150, 175, 200, 160, 125, 108, 130};
+    const int arr[] = {50,  25, 12, 38, 6,  3,  9,  18, 15,  22,  30,  26,  35,  42,  40, 48,
+                       100, 75, 60, 55, 65, 85, 80, 90, 150, 175, 200, 160, 125, 108, 130};
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         A.insert(arr[i]);
     }
@@ -80,7 +81,7 @@ TEST(BalancedTreeTests, BigNonBalancedTest)
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         ASSERT_TRUE(A.insert(arr[i]));
     }
@@ -101,7 +102,7 @@ TEST(BalancedTreeTests, InsertRightSkewedTest)
 
     BalancedTree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         A.insert(arr[i]);
         ASSERT_TRUE(A.isBalanced());
@@ -114,7 +115,7 @@ TEST(BalancedTreeTests, InsertLeftSkewedTest)
 
     BalancedTree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         A.insert(arr[i]);
         ASSERT_TRUE(A.isBalanced());
@@ -127,7 +128,7 @@ TEST(BalancedTreeTests, InsertLeftAngleTest)
 
     BalancedTree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         A.insert(arr[i]);
         ASSERT_TRUE(A.isBalanced());
@@ -140,7 +141,7 @@ TEST(BalancedTreeTests, InsertRightAngleTest)
 
     BalancedTree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         A.insert(arr[i]);
         ASSERT_TRUE(A.isBalanced());
@@ -153,7 +154,7 @@ TEST(BalancedTreeTests, InsertLeftSubtreeLeftSkewedTest)
 
     BalancedTree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         A.insert(arr[i]);
         ASSERT_TRUE(A.isBalanced());
@@ -166,7 +167,7 @@ TEST(BalancedTreeTests, InsertLeftSubtreeLeftAngleTest)
 
     BalancedTree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         A.insert(arr[i]);
         ASSERT_TRUE(A.isBalanced());
@@ -179,7 +180,7 @@ TEST(BalancedTreeTests, InsertLeftSubtreeRightAngleTest)
 
     BalancedTree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         A.insert(arr[i]);
         ASSERT_TRUE(A.isBalanced());
@@ -192,7 +193,7 @@ TEST(BalancedTreeTests, InsertLeftSubtreeRightSkewedTest)
 
     BalancedTree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         A.insert(arr[i]);
         ASSERT_TRUE(A.isBalanced());
@@ -205,7 +206,7 @@ TEST(BalancedTreeTests, InsertRightSubtreeLeftSkewedTest)
 
     BalancedTree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         A.insert(arr[i]);
         ASSERT_TRUE(A.isBalanced());
@@ -218,7 +219,7 @@ TEST(BalancedTreeTests, InsertRightSubtreeLeftAngleTest)
 
     BalancedTree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         A.insert(arr[i]);
         ASSERT_TRUE(A.isBalanced());
@@ -231,7 +232,7 @@ TEST(BalancedTreeTests, InsertRightSubtreeRightAngleTest)
 
     BalancedTree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         A.insert(arr[i]);
         ASSERT_TRUE(A.isBalanced());
@@ -244,7 +245,7 @@ TEST(BalancedTreeTests, InsertRightSubtreeRightSkewedTest)
 
     BalancedTree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         A.insert(arr[i]);
         ASSERT_TRUE(A.isBalanced());
@@ -257,7 +258,7 @@ TEST(BalancedTreeTests, InsertBigNonBalancedTest)
 
     BalancedTree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         ASSERT_TRUE(A.insert(arr[i]));
         ASSERT_TRUE(A.isBalanced());
@@ -270,7 +271,7 @@ TEST(BalancedTreeTests, RemoveLeftSkewedTest)
 
     BalancedTree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         ASSERT_TRUE(A.insert(arr[i]));
         ASSERT_TRUE(A.isBalanced());
@@ -286,7 +287,7 @@ TEST(BalancedTreeTests, RemoveLeftAngleTest)
 
     BalancedTree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         ASSERT_TRUE(A.insert(arr[i]));
 
@@ -303,7 +304,7 @@ TEST(BalancedTreeTests, RemoveRightAngleTest)
 
     BalancedTree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         ASSERT_TRUE(A.insert(arr[i]));
         ASSERT_TRUE(A.isBalanced());
@@ -319,7 +320,7 @@ TEST(BalancedTreeTests, RemoveRightSkewedTest)
 
     BalancedTree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         ASSERT_TRUE(A.insert(arr[i]));
         ASSERT_TRUE(A.isBalanced());
@@ -335,7 +336,7 @@ TEST(BalancedTreeTests, RemoveLeftSubtreeTest)
 
     BalancedTree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         ASSERT_TRUE(A.insert(arr[i]));
         ASSERT_TRUE(A.isBalanced());
@@ -355,7 +356,7 @@ TEST(BalancedTreeTests, RemoveRightSubtreeTest)
 
     BalancedTree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         ASSERT_TRUE(A.insert(arr[i]));
         ASSERT_TRUE(A.isBalanced());
@@ -375,7 +376,7 @@ TEST(BalancedTreeTests, RemoveBiggerRightSubtreeTest)
 
     BalancedTree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         ASSERT_TRUE(A.insert(arr[i]));
         ASSERT_TRUE(A.isBalanced());
@@ -403,7 +404,7 @@ TEST(BalancedTreeTests, RemoveBiggerLeftSubtreeTest)
 
     BalancedTree<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         ASSERT_TRUE(A.insert(arr[i]));
         ASSERT_TRUE(A.isBalanced());

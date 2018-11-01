@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include <pyu/orderedset.h>
-#include <pyu/iterator.h>
 #include <pyu/common.h>
+#include <pyu/iterator.h>
+#include <pyu/orderedset.h>
 
 using namespace pyu;
 
@@ -11,13 +11,13 @@ TEST(OrderedSetTests, PrimitiveTypeInsertTest)
 
     OrderedSet<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
         ASSERT_TRUE(A.insert(arr[i]));
 
     ASSERT_FALSE(A.insert(10));
     ASSERT_EQ(A.size(), ARRAYSIZE(arr));
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
         ASSERT_TRUE(A.contains(arr[i]));
 }
 
@@ -30,10 +30,10 @@ TEST(OrderedSetTests, PrimitiveTypeRemoveTest)
 
     ASSERT_FALSE(A.remove(10));
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
         ASSERT_TRUE(A.insert(arr[i]));
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
         ASSERT_TRUE(A.contains(arr[i]));
 
     ASSERT_EQ(A.size(), ARRAYSIZE(arr));
@@ -41,7 +41,7 @@ TEST(OrderedSetTests, PrimitiveTypeRemoveTest)
     ASSERT_FALSE(A.remove(10));
     data.remove(data.find(10));
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
         ASSERT_TRUE(A.contains(data.at(i)));
 
     ASSERT_EQ(A.size(), data.length());
@@ -57,26 +57,26 @@ TEST(OrderedSetTests, PrimitiveTypeClearTest)
     A.clear();
     ASSERT_TRUE(A.empty());
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
         ASSERT_TRUE(A.insert(arr[i]));
 
     ASSERT_EQ(A.size(), ARRAYSIZE(arr));
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
         ASSERT_TRUE(A.contains(arr[i]));
 
     A.clear();
     ASSERT_TRUE(A.empty());
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
         ASSERT_FALSE(A.contains(arr[i]));
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
         ASSERT_TRUE(A.insert(arr[i]));
 
     ASSERT_EQ(A.size(), ARRAYSIZE(arr));
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
         ASSERT_TRUE(A.contains(arr[i]));
 }
 
@@ -88,10 +88,10 @@ TEST(OrderedSetTests, PrimitiveTypeContainsTest)
 
     ASSERT_FALSE(A.contains(0));
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
         ASSERT_TRUE(A.insert(arr[i]));
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
         ASSERT_TRUE(A.contains(arr[i]));
 
     ASSERT_FALSE(A.contains(-10));
@@ -108,18 +108,18 @@ TEST(OrderedSetTests, PrimitiveTypeComparisonTest)
 
     ASSERT_TRUE(A == B);
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
         ASSERT_TRUE(A.insert(arr[i]));
 
     ASSERT_FALSE(A == B);
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr2); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr2); ++i)
         ASSERT_TRUE(B.insert(arr2[i]));
 
     ASSERT_FALSE(A == B);
     B.clear();
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
         ASSERT_TRUE(B.insert(arr[i]));
 
     ASSERT_TRUE(A == B);
@@ -131,20 +131,20 @@ TEST(OrderedSetTests, PrimitiveTypeIteratorTest)
 
     Tree<int> T;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
         ASSERT_TRUE(T.insert(arr[i]));
 
     Vector<int> sorted = T.getSorted();
 
     OrderedSet<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
         ASSERT_TRUE(A.insert(arr[i]));
 
     ASSERT_EQ(A.size(), sorted.length());
     uint32_t index = 0;
 
-    for (Iterator<int> it = A.begin(); it != A.end(); ++it)
+    for(Iterator<int> it = A.begin(); it != A.end(); ++it)
     {
         ASSERT_EQ(*it, sorted.at(index));
         ++index;
@@ -157,10 +157,10 @@ TEST(OrderedSetTests, PrimitiveTypeIteratorFindTest)
 
     OrderedSet<int> A;
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
         ASSERT_TRUE(A.insert(arr[i]));
 
-    for (uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {
         Iterator<int> it = A.find(arr[i]);
         ASSERT_EQ(*it, arr[i]);
@@ -172,25 +172,13 @@ TEST(OrderedSetTests, PrimitiveTypeIteratorFindTest)
 
 struct ComplexType
 {
-    ComplexType(uint32_t val)
-    {
-        m_value = val;
-    }
+    ComplexType(uint32_t val) { m_value = val; }
 
-    bool operator> (const ComplexType& other) const
-    {
-        return m_value > other.m_value;
-    }
+    bool operator>(const ComplexType& other) const { return m_value > other.m_value; }
 
-    bool operator== (const ComplexType& other) const
-    {
-        return m_value == other.m_value;
-    }
+    bool operator==(const ComplexType& other) const { return m_value == other.m_value; }
 
-    bool operator!= (const ComplexType& other) const
-    {
-        return !(*this == other);
-    }
+    bool operator!=(const ComplexType& other) const { return !(*this == other); }
 
     uint32_t m_value;
 };
@@ -203,13 +191,13 @@ TEST(OrderedSetTests, NonPrimitiveInsertTest)
     ComplexType val(0);
     uint32_t size = 8;
 
-    for (uint32_t i = 0; i < size; ++i)
+    for(uint32_t i = 0; i < size; ++i)
     {
         val.m_value = i;
         ASSERT_TRUE(A.insert(val));
     }
 
-    for (uint32_t i = 0; i < size; ++i)
+    for(uint32_t i = 0; i < size; ++i)
     {
         val.m_value = i;
         ASSERT_TRUE(A.contains(val));
@@ -227,13 +215,13 @@ TEST(OrderedSetTests, NonPrimitiveRemoveTest)
     ASSERT_FALSE(A.remove(val));
     uint32_t size = 8;
 
-    for (uint32_t i = 0; i < size; ++i)
+    for(uint32_t i = 0; i < size; ++i)
     {
         val.m_value = i;
         ASSERT_TRUE(A.insert(val));
     }
 
-    for (uint32_t i = 0; i < size; ++i)
+    for(uint32_t i = 0; i < size; ++i)
     {
         val.m_value = i;
         ASSERT_TRUE(A.contains(val));
@@ -245,7 +233,7 @@ TEST(OrderedSetTests, NonPrimitiveRemoveTest)
     ASSERT_FALSE(A.remove(val));
     ASSERT_EQ(A.size(), size - 1);
 
-    for (uint32_t i = 0; i < size - 1; ++i)
+    for(uint32_t i = 0; i < size - 1; ++i)
     {
         val.m_value = i + 1;
         ASSERT_TRUE(A.contains(val));

@@ -6,7 +6,7 @@ TEST(LinkedListTests, FindManyTest)
     // FindMany returns a vector all positions where given value occurs in linked list
     pyu::LinkedList<int> A;
 
-    for (uint32_t i = 0; i < 5; ++i)
+    for(uint32_t i = 0; i < 5; ++i)
     {
         A.insert_back(5);
     }
@@ -14,14 +14,14 @@ TEST(LinkedListTests, FindManyTest)
     pyu::Vector<int> FindIndices = A.findmany(5);
     ASSERT_EQ(FindIndices.length(), 5);
 
-    for (uint32_t i = 0; i < FindIndices.length(); ++i)
+    for(uint32_t i = 0; i < FindIndices.length(); ++i)
     {
         ASSERT_EQ(FindIndices.at(i), i);
     }
 
     pyu::LinkedList<int> B;
 
-    for (uint32_t i = 0; i < 3; ++i)
+    for(uint32_t i = 0; i < 3; ++i)
     {
         B.insert_back(i);
     }
@@ -42,4 +42,3 @@ TEST(LinkedListTests, FindManyTest)
     ASSERT_EQ(FindIndices.at(0), 0);
     ASSERT_EQ(FindIndices.at(1), 2);
 }
-

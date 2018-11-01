@@ -1,11 +1,11 @@
 #pragma once
 
+#include "queue.h"
 #include "stack.h"
 #include "vector.h"
-#include "queue.h"
-#include <string>
 #include <algorithm>
 #include <cmath>
+#include <string>
 
 namespace pyu
 {
@@ -13,42 +13,24 @@ namespace pyu
 template <typename T>
 class Tree
 {
-public:
-    Tree() : m_root(nullptr), m_size(0), m_depth(0), m_depthCounter(0) {};
+  public:
+    Tree() : m_root(nullptr), m_size(0), m_depth(0), m_depthCounter(0){};
 
-    ~Tree()
-    {
-        clear();
-    }
+    ~Tree() { clear(); }
 
-    uint32_t size() const
-    {
-        return m_size;
-    }
+    uint32_t size() const { return m_size; }
 
-    bool empty() const
-    {
-        return (size() == 0);
-    }
+    bool empty() const { return (size() == 0); }
 
-    bool insert(const T& val)
-    {
-        return insertNode(val);
-    }
+    bool insert(const T& val) { return insertNode(val); }
 
-    bool remove(const T& val)
-    {
-        return removeNode(val);
-    }
+    bool remove(const T& val) { return removeNode(val); }
 
-    uint32_t depth() const
-    {
-        return m_depth;
-    }
+    uint32_t depth() const { return m_depth; }
 
-    friend std::ostream& operator<< (std::ostream& os, const Tree& tree)
+    friend std::ostream& operator<<(std::ostream& os, const Tree& tree)
     {
-        if (tree.m_root)
+        if(tree.m_root)
         {
             Vector<PrintMetadata> printData(tree.size());
             Queue<uint32_t> order(new Vector<uint32_t>(tree.size()));
@@ -58,18 +40,13 @@ public:
             double minRelCol = 0;
             double maxRelCol = 0;
 
-            auto addNode = [&printData, &order, &numSpaces](const PrintMetadata& obj, Node* next, double colDelta)
-            {
-                printData.insert_back({
-                        next,
-                        std::to_string(next->m_value),
-                        obj.m_row + 3,
-                        obj.m_relCol + colDelta});
+            auto addNode = [&printData, &order, &numSpaces](const PrintMetadata& obj, Node* next, double colDelta) {
+                printData.insert_back({next, std::to_string(next->m_value), obj.m_row + 3, obj.m_relCol + colDelta});
                 order.push(printData.length() - 1);
                 numSpaces = std::max(numSpaces, static_cast<uint32_t>(printData.back().m_str.length()));
             };
 
-            while (order.length() > 0)
+            while(order.length() > 0)
             {
                 const PrintMetadata obj = printData.at(order.front());
                 order.pop();
@@ -77,10 +54,10 @@ public:
                 minRelCol = std::min(minRelCol, obj.m_relCol);
                 maxRelCol = std::max(maxRelCol, obj.m_relCol);
 
-                if (obj.m_node->m_children[RIGHT])
+                if(obj.m_node->m_children[RIGHT])
                     addNode(obj, obj.m_node->m_children[RIGHT], relColDiff);
 
-                if (obj.m_node->m_children[LEFT])
+                if(obj.m_node->m_children[LEFT])
                     addNode(obj, obj.m_node->m_children[LEFT], -relColDiff);
             }
 
@@ -91,50 +68,53 @@ public:
             uint32_t lineCounter;
             uint32_t prevRow = 0;
 
-            if (depth > 1)
+            if(depth > 1)
                 lineCounter = (1 << (depth - 2)) - 1;
             else
                 lineCounter = 0;
 
-            std::string row (numSpaces * (maxCol + 1), ' ');
+            std::string row(numSpaces * (maxCol + 1), ' ');
             row.append("\n");
             row = row + row + row;
             std::string output;
 
-            for (uint32_t i = 0; i < printData.length(); ++i)
+            for(uint32_t i = 0; i < printData.length(); ++i)
             {
-                if (prevRow != printData.at(i).m_row)
+                if(prevRow != printData.at(i).m_row)
                 {
                     os << output;
                     output = row;
 
-                    if (i != 0)
+                    if(i != 0)
                         lineCounter = lineCounter >> 1;
                 }
 
-                uint32_t pos = (printData.at(i).m_relCol * normFactor + transFactor) * numSpaces + (numSpaces - printData.at(i).m_str.length()) / 2;
+                uint32_t pos = (printData.at(i).m_relCol * normFactor + transFactor) * numSpaces +
+                               (numSpaces - printData.at(i).m_str.length()) / 2;
                 output.replace(pos, printData.at(i).m_str.length(), printData.at(i).m_str);
 
-                if (printData.at(i).m_node->m_children[LEFT] || printData.at(i).m_node->m_children[RIGHT])
+                if(printData.at(i).m_node->m_children[LEFT] || printData.at(i).m_node->m_children[RIGHT])
                 {
-                    uint32_t arrowPos = (numSpaces * (maxCol + 1) + 1) + (printData.at(i).m_relCol * normFactor + transFactor) * numSpaces + numSpaces / 2;
+                    uint32_t arrowPos = (numSpaces * (maxCol + 1) + 1) +
+                                        (printData.at(i).m_relCol * normFactor + transFactor) * numSpaces +
+                                        numSpaces / 2;
                     output.replace(arrowPos, 1, "|");
 
                     int numLines = lineCounter * numSpaces + numSpaces / 2 - 1;
 
                     std::string lines;
-                    for (int i = 0; i < numLines; ++i)
+                    for(int i = 0; i < numLines; ++i)
                         lines += "_";
 
                     const uint32_t position = (numSpaces * (maxCol + 1) + 1) + arrowPos;
 
-                    if (printData.at(i).m_node->m_children[LEFT])
+                    if(printData.at(i).m_node->m_children[LEFT])
                     {
                         output.replace(arrowPos - numLines, numLines, lines);
                         output.replace(position - numLines - 1, 1, "/");
                     }
 
-                    if (printData.at(i).m_node->m_children[RIGHT])
+                    if(printData.at(i).m_node->m_children[RIGHT])
                     {
                         output.replace(arrowPos + 1, numLines, lines);
                         output.replace(position + numLines + 1, 1, "\\");
@@ -153,19 +133,19 @@ public:
 
     void clear()
     {
-        if (m_root)
+        if(m_root)
         {
             Stack<Node*> deleteorder(new Vector<Node*>(size()));
             deleteorder.push(m_root);
 
-            while (deleteorder.length() > 0)
+            while(deleteorder.length() > 0)
             {
                 Node* curr = deleteorder.top();
                 deleteorder.pop();
 
-                for (uint32_t i = 0; i < sizeof(curr->m_children)/sizeof(curr->m_children[0]); ++i)
+                for(uint32_t i = 0; i < sizeof(curr->m_children) / sizeof(curr->m_children[0]); ++i)
                 {
-                    if (curr->m_children[i])
+                    if(curr->m_children[i])
                         deleteorder.push(curr->m_children[i]);
                 }
 
@@ -179,10 +159,7 @@ public:
         m_root = nullptr;
     }
 
-    bool contains(const T& val) const
-    {
-        return find(val);
-    }
+    bool contains(const T& val) const { return find(val); }
 
     Vector<T> getSorted() const
     {
@@ -190,9 +167,9 @@ public:
         Stack<Node*> stack(new Vector<Node*>(size()));
         Node* curr = m_root;
 
-        while (!stack.empty() || curr)
+        while(!stack.empty() || curr)
         {
-            while (curr)
+            while(curr)
             {
                 stack.push(curr);
                 curr = curr->m_children[LEFT];
@@ -209,13 +186,13 @@ public:
 
     bool isBalanced() const
     {
-        if (empty())
+        if(empty())
             return true;
 
         return (static_cast<uint32_t>(1 << (depth() - 1)) <= size());
     }
 
-protected:
+  protected:
     enum Direction
     {
         LEFT,
@@ -224,31 +201,22 @@ protected:
 
     struct Node
     {
-        Node(const T& value) : m_value(value)
-        {
-            memset(m_children, 0, sizeof(m_children));
-        }
+        Node(const T& value) : m_value(value) { memset(m_children, 0, sizeof(m_children)); }
 
         virtual ~Node() {}
 
-        virtual void reset()
-        {
-            memset(m_children, 0, sizeof(m_children));
-        }
+        virtual void reset() { memset(m_children, 0, sizeof(m_children)); }
 
-        virtual void connect(Node* conNode, Direction dir)
-        {
-            m_children[dir] = conNode;
-        }
+        virtual void connect(Node* conNode, Direction dir) { m_children[dir] = conNode; }
 
         virtual void replace(Node* node, Node* parent)
         {
-            if (parent)
+            if(parent)
                 parent->connect(m_children[m_value > node->m_value], static_cast<Direction>(m_value > parent->m_value));
 
             this->reset();
 
-            for (uint32_t i = 0; i < sizeof(m_children)/sizeof(m_children[0]); ++i)
+            for(uint32_t i = 0; i < sizeof(m_children) / sizeof(m_children[0]); ++i)
                 m_children[i] = node->m_children[i];
         }
 
@@ -261,10 +229,7 @@ protected:
         Node* m_node;
         uint32_t m_val;
 
-        bool operator== (const Metadata& other) const
-        {
-            return (m_node == other.m_node && m_val == other.m_val);
-        }
+        bool operator==(const Metadata& other) const { return (m_node == other.m_node && m_val == other.m_val); }
     };
 
     struct PrintMetadata
@@ -281,17 +246,17 @@ protected:
         uint32_t dummyDepth = 1;
         Node* dummyPrev = nullptr;
 
-        while (curr && curr->m_value != val)
+        while(curr && curr->m_value != val)
         {
             dummyPrev = curr;
             curr = curr->m_children[(val > curr->m_value)];
             ++dummyDepth;
         }
 
-        if (pDepth)
+        if(pDepth)
             *pDepth = dummyDepth;
 
-        if (pPrev)
+        if(pPrev)
             *pPrev = dummyPrev;
 
         return curr;
@@ -302,12 +267,12 @@ protected:
         Node* dummyPrev = nullptr;
         uint32_t newNodeDepth = 0;
 
-        if (find(val, &dummyPrev, &newNodeDepth))
+        if(find(val, &dummyPrev, &newNodeDepth))
             return nullptr;
 
-        if (newNodeDepth == m_depth)
+        if(newNodeDepth == m_depth)
             ++m_depthCounter;
-        else if (newNodeDepth > m_depth)
+        else if(newNodeDepth > m_depth)
         {
             m_depthCounter = 1;
             m_depth = newNodeDepth;
@@ -315,12 +280,12 @@ protected:
 
         Node* node = createNode(val);
 
-        if (!m_root)
+        if(!m_root)
             m_root = node;
         else
             dummyPrev->connect(node, static_cast<Direction>(val > dummyPrev->m_value));
 
-        if (pPrev)
+        if(pPrev)
             *pPrev = dummyPrev;
 
         ++m_size;
@@ -329,12 +294,12 @@ protected:
 
     void nodeSwap(Node* oldRoot, Node* oldRootParent, Node* newRoot, Node* newRootParent)
     {
-        if (newRoot)
+        if(newRoot)
             newRoot->replace(oldRoot, newRootParent);
 
         oldRoot->reset();
 
-        if (oldRoot == m_root)
+        if(oldRoot == m_root)
             m_root = newRoot;
         else
             oldRootParent->connect(newRoot, static_cast<Direction>(oldRoot->m_value > oldRootParent->m_value));
@@ -345,11 +310,10 @@ protected:
         Node* newRoot = nullptr;
         newRootParent = const_cast<Node*>(oldRoot);
 
-        auto setNewRoot = [&newRootParent, &newRoot, &oldRoot, &newRootDepth](const Direction dir)
-        {
+        auto setNewRoot = [&newRootParent, &newRoot, &oldRoot, &newRootDepth](const Direction dir) {
             newRoot = oldRoot->m_children[dir];
             ++newRootDepth;
-            while (newRoot->m_children[!dir])
+            while(newRoot->m_children[!dir])
             {
                 newRootParent = newRoot;
                 newRoot = newRoot->m_children[!dir];
@@ -357,9 +321,9 @@ protected:
             }
         };
 
-        if (oldRoot->m_children[LEFT])
+        if(oldRoot->m_children[LEFT])
             setNewRoot(LEFT);
-        else if (oldRoot->m_children[RIGHT])
+        else if(oldRoot->m_children[RIGHT])
             setNewRoot(RIGHT);
 
         return newRoot;
@@ -371,7 +335,7 @@ protected:
         uint32_t oldRootDepth = 0;
         Node* oldRoot = find(val, &oldRootParent, &oldRootDepth);
 
-        if (!oldRoot)
+        if(!oldRoot)
             return false;
 
         Node* newRootParent = nullptr;
@@ -379,7 +343,7 @@ protected:
         Node* newRoot = findNewRoot(oldRoot, newRootParent, newRootDepth);
         nodeSwap(oldRoot, oldRootParent, newRoot, newRootParent);
 
-        if ((newRootDepth == m_depth || oldRootDepth == m_depth) && (m_depthCounter != 1))
+        if((newRootDepth == m_depth || oldRootDepth == m_depth) && (m_depthCounter != 1))
             --m_depthCounter;
         else
             depthUpdate();
@@ -387,9 +351,9 @@ protected:
         delete oldRoot;
         --m_size;
 
-        if (pTargetRoot)
+        if(pTargetRoot)
         {
-            if (newRoot)
+            if(newRoot)
                 *pTargetRoot = newRoot;
             else
                 *pTargetRoot = oldRootParent;
@@ -403,7 +367,7 @@ protected:
         m_depth = 0;
         m_depthCounter = 0;
 
-        if (!m_root)
+        if(!m_root)
         {
             return;
         }
@@ -411,23 +375,23 @@ protected:
         Queue<Metadata> order(new Vector<Metadata>(size()));
         order.push({m_root, 1});
 
-        while (order.length() > 0)
+        while(order.length() > 0)
         {
             Node* curr = order.front().m_node;
             uint32_t d = order.front().m_val;
             order.pop();
 
-            if (d == m_depth)
+            if(d == m_depth)
                 ++m_depthCounter;
-            else if (d > m_depth)
+            else if(d > m_depth)
             {
                 m_depth = d;
                 m_depthCounter = 1;
             }
 
-            for (uint32_t i = 0; i < sizeof(curr->m_children)/sizeof(curr->m_children[0]); ++i)
+            for(uint32_t i = 0; i < sizeof(curr->m_children) / sizeof(curr->m_children[0]); ++i)
             {
-                if (curr->m_children[i])
+                if(curr->m_children[i])
                     order.push({curr->m_children[i], d + 1});
             }
         }
@@ -438,11 +402,8 @@ protected:
     uint32_t m_depth;
     uint32_t m_depthCounter;
 
-private:
-    virtual Node* createNode(const T& value)
-    {
-        return new Node(value);
-    }
+  private:
+    virtual Node* createNode(const T& value) { return new Node(value); }
 };
 
-}
+} // namespace pyu

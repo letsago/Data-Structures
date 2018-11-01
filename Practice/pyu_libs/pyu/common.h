@@ -1,3 +1,3 @@
 #pragma once
 
-#define ARRAYSIZE(arr) (sizeof(arr)/sizeof(arr[0]))
+#define ARRAYSIZE(arr) (sizeof(arr) / sizeof(arr[0]))

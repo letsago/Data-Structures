@@ -7,18 +7,18 @@ using namespace pyu;
 TEST(TreeTests, InsertTest)
 {
     const int arr[] = {10, 5, 20, 15, 8, 2};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.insert(data.at(i)));
     }
 
     ASSERT_EQ(A.size(), data.length());
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.contains(data.at(i)));
     }
@@ -31,13 +31,13 @@ TEST(TreeTests, InsertTest)
 TEST(TreeTests, RemoveFailTest)
 {
     const int arr[] = {10, 5, 20};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
     ASSERT_FALSE(A.remove(8));
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.insert(data.at(i)));
     }
@@ -48,11 +48,11 @@ TEST(TreeTests, RemoveFailTest)
 TEST(TreeTests, RemoveLastLeafTest)
 {
     const int arr[] = {10, 11, 12};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.insert(data.at(i)));
     }
@@ -62,7 +62,7 @@ TEST(TreeTests, RemoveLastLeafTest)
     data.remove(data.find(12));
     ASSERT_EQ(A.size(), data.length());
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.contains(data.at(i)));
     }
@@ -71,11 +71,11 @@ TEST(TreeTests, RemoveLastLeafTest)
 TEST(TreeTests, RemoveRightSkewedMiddleLeafTest)
 {
     const int arr[] = {10, 11, 12};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.insert(data.at(i)));
     }
@@ -85,7 +85,7 @@ TEST(TreeTests, RemoveRightSkewedMiddleLeafTest)
     data.remove(data.find(11));
     ASSERT_EQ(A.size(), data.length());
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.contains(data.at(i)));
     }
@@ -94,11 +94,11 @@ TEST(TreeTests, RemoveRightSkewedMiddleLeafTest)
 TEST(TreeTests, RemoveRightAngularMiddleLeafTest)
 {
     const int arr[] = {10, 12, 11};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.insert(data.at(i)));
     }
@@ -108,7 +108,7 @@ TEST(TreeTests, RemoveRightAngularMiddleLeafTest)
     data.remove(data.find(12));
     ASSERT_EQ(A.size(), data.length());
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.contains(data.at(i)));
     }
@@ -117,11 +117,11 @@ TEST(TreeTests, RemoveRightAngularMiddleLeafTest)
 TEST(TreeTests, RemoveLeftAngularMiddleLeafTest)
 {
     const int arr[] = {10, 8, 9};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.insert(data.at(i)));
     }
@@ -131,7 +131,7 @@ TEST(TreeTests, RemoveLeftAngularMiddleLeafTest)
     data.remove(data.find(8));
     ASSERT_EQ(A.size(), data.length());
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.contains(data.at(i)));
     }
@@ -140,11 +140,11 @@ TEST(TreeTests, RemoveLeftAngularMiddleLeafTest)
 TEST(TreeTests, RemoveLeftSkewedMiddleLeafTest)
 {
     const int arr[] = {10, 9, 8};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.insert(data.at(i)));
     }
@@ -154,7 +154,7 @@ TEST(TreeTests, RemoveLeftSkewedMiddleLeafTest)
     data.remove(data.find(9));
     ASSERT_EQ(A.size(), data.length());
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.contains(data.at(i)));
     }
@@ -163,11 +163,11 @@ TEST(TreeTests, RemoveLeftSkewedMiddleLeafTest)
 TEST(TreeTests, RemoveRightSkewedRootTest)
 {
     const int arr[] = {10, 11, 12};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.insert(data.at(i)));
     }
@@ -177,7 +177,7 @@ TEST(TreeTests, RemoveRightSkewedRootTest)
     data.remove(data.find(10));
     ASSERT_EQ(A.size(), data.length());
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.contains(data.at(i)));
     }
@@ -186,11 +186,11 @@ TEST(TreeTests, RemoveRightSkewedRootTest)
 TEST(TreeTests, RemoveRightAngularRootTest)
 {
     const int arr[] = {10, 12, 11};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.insert(data.at(i)));
     }
@@ -200,7 +200,7 @@ TEST(TreeTests, RemoveRightAngularRootTest)
     data.remove(data.find(10));
     ASSERT_EQ(A.size(), data.length());
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.contains(data.at(i)));
     }
@@ -209,11 +209,11 @@ TEST(TreeTests, RemoveRightAngularRootTest)
 TEST(TreeTests, RemoveLeftAngularRootTest)
 {
     const int arr[] = {10, 8, 9};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.insert(data.at(i)));
     }
@@ -223,7 +223,7 @@ TEST(TreeTests, RemoveLeftAngularRootTest)
     data.remove(data.find(10));
     ASSERT_EQ(A.size(), data.length());
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.contains(data.at(i)));
     }
@@ -232,11 +232,11 @@ TEST(TreeTests, RemoveLeftAngularRootTest)
 TEST(TreeTests, RemoveLeftSkewedRootTest)
 {
     const int arr[] = {10, 9, 8};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.insert(data.at(i)));
     }
@@ -246,7 +246,7 @@ TEST(TreeTests, RemoveLeftSkewedRootTest)
     data.remove(data.find(10));
     ASSERT_EQ(A.size(), data.length());
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.contains(data.at(i)));
     }
@@ -255,11 +255,11 @@ TEST(TreeTests, RemoveLeftSkewedRootTest)
 TEST(TreeTests, RemoveSimpleRootTest)
 {
     const int arr[] = {10, 8, 12};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.insert(data.at(i)));
     }
@@ -269,7 +269,7 @@ TEST(TreeTests, RemoveSimpleRootTest)
     data.remove(data.find(10));
     ASSERT_EQ(A.size(), data.length());
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.contains(data.at(i)));
     }
@@ -278,11 +278,11 @@ TEST(TreeTests, RemoveSimpleRootTest)
 TEST(TreeTests, RemoveMultipleRootsBalancedTest)
 {
     const int arr[] = {10, 5, 20, 15, 8, 2, 25};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.insert(data.at(i)));
     }
@@ -292,7 +292,7 @@ TEST(TreeTests, RemoveMultipleRootsBalancedTest)
     data.remove(data.find(10));
     ASSERT_EQ(A.size(), data.length());
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.contains(data.at(i)));
     }
@@ -302,7 +302,7 @@ TEST(TreeTests, RemoveMultipleRootsBalancedTest)
     data.remove(data.find(8));
     ASSERT_EQ(A.size(), data.length());
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.contains(data.at(i)));
     }
@@ -311,11 +311,11 @@ TEST(TreeTests, RemoveMultipleRootsBalancedTest)
 TEST(TreeTests, RemoveRootNonBalancedTest)
 {
     const int arr[] = {10, 5, 15, 3, 7, 12, 20, 9, 11, 13, 8};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.insert(data.at(i)));
     }
@@ -325,7 +325,7 @@ TEST(TreeTests, RemoveRootNonBalancedTest)
     data.remove(data.find(10));
     ASSERT_EQ(A.size(), data.length());
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.contains(data.at(i)));
     }
@@ -334,11 +334,11 @@ TEST(TreeTests, RemoveRootNonBalancedTest)
 TEST(TreeTests, RemoveRootLeftChildNonBalancedTest)
 {
     const int arr[] = {10, 5, 15, 3, 7, 12, 20, 9, 11, 13, 8};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.insert(data.at(i)));
     }
@@ -348,7 +348,7 @@ TEST(TreeTests, RemoveRootLeftChildNonBalancedTest)
     data.remove(data.find(5));
     ASSERT_EQ(A.size(), data.length());
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.contains(data.at(i)));
     }
@@ -357,11 +357,11 @@ TEST(TreeTests, RemoveRootLeftChildNonBalancedTest)
 TEST(TreeTests, RemoveRootRightChildNonBalancedTest)
 {
     const int arr[] = {10, 5, 15, 3, 7, 12, 20, 9, 11, 13, 8};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.insert(data.at(i)));
     }
@@ -371,7 +371,7 @@ TEST(TreeTests, RemoveRootRightChildNonBalancedTest)
     data.remove(data.find(15));
     ASSERT_EQ(A.size(), data.length());
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.contains(data.at(i)));
     }
@@ -380,11 +380,11 @@ TEST(TreeTests, RemoveRootRightChildNonBalancedTest)
 TEST(TreeTests, ClearTest)
 {
     const int arr[] = {10, 5, 20, 15, 8, 2, 25, 1, 7, 9, 40, 30, 42, 28, 35, 26, 46, 50};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.insert(data.at(i)));
     }
@@ -402,18 +402,18 @@ TEST(TreeTests, ClearTest)
 TEST(TreeTests, ContainsTest)
 {
     const int arr[] = {10, 5, 20, 15, 8, 2, 25, 23, 1, 3, 7, 324, 90, 34, -3, -10};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.insert(data.at(i)));
     }
 
     ASSERT_EQ(A.size(), data.length());
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.contains(data.at(i)));
     }
@@ -429,7 +429,7 @@ TEST_F(SortedTreeTests, BalancedTree)
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
+    for(uint32_t i = 0; i < sizeof(arr) / sizeof(arr[0]); ++i)
     {
         ASSERT_TRUE(A.insert(arr[i]));
     }
@@ -445,7 +445,7 @@ TEST_F(SortedTreeTests, NonBalancedTree)
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
+    for(uint32_t i = 0; i < sizeof(arr) / sizeof(arr[0]); ++i)
     {
         ASSERT_TRUE(A.insert(arr[i]));
     }
@@ -461,7 +461,7 @@ TEST_F(SortedTreeTests, RightSkewedTree)
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
+    for(uint32_t i = 0; i < sizeof(arr) / sizeof(arr[0]); ++i)
     {
         ASSERT_TRUE(A.insert(arr[i]));
     }
@@ -477,7 +477,7 @@ TEST_F(SortedTreeTests, LeftSkewedTree)
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < sizeof(arr)/sizeof(arr[0]); ++i)
+    for(uint32_t i = 0; i < sizeof(arr) / sizeof(arr[0]); ++i)
     {
         ASSERT_TRUE(A.insert(arr[i]));
     }
@@ -497,10 +497,10 @@ TEST(TreeTests, SortedNullTreeTest)
 TEST(TreeTests, DepthInsertTest)
 {
     const int arr[] = {10, 5, 20, 15, 8, 2, 25};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.insert(data.at(i)));
     }
@@ -517,10 +517,10 @@ TEST(TreeTests, DepthInsertTest)
 TEST(TreeTests, BottomTopDepthRemoveTest)
 {
     const int arr[] = {10, 15, 5};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.insert(data.at(i)));
     }
@@ -537,10 +537,10 @@ TEST(TreeTests, BottomTopDepthRemoveTest)
 TEST(TreeTests, TopBottomDepthRemoveTest)
 {
     const int arr[] = {10, 5, 20, 2, 8, 15};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         ASSERT_TRUE(A.insert(data.at(i)));
     }
@@ -569,10 +569,10 @@ TEST(TreeTests, DepthNullTreeTest)
 TEST(TreeTests, DepthClearTest)
 {
     const int arr2[] = {10, 5, 20, 15, 8, 2, 25, 23, 1, 3, 7, 324, 90, 34, -3, -10};
-    Vector<int> data2(arr2, sizeof(arr2)/sizeof(arr2[0]));
+    Vector<int> data2(arr2, sizeof(arr2) / sizeof(arr2[0]));
     Tree<int> C;
 
-    for (uint32_t i = 0; i < data2.length(); ++i)
+    for(uint32_t i = 0; i < data2.length(); ++i)
     {
         ASSERT_TRUE(C.insert(data2.at(i)));
     }
@@ -599,24 +599,23 @@ TEST(TreeTests, PrintSimplestTreeTest)
 TEST(TreeTests, PrintBalancedTreeTest)
 {
     const int arr[] = {4, 2, 6, 1, 3, 5, 10};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         A.insert(data.at(i) * 100000);
     }
 
     std::stringstream ss1;
-    ss1
-        << "                     400000                      "    << std::endl
-        << "               _________|_________               "    << std::endl
-        << "              /                   \\              "   << std::endl
-        << "       200000                      600000        "    << std::endl
-        << "        __|__                       __|__        "    << std::endl
-        << "       /     \\                     /     \\       "  << std::endl
-        << "100000        300000        500000        1000000"    << std::endl;
+    ss1 << "                     400000                      " << std::endl
+        << "               _________|_________               " << std::endl
+        << "              /                   \\              " << std::endl
+        << "       200000                      600000        " << std::endl
+        << "        __|__                       __|__        " << std::endl
+        << "       /     \\                     /     \\       " << std::endl
+        << "100000        300000        500000        1000000" << std::endl;
 
     std::stringstream ss2;
     ss2 << A;
@@ -626,27 +625,26 @@ TEST(TreeTests, PrintBalancedTreeTest)
 TEST(TreeTests, PrintNonBalancedTreeTest)
 {
     const int arr[] = {10, 5, 20, 8, 2, 25, 15, 23, 12, 18, 30};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         A.insert(data.at(i));
     }
 
     std::stringstream ss1;
-    ss1
-        << "                  10                      "      << std::endl
-        << "          _________|_________             "      << std::endl
-        << "         /                   \\            "     << std::endl
-        << "       5                      20          "      << std::endl
-        << "    ___|___                 ___|___       "      << std::endl
-        << "   /       \\               /       \\      "    << std::endl
-        << " 2           8          15          25    "      << std::endl
-        << "                         |           |    "      << std::endl
-        << "                        / \\         / \\   "    << std::endl
-        << "                     12    18    23    30 "      << std::endl;
+    ss1 << "                  10                      " << std::endl
+        << "          _________|_________             " << std::endl
+        << "         /                   \\            " << std::endl
+        << "       5                      20          " << std::endl
+        << "    ___|___                 ___|___       " << std::endl
+        << "   /       \\               /       \\      " << std::endl
+        << " 2           8          15          25    " << std::endl
+        << "                         |           |    " << std::endl
+        << "                        / \\         / \\   " << std::endl
+        << "                     12    18    23    30 " << std::endl;
 
     std::stringstream ss2;
     ss2 << A;
@@ -655,31 +653,34 @@ TEST(TreeTests, PrintNonBalancedTreeTest)
 
 TEST(TreeTests, PrintBigBalancedTreeTest)
 {
-    const int arr[] = {50, 25, 12, 38, 6, 3, 9, 18, 15, 22, 30, 26, 35, 42, 40, 48, 100, 75, 60, 55, 65, 85, 80, 90, 150, 175, 200, 160, 125, 108, 130};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    const int arr[] = {50,  25, 12, 38, 6,  3,  9,  18, 15,  22,  30,  26,  35,  42,  40, 48,
+                       100, 75, 60, 55, 65, 85, 80, 90, 150, 175, 200, 160, 125, 108, 130};
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         A.insert(data.at(i));
     }
 
     std::stringstream ss1;
-    ss1
-        << "                                             50                                              "          << std::endl
-        << "                         _____________________|_____________________                         "          << std::endl
-        << "                        /                                           \\                        "         << std::endl
-        << "                     25                                              100                     "          << std::endl
-        << "             _________|_________                             _________|_________             "          << std::endl
-        << "            /                   \\                           /                   \\            "        << std::endl
-        << "         12                      38                      75                      150         "          << std::endl
-        << "       ___|___                 ___|___                 ___|___                 ___|___       "          << std::endl
-        << "      /       \\               /       \\               /       \\               /       \\      "      << std::endl
-        << "    6          18          30          42          60          85          125         175   "          << std::endl
-        << "    |           |           |           |           |           |           |           |    "          << std::endl
-        << "   / \\         / \\         / \\         / \\         / \\         / \\         / \\         / \\   "  << std::endl
-        << " 3     9    15    22    26    35    40    48    55    65    80    90    108   130   160   200"          << std::endl;
+    ss1 << "                                             50                                              " << std::endl
+        << "                         _____________________|_____________________                         " << std::endl
+        << "                        /                                           \\                        " << std::endl
+        << "                     25                                              100                     " << std::endl
+        << "             _________|_________                             _________|_________             " << std::endl
+        << "            /                   \\                           /                   \\            "
+        << std::endl
+        << "         12                      38                      75                      150         " << std::endl
+        << "       ___|___                 ___|___                 ___|___                 ___|___       " << std::endl
+        << "      /       \\               /       \\               /       \\               /       \\      "
+        << std::endl
+        << "    6          18          30          42          60          85          125         175   " << std::endl
+        << "    |           |           |           |           |           |           |           |    " << std::endl
+        << "   / \\         / \\         / \\         / \\         / \\         / \\         / \\         / \\   "
+        << std::endl
+        << " 3     9    15    22    26    35    40    48    55    65    80    90    108   130   160   200" << std::endl;
 
     std::stringstream ss2;
     ss2 << A;
@@ -689,30 +690,29 @@ TEST(TreeTests, PrintBigBalancedTreeTest)
 TEST(TreeTests, PrintBigNonBalancedTreeTest)
 {
     const int arr[] = {28, 12, 6, 80, 43, 586, 100, 19, 29, 81, 25, 21, 34, 15};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         A.insert(data.at(i));
     }
 
     std::stringstream ss1;
-    ss1
-        << "                                    28                                     "      << std::endl
-        << "                _____________________|_____________________                "      << std::endl
-        << "               /                                           \\               "     << std::endl
-        << "            12                                              80             "      << std::endl
-        << "    _________|_________                             _________|_________    "      << std::endl
-        << "   /                   \\                           /                   \\   "    << std::endl
-        << " 6                      19                      43                      586"      << std::endl
-        << "                      ___|___                 ___|                    ___| "      << std::endl
-        << "                     /       \\               /                       /     "     << std::endl
-        << "                  15          25          29                      100      "      << std::endl
-        << "                               |           |                       |       "      << std::endl
-        << "                              /             \\                     /        "     << std::endl
-        << "                           21                34                81          "      << std::endl;
+    ss1 << "                                    28                                     " << std::endl
+        << "                _____________________|_____________________                " << std::endl
+        << "               /                                           \\               " << std::endl
+        << "            12                                              80             " << std::endl
+        << "    _________|_________                             _________|_________    " << std::endl
+        << "   /                   \\                           /                   \\   " << std::endl
+        << " 6                      19                      43                      586" << std::endl
+        << "                      ___|___                 ___|                    ___| " << std::endl
+        << "                     /       \\               /                       /     " << std::endl
+        << "                  15          25          29                      100      " << std::endl
+        << "                               |           |                       |       " << std::endl
+        << "                              /             \\                     /        " << std::endl
+        << "                           21                34                81          " << std::endl;
 
     std::stringstream ss2;
     ss2 << A;
@@ -722,27 +722,26 @@ TEST(TreeTests, PrintBigNonBalancedTreeTest)
 TEST(TreeTests, PrintRightSkewedTreeTest)
 {
     const int arr[] = {11, 12, 13, 14};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         A.insert(data.at(i));
     }
 
     std::stringstream ss1;
-    ss1
-        << "11                      "  << std::endl
-        << " |_________             "  << std::endl
+    ss1 << "11                      " << std::endl
+        << " |_________             " << std::endl
         << "           \\            " << std::endl
-        << "            12          "  << std::endl
-        << "             |___       "  << std::endl
+        << "            12          " << std::endl
+        << "             |___       " << std::endl
         << "                 \\      " << std::endl
-        << "                  13    "  << std::endl
-        << "                   |    "  << std::endl
+        << "                  13    " << std::endl
+        << "                   |    " << std::endl
         << "                    \\   " << std::endl
-        << "                     14 "  << std::endl;
+        << "                     14 " << std::endl;
 
     std::stringstream ss2;
     ss2 << A;
@@ -752,27 +751,26 @@ TEST(TreeTests, PrintRightSkewedTreeTest)
 TEST(TreeTests, PrintLeftSkewedTreeTest)
 {
     const int arr[] = {14, 13, 12, 11};
-    Vector<int> data(arr, sizeof(arr)/sizeof(arr[0]));
+    Vector<int> data(arr, sizeof(arr) / sizeof(arr[0]));
 
     Tree<int> A;
 
-    for (uint32_t i = 0; i < data.length(); ++i)
+    for(uint32_t i = 0; i < data.length(); ++i)
     {
         A.insert(data.at(i));
     }
 
     std::stringstream ss1;
-    ss1
-        << "                     14 "  << std::endl
-        << "             _________| "  << std::endl
-        << "            /           "  << std::endl
-        << "         13             "  << std::endl
-        << "       ___|             "  << std::endl
-        << "      /                 "  << std::endl
-        << "   12                   "  << std::endl
-        << "    |                   "  << std::endl
-        << "   /                    "  << std::endl
-        << "11                      "  << std::endl;
+    ss1 << "                     14 " << std::endl
+        << "             _________| " << std::endl
+        << "            /           " << std::endl
+        << "         13             " << std::endl
+        << "       ___|             " << std::endl
+        << "      /                 " << std::endl
+        << "   12                   " << std::endl
+        << "    |                   " << std::endl
+        << "   /                    " << std::endl
+        << "11                      " << std::endl;
 
     std::stringstream ss2;
     ss2 << A;

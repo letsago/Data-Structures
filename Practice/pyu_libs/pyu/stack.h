@@ -10,51 +10,25 @@ template <typename T>
 class Stack
 {
 
-public:
+  public:
+    Stack(shared_ptr<LinearStorageInterface<T>> pLsi) { m_pLsi = pLsi; }
 
-    Stack(shared_ptr<LinearStorageInterface<T>> pLsi)
-    {
-        m_pLsi = pLsi;
-    }
+    bool pop() { return m_pLsi->remove_back(); }
 
-    bool pop()
-    {  
-        return m_pLsi->remove_back();
-    }
+    bool push(T value) { return m_pLsi->insert_back(value); }
 
-    bool push(T value)
-    {
-        return m_pLsi->insert_back(value);
-    }
+    T& top() { return m_pLsi->back(); }
 
-    T& top()
-    {
-        return m_pLsi->back();
-    }
+    const T& top() const { return m_pLsi->back(); }
 
-    const T& top() const
-    {
-        return m_pLsi->back();
-    }  
+    int length() const { return m_pLsi->length(); }
 
-    int length() const
-    {
-        return m_pLsi->length();
-    }
+    bool empty() { return m_pLsi->empty(); }
 
-    bool empty()
-    {
-        return m_pLsi->empty();
-    }
+    void clear() { m_pLsi->clear(); }
 
-    void clear()
-    {
-        m_pLsi->clear();
-    }
-
-private:
-
+  private:
     shared_ptr<LinearStorageInterface<T>> m_pLsi;
 };
 
-}
+} // namespace pyu
