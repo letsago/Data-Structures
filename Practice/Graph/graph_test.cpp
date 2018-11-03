@@ -54,7 +54,7 @@ Vector<ComplexType> DataGenerator<ComplexType>(const int arr[], size_t size)
     return x;
 }
 
-typedef testing::Types<int, ComplexType> Implementations;
+typedef testing::Types<int> Implementations;
 TYPED_TEST_CASE(GraphTests, Implementations);
 
 TYPED_TEST(GraphTests, DistinctConnectTest)
