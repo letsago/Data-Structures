@@ -34,9 +34,21 @@ struct ComplexType
     uint32_t m_value;
 };
 
-typedef testing::Types<OrderedMap<int, int>, UnorderedMap<int, int>> PrimitiveTypeImplementations;
-typedef testing::Types<OrderedMap<int, ComplexType>, UnorderedMap<int, ComplexType>> NonPrimitiveValueImplementations;
-typedef testing::Types<OrderedMap<ComplexType, int>> NonPrimitiveKeyImplementations;
+struct IntHash
+{
+    uint64_t operator()(const int key) const { return static_cast<const uint64_t>(key); }
+};
+
+struct ComplexTypeHash
+{
+    uint64_t operator()(const ComplexType key) const { return static_cast<const uint64_t>(key.m_value); }
+};
+
+typedef testing::Types<OrderedMap<int, int>, UnorderedMap<int, int, IntHash>> PrimitiveTypeImplementations;
+typedef testing::Types<OrderedMap<int, ComplexType>, UnorderedMap<int, ComplexType, IntHash>>
+    NonPrimitiveValueImplementations;
+typedef testing::Types<OrderedMap<ComplexType, int>, UnorderedMap<ComplexType, int, ComplexTypeHash>>
+    NonPrimitiveKeyImplementations;
 TYPED_TEST_CASE(MapPrimitiveTypeTests, PrimitiveTypeImplementations);
 TYPED_TEST_CASE(MapNonPrimitiveValueTests, NonPrimitiveValueImplementations);
 TYPED_TEST_CASE(MapNonPrimitiveKeyTests, NonPrimitiveKeyImplementations);

@@ -9,7 +9,7 @@
 namespace pyu
 {
 
-template <typename K, typename V>
+template <typename K, typename V, typename F>
 class UnorderedMap
 {
   private:
@@ -249,11 +249,6 @@ class UnorderedMap
         size_t m_depth;
     };
 
-    Vector<LinkedList<KeyValuePair>> m_map;
-    size_t m_bucketSize;
-    size_t m_size;
-    static const uint32_t kBucketDepth = 3;
-
     void rebalance()
     {
         m_bucketSize *= 2;
@@ -276,9 +271,16 @@ class UnorderedMap
         m_map = newMap;
     }
 
-    uint64_t getBucket(const K& key) const { return hashFunction(key) & (m_bucketSize - 1); }
+    uint64_t getBucket(const K& key) const { return kHashFunction(key) & (m_bucketSize - 1); }
 
-    static uint64_t hashFunction(const K& key) { return static_cast<const uint64_t>(key); }
+    Vector<LinkedList<KeyValuePair>> m_map;
+    size_t m_bucketSize;
+    size_t m_size;
+    static const uint32_t kBucketDepth = 3;
+    static const F kHashFunction;
 };
+
+template <typename K, typename V, typename F>
+const F UnorderedMap<K, V, F>::kHashFunction;
 
 } // namespace pyu
