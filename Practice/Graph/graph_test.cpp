@@ -1,7 +1,9 @@
+#include <functional>
 #include <gtest/gtest.h>
 #include <pyu/common.h>
 #include <pyu/graph.h>
 #include <pyu/vector.h>
+#include <pyu/weightedgraph.h>
 
 using namespace pyu;
 
@@ -54,19 +56,44 @@ Vector<ComplexType> DataGenerator<ComplexType>(const int arr[], size_t size)
     return x;
 }
 
-typedef testing::Types<int> Implementations;
+struct ComplexTypeHash
+{
+    uint64_t operator()(const ComplexType key) const { return static_cast<const uint64_t>(key.m_value); }
+};
+
+template <typename A, typename B, typename C>
+struct TypeDefinitions
+{
+    typedef A Type1;
+    typedef B Type2;
+    typedef C Type3;
+};
+
+typedef testing::Types<TypeDefinitions<Graph<int, std::hash<int>>, int, std::hash<int>>,
+                       TypeDefinitions<WeightedGraph<int, std::hash<int>>, int, std::hash<int>>,
+                       TypeDefinitions<Graph<ComplexType, ComplexTypeHash>, ComplexType, ComplexTypeHash>,
+                       TypeDefinitions<WeightedGraph<ComplexType, ComplexTypeHash>, ComplexType, ComplexTypeHash>>
+    Implementations;
 TYPED_TEST_CASE(GraphTests, Implementations);
 
 TYPED_TEST(GraphTests, DistinctConnectTest)
 {
     const int arr[] = {10, 5, 20, 15};
-    Vector<TypeParam> data = DataGenerator<TypeParam>(arr, ARRAYSIZE(arr));
-    Graph<TypeParam> A;
+    Vector<typename TypeParam::Type2> data = DataGenerator<typename TypeParam::Type2>(arr, ARRAYSIZE(arr));
+    typename TypeParam::Type1 A;
     ASSERT_TRUE(A.empty());
+
+    constexpr bool isWeightedGraph =
+        (std::is_same<typename TypeParam::Type1,
+                      WeightedGraph<typename TypeParam::Type2, typename TypeParam::Type3>>::value);
 
     for(uint32_t i = 1; i < data.length(); ++i)
     {
-        A.connect(data.front(), data.at(i));
+        if constexpr(isWeightedGraph)
+            A.connect(data.front(), data.at(i), i);
+        else
+            A.connect(data.front(), data.at(i));
+
         ASSERT_EQ(A.size(), i + 1);
     }
 
@@ -79,16 +106,28 @@ TYPED_TEST(GraphTests, DistinctConnectTest)
 TYPED_TEST(GraphTests, NonDistinctConnectTest)
 {
     const int arr[] = {10, 5, 20, 15};
-    Vector<TypeParam> data = DataGenerator<TypeParam>(arr, ARRAYSIZE(arr));
-    Graph<TypeParam> A;
+    Vector<typename TypeParam::Type2> data = DataGenerator<typename TypeParam::Type2>(arr, ARRAYSIZE(arr));
+    typename TypeParam::Type1 A;
     ASSERT_TRUE(A.empty());
-    A.connect(data.front(), data.front());
+    constexpr bool isWeightedGraph =
+        (std::is_same<typename TypeParam::Type1,
+                      WeightedGraph<typename TypeParam::Type2, typename TypeParam::Type3>>::value);
+
+    if constexpr(isWeightedGraph)
+        A.connect(data.front(), data.front(), 0);
+    else
+        A.connect(data.front(), data.front());
+
     ASSERT_TRUE(A.contains(data.front()));
     ASSERT_EQ(A.size(), 1);
 
     for(uint32_t i = 1; i < data.length(); ++i)
     {
-        A.connect(data.front(), data.at(i));
+        if constexpr(isWeightedGraph)
+            A.connect(data.front(), data.at(i), i);
+        else
+            A.connect(data.front(), data.at(i));
+
         ASSERT_EQ(A.size(), i + 1);
     }
 
@@ -99,7 +138,11 @@ TYPED_TEST(GraphTests, NonDistinctConnectTest)
 
     for(uint32_t i = 1; i < data.length(); ++i)
     {
-        A.connect(data.at(i), data.front());
+        if constexpr(isWeightedGraph)
+            A.connect(data.at(i), data.front(), i);
+        else
+            A.connect(data.at(i), data.front());
+
         ASSERT_EQ(A.size(), data.length());
     }
 
@@ -112,14 +155,22 @@ TYPED_TEST(GraphTests, NonDistinctConnectTest)
 TYPED_TEST(GraphTests, RemoveTest)
 {
     const int arr[] = {10, 5, 20, 15};
-    Vector<TypeParam> data = DataGenerator<TypeParam>(arr, ARRAYSIZE(arr));
-    Graph<TypeParam> A;
+    Vector<typename TypeParam::Type2> data = DataGenerator<typename TypeParam::Type2>(arr, ARRAYSIZE(arr));
+    typename TypeParam::Type1 A;
     ASSERT_TRUE(A.empty());
     ASSERT_FALSE(A.remove(data.front()));
 
+    constexpr bool isWeightedGraph =
+        (std::is_same<typename TypeParam::Type1,
+                      WeightedGraph<typename TypeParam::Type2, typename TypeParam::Type3>>::value);
+
     for(uint32_t i = 1; i < data.length(); ++i)
     {
-        A.connect(data.front(), data.at(i));
+        if constexpr(isWeightedGraph)
+            A.connect(data.front(), data.at(i), i);
+        else
+            A.connect(data.front(), data.at(i));
+
         ASSERT_EQ(A.size(), i + 1);
     }
 
@@ -144,13 +195,21 @@ TYPED_TEST(GraphTests, RemoveTest)
 TYPED_TEST(GraphTests, ShortestDistanceConnectedTest)
 {
     const int arr[] = {10, 5, 20, 15};
-    Vector<TypeParam> data = DataGenerator<TypeParam>(arr, ARRAYSIZE(arr));
-    Graph<TypeParam> A;
+    Vector<typename TypeParam::Type2> data = DataGenerator<typename TypeParam::Type2>(arr, ARRAYSIZE(arr));
+    typename TypeParam::Type1 A;
     ASSERT_TRUE(A.empty());
+
+    constexpr bool isWeightedGraph =
+        (std::is_same<typename TypeParam::Type1,
+                      WeightedGraph<typename TypeParam::Type2, typename TypeParam::Type3>>::value);
 
     for(uint32_t i = 1; i < data.length(); ++i)
     {
-        A.connect(data.front(), data.at(i));
+        if constexpr(isWeightedGraph)
+            A.connect(data.front(), data.at(i), i);
+        else
+            A.connect(data.front(), data.at(i));
+
         ASSERT_EQ(A.size(), i + 1);
     }
 
@@ -161,25 +220,51 @@ TYPED_TEST(GraphTests, ShortestDistanceConnectedTest)
     ASSERT_EQ(A.shortestDistance(data.front(), data.front()), 0);
 
     for(uint32_t i = 1; i < data.length(); ++i)
-        ASSERT_EQ(A.shortestDistance(data.front(), data.at(i)), 1);
+    {
+        if constexpr(isWeightedGraph)
+            ASSERT_EQ(A.shortestDistance(data.front(), data.at(i)), i);
+        else
+            ASSERT_EQ(A.shortestDistance(data.front(), data.at(i)), 1);
+    }
 
     for(uint32_t i = 2; i < data.length(); ++i)
-        ASSERT_EQ(A.shortestDistance(data.at(1), data.at(i)), 2);
+    {
+        if constexpr(isWeightedGraph)
+            ASSERT_EQ(A.shortestDistance(data.at(1), data.at(i)), i + 1);
+        else
+            ASSERT_EQ(A.shortestDistance(data.at(1), data.at(i)), 2);
+    }
 
-    A.connect(data.at(1), data.at(2));
-    ASSERT_EQ(A.shortestDistance(data.at(1), data.at(2)), 1);
+    if constexpr(isWeightedGraph)
+    {
+        A.connect(data.at(1), data.at(2), 2);
+        ASSERT_EQ(A.shortestDistance(data.at(1), data.at(2)), 2);
+    }
+    else
+    {
+        A.connect(data.at(1), data.at(2));
+        ASSERT_EQ(A.shortestDistance(data.at(1), data.at(2)), 1);
+    }
 }
 
 TYPED_TEST(GraphTests, DistinctShortestDistanceNonConnectedTest)
 {
     const int arr[] = {10, 5, 20, 15};
-    Vector<TypeParam> data = DataGenerator<TypeParam>(arr, ARRAYSIZE(arr));
-    Graph<TypeParam> A;
+    Vector<typename TypeParam::Type2> data = DataGenerator<typename TypeParam::Type2>(arr, ARRAYSIZE(arr));
+    typename TypeParam::Type1 A;
     ASSERT_TRUE(A.empty());
+
+    constexpr bool isWeightedGraph =
+        (std::is_same<typename TypeParam::Type1,
+                      WeightedGraph<typename TypeParam::Type2, typename TypeParam::Type3>>::value);
 
     for(uint32_t i = 1; i < data.length(); ++i)
     {
-        A.connect(data.front(), data.at(i));
+        if constexpr(isWeightedGraph)
+            A.connect(data.front(), data.at(i), i);
+        else
+            A.connect(data.front(), data.at(i));
+
         ASSERT_EQ(A.size(), i + 1);
     }
 
@@ -189,21 +274,32 @@ TYPED_TEST(GraphTests, DistinctShortestDistanceNonConnectedTest)
     ASSERT_EQ(A.size(), data.length());
 
     for(uint32_t i = 1; i < data.length(); ++i)
-        ASSERT_EQ(A.shortestDistance(data.front(), data.at(i)), 1);
+    {
+        if constexpr(isWeightedGraph)
+            ASSERT_EQ(A.shortestDistance(data.front(), data.at(i)), i);
+        else
+            ASSERT_EQ(A.shortestDistance(data.front(), data.at(i)), 1);
+    }
 
     ASSERT_TRUE(A.remove(data.front()));
 
     for(uint32_t i = 1; i < data.length(); ++i)
+    {
         ASSERT_THROW(A.shortestDistance(data.front(), data.at(i)), std::out_of_range);
+        ASSERT_THROW(A.shortestDistance(data.at(i - 1), data.at(i)), std::out_of_range);
+    }
+
+    ASSERT_THROW(A.shortestDistance(data.at(1), data.back()), std::out_of_range);
 }
 
 TYPED_TEST(GraphTests, ContainsTest)
 {
     const int arr[] = {10, 5, 20, 15};
-    Vector<TypeParam> data = DataGenerator<TypeParam>(arr, ARRAYSIZE(arr));
+    Vector<typename TypeParam::Type2> data = DataGenerator<typename TypeParam::Type2>(arr, ARRAYSIZE(arr));
     const int arr2[] = {80};
-    Vector<TypeParam> nonContainedData = DataGenerator<TypeParam>(arr2, ARRAYSIZE(arr2));
-    Graph<TypeParam> A;
+    Vector<typename TypeParam::Type2> nonContainedData =
+        DataGenerator<typename TypeParam::Type2>(arr2, ARRAYSIZE(arr2));
+    typename TypeParam::Type1 A;
     ASSERT_TRUE(A.empty());
 
     for(uint32_t i = 0; i < data.length(); ++i)
@@ -211,9 +307,17 @@ TYPED_TEST(GraphTests, ContainsTest)
 
     ASSERT_TRUE(A.empty());
 
+    constexpr bool isWeightedGraph =
+        (std::is_same<typename TypeParam::Type1,
+                      WeightedGraph<typename TypeParam::Type2, typename TypeParam::Type3>>::value);
+
     for(uint32_t i = 1; i < data.length(); ++i)
     {
-        A.connect(data.front(), data.at(i));
+        if constexpr(isWeightedGraph)
+            A.connect(data.front(), data.at(i), i);
+        else
+            A.connect(data.front(), data.at(i));
+
         ASSERT_EQ(A.size(), i + 1);
     }
 

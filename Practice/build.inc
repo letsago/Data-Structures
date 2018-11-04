@@ -6,8 +6,8 @@ OS = Mac
 LIB_EXT = dylib
 endif
 
-CC = g++
-DEFAULT_FLAGS = -Wall -std=c++14 -Werror
+CC = clang++-4.0
+DEFAULT_FLAGS = -Wall -std=c++1z -Werror
 LIB_FLAGS = -c -fPIC
 LINKER_FLAGS := $(LINKER_FLAGS)
 DEBUG_FLAGS = -ggdb
@@ -43,7 +43,7 @@ R_PATH := $(addprefix $(rpath_base) ,$(LIBRARY_PATH))
 else
 rpath_base = -Wl,-rpath=
 R_PATH := $(addprefix $(rpath_base),$(LIBRARY_PATH))
-endif 
+endif
 
 TARGET_LIBS := $(filter-out $(TARGET_NAME), $(TARGET_LIBS))
 TARGET_LIBS := $(addprefix -l, $(TARGET_LIBS))
