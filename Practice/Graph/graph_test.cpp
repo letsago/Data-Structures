@@ -22,6 +22,8 @@ struct ComplexType
 
     bool operator==(const ComplexType& other) const { return m_value == other.m_value; }
 
+    bool operator!=(const ComplexType& other) const { return m_value != other.m_value; }
+
     int m_value;
 };
 
