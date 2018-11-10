@@ -8,40 +8,19 @@ class Room;
 class RoombaHardware
 {
   public:
-    RoombaHardware(size_t battery) : m_battery(battery){};
+    RoombaHardware(size_t battery) : m_battery(battery), m_cleanState(false){};
 
     RoombaHardware(const RoombaHardware& other) = delete;
 
-    bool move(Room& room)
-    {
-        if(m_battery == 0)
-            throw "battery is depleted";
-        else
-            --m_battery;
+    bool move(Room& room);
 
-        return false;
-    }
+    void rotate(Room& room);
 
-    void rotate()
-    {
-        if(m_battery == 0)
-            throw "battery is depleted";
-        else
-            --m_battery;
-    }
+    void setCleanMode(bool cleanState);
 
-    void setCleanMode()
-    {
-        if(m_battery == 0)
-            throw "battery is depleted";
-        else
-            --m_battery;
-    }
-
-    void setBattery(size_t battery) { m_battery = battery; }
-
-    size_t getBattery() { return m_battery; }
+    void setBattery(size_t battery);
 
   private:
     size_t m_battery;
+    bool m_cleanState;
 };

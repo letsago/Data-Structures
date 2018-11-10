@@ -1,6 +1,6 @@
 #pragma once
 
-#include "roombahardware.h"
+#include "room.h"
 
 class RoombaBrain
 {
@@ -9,9 +9,9 @@ class RoombaBrain
 
     RoombaBrain(const RoombaBrain& other) = delete;
 
-    bool isClean() { return false; }
+    bool isClean() const;
 
-    void step() { m_roomba.rotate(); }
+    void step(Room& room);
 
   private:
     RoombaHardware& m_roomba;

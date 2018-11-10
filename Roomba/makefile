@@ -4,8 +4,10 @@ TARGET_TYPE = program
 TARGET_NAME = roomba_test
 
 DIRS := \
+	Src \
 	Test \
 
 include Test/makefile.exp
+include Src/makefile.exp
 
 include build.inc
