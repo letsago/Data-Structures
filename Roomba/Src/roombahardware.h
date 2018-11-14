@@ -8,7 +8,7 @@ class Room;
 class RoombaHardware
 {
   public:
-    RoombaHardware(size_t battery) : m_battery(battery), m_cleanState(false){};
+    RoombaHardware(size_t battery) : m_battery(battery), m_cleanState(true){};
 
     RoombaHardware(const RoombaHardware& other) = delete;
 
@@ -17,6 +17,8 @@ class RoombaHardware
     void rotate(Room& room);
 
     void setCleanMode(bool cleanState);
+
+    bool getCleanMode() const;
 
     void setBattery(size_t battery);
 

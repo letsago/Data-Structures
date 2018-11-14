@@ -38,4 +38,6 @@ void RoombaHardware::setCleanMode(bool cleanState)
     m_cleanState = cleanState;
 }
 
+bool RoombaHardware::getCleanMode() const { return m_cleanState; }
+
 void RoombaHardware::setBattery(size_t battery) { m_battery = battery; }

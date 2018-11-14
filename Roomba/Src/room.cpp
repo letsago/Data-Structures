@@ -1,6 +1,7 @@
 #include "room.h"
+#include "colors.h"
 
-Room::Room(std::string file) : m_roomDimensions({0, 0})
+Room::Room(std::string file) : m_dirtySpaces(0)
 {
     std::ifstream inf(file);
 
@@ -13,17 +14,95 @@ Room::Room(std::string file) : m_roomDimensions({0, 0})
     inf >> *this;
 }
 
-bool Room::isClean() const { return false; }
-
-void Room::dropRoomba(size_t x, size_t y, Direction dir, RoombaHardware& roomba)
+std::ostream& operator<<(std::ostream& os, const Room& room)
 {
-    if(m_room.at(x * m_roomDimensions.columnCount + y) == ' ')
-        m_room.replace(x * m_roomDimensions.columnCount + y, 1, "x");
-    else
-        throw std::out_of_range("cannot drop roomba here");
+    Room::Coordinate coor = {0, 0};
 
-    m_roombaProperties.roombaCoor1 = x;
-    m_roombaProperties.roombaCoor2 = y;
+    for(size_t row = 0; row < room.m_room.size(); ++row)
+    {
+        std::string roomRow;
+        coor.x = row;
+
+        for(size_t col = 0; col < room.m_room[row].size(); ++col)
+        {
+            coor.y = col;
+
+            if(!room.getRoom(coor).isTraversable)
+                roomRow.append("#");
+            else if(room.getRoom(coor).isClean)
+            {
+                if(coor == room.m_roombaProperties.roombaCoor)
+                    roomRow.append(BLUEBACK("x"));
+                else
+                    roomRow.append(BLUEBACK(" "));
+            }
+            else
+            {
+                if(coor == room.m_roombaProperties.roombaCoor)
+                    roomRow.append("x");
+                else
+                    roomRow.append(" ");
+            }
+        }
+
+        roomRow.append("\n");
+        os << roomRow;
+    }
+
+    os << "\n";
+    return os;
+}
+
+std::istream& operator>>(std::istream& is, Room& room)
+{
+    room.clear();
+    std::vector<Room::RoomSpace> rowRoom;
+
+    while(is)
+    {
+        std::string strInput;
+        getline(is, strInput);
+
+        if(!strInput.empty())
+        {
+            rowRoom.resize(strInput.length());
+
+            for(size_t i = 0; i < strInput.length(); ++i)
+            {
+                Room::RoomSpace space;
+                space.isClean = false;
+
+                if(strInput[i] == ' ')
+                {
+                    ++room.m_dirtySpaces;
+                    space.isTraversable = true;
+                }
+                else
+                    space.isTraversable = false;
+
+                rowRoom[i] = space;
+            }
+
+            room.m_room.push_back(rowRoom);
+        }
+    }
+
+    return is;
+}
+
+bool Room::isClean() const { return m_dirtySpaces == 0; }
+
+void Room::dropRoomba(Coordinate coor, Direction dir, RoombaHardware& roomba)
+{
+    if(!getRoom(coor).isTraversable)
+        throw std::out_of_range("cannot drop roomba here");
+    else if(roomba.getCleanMode())
+    {
+        getRoom(coor).isClean = true;
+        --m_dirtySpaces;
+    }
+
+    m_roombaProperties.roombaCoor = coor;
     m_roombaProperties.roombaDir = dir;
 }
 
@@ -34,42 +113,43 @@ void Room::rotate(RoombaHardware& roomba)
 
 void Room::move(RoombaHardware& roomba)
 {
-    size_t roombaCoor1 = m_roombaProperties.roombaCoor1;
-    size_t roombaCoor2 = m_roombaProperties.roombaCoor2;
+    Coordinate roombaNewCoor = m_roombaProperties.roombaCoor;
 
     switch(m_roombaProperties.roombaDir)
     {
     case UP:
-        --roombaCoor1;
+        --roombaNewCoor.x;
         break;
     case RIGHT:
-        ++roombaCoor2;
+        ++roombaNewCoor.y;
         break;
     case DOWN:
-        ++roombaCoor1;
+        ++roombaNewCoor.x;
         break;
     case LEFT:
-        --roombaCoor2;
+        --roombaNewCoor.y;
         break;
     default:
         break;
     }
 
-    if(m_room.at(roombaCoor1 * m_roomDimensions.columnCount + roombaCoor2) != '#')
-    {
-        m_room.replace(m_roombaProperties.roombaCoor1 * m_roomDimensions.columnCount + m_roombaProperties.roombaCoor2,
-                       1, " ");
-        m_room.replace(roombaCoor1 * m_roomDimensions.columnCount + roombaCoor2, 1, "x");
-        m_roombaProperties.roombaCoor1 = roombaCoor1;
-        m_roombaProperties.roombaCoor2 = roombaCoor2;
-    }
-    else
+    if(!getRoom(roombaNewCoor).isTraversable)
         throw std::out_of_range("roomba didn't move");
+    else if(roomba.getCleanMode() && !getRoom(roombaNewCoor).isClean)
+    {
+        --m_dirtySpaces;
+        getRoom(roombaNewCoor).isClean = true;
+    }
+
+    m_roombaProperties.roombaCoor = roombaNewCoor;
 }
 
 void Room::clear()
 {
     m_room.clear();
-    m_roomDimensions.rowCount = 0;
-    m_roomDimensions.columnCount = 0;
+    m_dirtySpaces = 0;
 }
+
+const Room::RoomSpace& Room::getRoom(Coordinate coor) const { return m_room[coor.x][coor.y]; }
+
+Room::RoomSpace& Room::getRoom(Coordinate coor) { return m_room[coor.x][coor.y]; }

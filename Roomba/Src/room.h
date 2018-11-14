@@ -5,11 +5,12 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 class Room
 {
   public:
-    Room() : m_roomDimensions({0, 0}){};
+    Room() : m_dirtySpaces(0){};
 
     Room(std::string file);
 
@@ -24,36 +25,21 @@ class Room
         COUNT
     };
 
-    friend std::ostream& operator<<(std::ostream& os, const Room& room)
+    struct Coordinate
     {
-        os << room.m_room;
-        return os;
-    }
+        size_t x;
+        size_t y;
 
-    friend std::istream& operator>>(std::istream& is, Room& room)
-    {
-        room.clear();
+        bool operator==(const Coordinate& other) { return (x == other.x && y == other.y); }
+    };
 
-        while(is)
-        {
-            std::string strInput;
-            getline(is, strInput);
-            if(!strInput.empty())
-            {
-                strInput.append("\n");
-                room.m_room.append(strInput);
-                ++room.m_roomDimensions.rowCount;
-            }
-        }
+    friend std::ostream& operator<<(std::ostream& os, const Room& room);
 
-        room.m_roomDimensions.columnCount = (room.m_room.length()) / room.m_roomDimensions.rowCount;
-        room.m_room.append("\n");
-        return is;
-    }
+    friend std::istream& operator>>(std::istream& is, Room& room);
 
     bool isClean() const;
 
-    void dropRoomba(size_t x, size_t y, Direction dir, RoombaHardware& roomba);
+    void dropRoomba(Coordinate coor, Direction dir, RoombaHardware& roomba);
 
   private:
     void rotate(RoombaHardware& roomba);
@@ -62,22 +48,25 @@ class Room
 
     void clear();
 
-    struct RoomDimensions
-    {
-        size_t rowCount;
-        size_t columnCount;
-    };
-
     struct RoombaProperties
     {
-        size_t roombaCoor1;
-        size_t roombaCoor2;
+        Coordinate roombaCoor;
         Direction roombaDir;
     };
 
-    std::string m_room;
-    RoomDimensions m_roomDimensions;
+    struct RoomSpace
+    {
+        bool isTraversable;
+        bool isClean;
+    };
+
+    const RoomSpace& getRoom(Coordinate coor) const;
+
+    RoomSpace& getRoom(Coordinate coor);
+
+    std::vector<std::vector<RoomSpace>> m_room;
     RoombaProperties m_roombaProperties;
+    size_t m_dirtySpaces;
 
     friend class RoombaHardware;
 };
