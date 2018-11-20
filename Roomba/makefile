@@ -10,4 +10,4 @@ DIRS := \
 include Test/makefile.exp
 include Src/makefile.exp
 
-include build.inc
+include $(BUILD_TOOLS_PATH)/build.inc

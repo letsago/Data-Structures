@@ -59,3 +59,7 @@
 # End of https://www.gitignore.io/api/c++,linux,visualstudiocode
 
 Practice/outputs/*
+*/references/*
+.clang-format
+.clang-tidy
+.valgrindrc

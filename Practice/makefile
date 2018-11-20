@@ -32,4 +32,4 @@ include Stack/makefile.exp
 include Tree/makefile.exp
 include Vector/makefile.exp
 
-include build.inc
+include $(BUILD_TOOLS_PATH)/build.inc

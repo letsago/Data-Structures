@@ -2,4 +2,8 @@ TARGET_LIBS := \
     $(TARGET_LIBS) \
 	RoombaFunctionality \
 
+INCLUDE_PATH := \
+	$(INCLUDE_PATH) \
+    $(PROJECT_DIR)/Src \
+
 include $(PROJECT_DIR)/common.exp

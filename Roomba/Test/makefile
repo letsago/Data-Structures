@@ -2,4 +2,4 @@ TARGET_TYPE = library
 TARGET_NAME = RoombaProjectTest
 
 include makefile.exp
-include ../build.inc
+include $(BUILD_TOOLS_PATH)/build.inc
