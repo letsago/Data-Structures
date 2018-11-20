@@ -40,7 +40,9 @@ class shared_ptr
         if(m_pdata != other.m_pdata)
         {
             if(m_pdata != nullptr)
+            {
                 clear();
+            }
 
             m_pdata = other.m_pdata;
             m_counter = other.m_counter;

@@ -47,26 +47,34 @@ TEST(RoombaTests, SimpleCleanTest)
     ASSERT_FALSE(room.isClean());
 
     for(uint32_t i = 0; i < 2; i++)
+    {
         roomba.move(room);
+    }
 
     roomba.rotate(room);
     roomba.rotate(room);
     ASSERT_FALSE(room.isClean());
 
     for(uint32_t i = 0; i < 2; i++)
+    {
         roomba.move(room);
+    }
 
     roomba.rotate(room);
     ASSERT_FALSE(room.isClean());
 
     for(uint32_t i = 0; i < 2; i++)
+    {
         roomba.move(room);
+    }
 
     roomba.rotate(room);
     ASSERT_FALSE(room.isClean());
 
     for(uint32_t i = 0; i < 2; i++)
+    {
         roomba.move(room);
+    }
 
     ASSERT_FALSE(room.isClean());
 

@@ -37,7 +37,9 @@ class Iterator
     Iterator& operator+(uint32_t x)
     {
         for(uint32_t i = 0; i < x; ++i)
+        {
             m_curr->next();
+        }
 
         return *this;
     }
@@ -51,7 +53,9 @@ class Iterator
     const Iterator& operator+(uint32_t x) const
     {
         for(uint32_t i = 0; i < x; ++i)
+        {
             m_curr->next();
+        }
 
         return *this;
     }

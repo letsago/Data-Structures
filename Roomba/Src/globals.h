@@ -80,15 +80,25 @@ struct Coordinate
         const Coordinate leftCoor = {0, -1};
 
         if(coor == upCoor)
+        {
             dir = UP;
+        }
         else if(coor == downCoor)
+        {
             dir = DOWN;
+        }
         else if(coor == rightCoor)
+        {
             dir = RIGHT;
+        }
         else if(coor == leftCoor)
+        {
             dir = LEFT;
+        }
         else
+        {
             throw std::out_of_range("can only find direction from a unit coordinate");
+        }
 
         return dir;
     }

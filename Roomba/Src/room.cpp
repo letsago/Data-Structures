@@ -27,9 +27,13 @@ std::ostream& operator<<(std::ostream& os, const Room& room)
             os << room.getRoom(coor).getColor();
 
             if(coor == room.m_roombaProperties.roombaCoor)
+            {
                 os << room.m_roombaProperties;
+            }
             else
+            {
                 os << room.getRoom(coor).getSymbol();
+            }
         }
 
         os << std::endl;
@@ -64,7 +68,9 @@ std::istream& operator>>(std::istream& is, Room& room)
                     space.isTraversable = true;
                 }
                 else
+                {
                     space.isTraversable = false;
+                }
 
                 rowRoom[i] = space;
             }
@@ -81,8 +87,10 @@ bool Room::isClean() const { return m_dirtySpaces == 0; }
 void Room::dropRoomba(Coordinate coor, Direction dir, RoombaHardware& roomba)
 {
     if(!getRoom(coor).isTraversable)
+    {
         throw std::out_of_range("cannot drop roomba here");
-    else if(roomba.getCleanMode())
+    }
+    if(roomba.getCleanMode())
     {
         getRoom(coor).isClean = true;
         --m_dirtySpaces;
@@ -110,8 +118,10 @@ void Room::move(RoombaHardware& roomba)
     roombaNewCoor += Coordinate::GetCoordinateFromDirection(m_roombaProperties.roombaDir);
 
     if(!getRoom(roombaNewCoor).isTraversable)
+    {
         throw std::out_of_range("roomba didn't move");
-    else if(roomba.getCleanMode() && !getRoom(roombaNewCoor).isClean)
+    }
+    if(roomba.getCleanMode() && !getRoom(roombaNewCoor).isClean)
     {
         --m_dirtySpaces;
         getRoom(roombaNewCoor).isClean = true;

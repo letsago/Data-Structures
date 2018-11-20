@@ -39,7 +39,9 @@ Vector<int> DataGenerator<int>(const int arr[], size_t size)
     Vector<int> x;
 
     for(uint32_t i = 0; i < size; ++i)
+    {
         x.insert_back(arr[i]);
+    }
 
     return x;
 }
@@ -92,15 +94,21 @@ TYPED_TEST(GraphTests, DistinctConnectTest)
     for(uint32_t i = 1; i < data.length(); ++i)
     {
         if constexpr(isWeightedGraph)
+        {
             A.connect(data.front(), data.at(i), i);
+        }
         else
+        {
             A.connect(data.front(), data.at(i));
+        }
 
         ASSERT_EQ(A.size(), i + 1);
     }
 
     for(uint32_t i = 0; i < data.length(); ++i)
+    {
         ASSERT_TRUE(A.contains(data.at(i)));
+    }
 
     ASSERT_EQ(A.size(), data.length());
 }
@@ -116,9 +124,13 @@ TYPED_TEST(GraphTests, NonDistinctConnectTest)
                       WeightedGraph<typename TypeParam::Type2, typename TypeParam::Type3>>::value);
 
     if constexpr(isWeightedGraph)
+    {
         A.connect(data.front(), data.front(), 0);
+    }
     else
+    {
         A.connect(data.front(), data.front());
+    }
 
     ASSERT_TRUE(A.contains(data.front()));
     ASSERT_EQ(A.size(), 1);
@@ -126,30 +138,42 @@ TYPED_TEST(GraphTests, NonDistinctConnectTest)
     for(uint32_t i = 1; i < data.length(); ++i)
     {
         if constexpr(isWeightedGraph)
+        {
             A.connect(data.front(), data.at(i), i);
+        }
         else
+        {
             A.connect(data.front(), data.at(i));
+        }
 
         ASSERT_EQ(A.size(), i + 1);
     }
 
     for(uint32_t i = 0; i < data.length(); ++i)
+    {
         ASSERT_TRUE(A.contains(data.at(i)));
+    }
 
     ASSERT_EQ(A.size(), data.length());
 
     for(uint32_t i = 1; i < data.length(); ++i)
     {
         if constexpr(isWeightedGraph)
+        {
             A.connect(data.at(i), data.front(), i);
+        }
         else
+        {
             A.connect(data.at(i), data.front());
+        }
 
         ASSERT_EQ(A.size(), data.length());
     }
 
     for(uint32_t i = 0; i < data.length(); ++i)
+    {
         ASSERT_TRUE(A.contains(data.at(i)));
+    }
 
     ASSERT_EQ(A.size(), data.length());
 }
@@ -169,15 +193,21 @@ TYPED_TEST(GraphTests, RemoveTest)
     for(uint32_t i = 1; i < data.length(); ++i)
     {
         if constexpr(isWeightedGraph)
+        {
             A.connect(data.front(), data.at(i), i);
+        }
         else
+        {
             A.connect(data.front(), data.at(i));
+        }
 
         ASSERT_EQ(A.size(), i + 1);
     }
 
     for(uint32_t i = 0; i < data.length(); ++i)
+    {
         ASSERT_TRUE(A.contains(data.at(i)));
+    }
 
     ASSERT_EQ(A.size(), data.length());
 
@@ -189,7 +219,9 @@ TYPED_TEST(GraphTests, RemoveTest)
     }
 
     for(uint32_t i = 0; i < data.length(); ++i)
+    {
         ASSERT_FALSE(A.contains(data.at(i)));
+    }
 
     ASSERT_TRUE(A.empty());
 }
@@ -208,15 +240,21 @@ TYPED_TEST(GraphTests, ShortestDistanceConnectedTest)
     for(uint32_t i = 1; i < data.length(); ++i)
     {
         if constexpr(isWeightedGraph)
+        {
             A.connect(data.front(), data.at(i), i);
+        }
         else
+        {
             A.connect(data.front(), data.at(i));
+        }
 
         ASSERT_EQ(A.size(), i + 1);
     }
 
     for(uint32_t i = 0; i < data.length(); ++i)
+    {
         ASSERT_TRUE(A.contains(data.at(i)));
+    }
 
     ASSERT_EQ(A.size(), data.length());
     ASSERT_EQ(A.shortestDistance(data.front(), data.front()), 0);
@@ -224,23 +262,33 @@ TYPED_TEST(GraphTests, ShortestDistanceConnectedTest)
     for(uint32_t i = 1; i < data.length(); ++i)
     {
         if constexpr(isWeightedGraph)
+        {
             ASSERT_EQ(A.shortestDistance(data.front(), data.at(i)), i);
+        }
         else
+        {
             ASSERT_EQ(A.shortestDistance(data.front(), data.at(i)), 1);
+        }
     }
 
     for(uint32_t i = 2; i < data.length(); ++i)
     {
         if constexpr(isWeightedGraph)
+        {
             ASSERT_EQ(A.shortestDistance(data.at(1), data.at(i)), i + 1);
+        }
         else
+        {
             ASSERT_EQ(A.shortestDistance(data.at(1), data.at(i)), 2);
+        }
     }
 
     if constexpr(isWeightedGraph)
     {
-        A.connect(data.at(1), data.at(2), 2);
-        ASSERT_EQ(A.shortestDistance(data.at(1), data.at(2)), 2);
+        {
+            A.connect(data.at(1), data.at(2), 2);
+            ASSERT_EQ(A.shortestDistance(data.at(1), data.at(2)), 2);
+        }
     }
     else
     {
@@ -263,24 +311,34 @@ TYPED_TEST(GraphTests, DistinctShortestDistanceNonConnectedTest)
     for(uint32_t i = 1; i < data.length(); ++i)
     {
         if constexpr(isWeightedGraph)
+        {
             A.connect(data.front(), data.at(i), i);
+        }
         else
+        {
             A.connect(data.front(), data.at(i));
+        }
 
         ASSERT_EQ(A.size(), i + 1);
     }
 
     for(uint32_t i = 0; i < data.length(); ++i)
+    {
         ASSERT_TRUE(A.contains(data.at(i)));
+    }
 
     ASSERT_EQ(A.size(), data.length());
 
     for(uint32_t i = 1; i < data.length(); ++i)
     {
         if constexpr(isWeightedGraph)
+        {
             ASSERT_EQ(A.shortestDistance(data.front(), data.at(i)), i);
+        }
         else
+        {
             ASSERT_EQ(A.shortestDistance(data.front(), data.at(i)), 1);
+        }
     }
 
     ASSERT_TRUE(A.remove(data.front()));
@@ -305,7 +363,9 @@ TYPED_TEST(GraphTests, ContainsTest)
     ASSERT_TRUE(A.empty());
 
     for(uint32_t i = 0; i < data.length(); ++i)
+    {
         ASSERT_FALSE(A.contains(data.at(i)));
+    }
 
     ASSERT_TRUE(A.empty());
 
@@ -316,18 +376,26 @@ TYPED_TEST(GraphTests, ContainsTest)
     for(uint32_t i = 1; i < data.length(); ++i)
     {
         if constexpr(isWeightedGraph)
+        {
             A.connect(data.front(), data.at(i), i);
+        }
         else
+        {
             A.connect(data.front(), data.at(i));
+        }
 
         ASSERT_EQ(A.size(), i + 1);
     }
 
     for(uint32_t i = 0; i < nonContainedData.length(); ++i)
+    {
         ASSERT_FALSE(A.contains(nonContainedData.at(i)));
+    }
 
     for(uint32_t i = 0; i < data.length(); ++i)
+    {
         ASSERT_TRUE(A.contains(data.at(i)));
+    }
 
     ASSERT_EQ(A.size(), data.length());
 }

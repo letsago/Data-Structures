@@ -3,9 +3,10 @@
 bool RoombaHardware::move(Room& room)
 {
     if(m_battery == 0)
+    {
         throw std::out_of_range("battery is depleted");
-    else
-        --m_battery;
+    }
+    --m_battery;
 
     try
     {
@@ -21,9 +22,10 @@ bool RoombaHardware::move(Room& room)
 void RoombaHardware::rotate(Room& room)
 {
     if(m_battery == 0)
+    {
         throw std::out_of_range("battery is depleted");
-    else
-        --m_battery;
+    }
+    --m_battery;
 
     room.rotate(*this);
 }
@@ -31,9 +33,10 @@ void RoombaHardware::rotate(Room& room)
 void RoombaHardware::setCleanMode(bool cleanState)
 {
     if(m_battery == 0)
+    {
         throw std::out_of_range("battery is depleted");
-    else
-        --m_battery;
+    }
+    --m_battery;
 
     m_cleanState = cleanState;
 }

@@ -48,7 +48,9 @@ class LinkedList : public LinearStorageInterface<T>
         clear();
 
         for(Iterator<T> it = other.begin(); it != other.end(); ++it)
+        {
             LinearStorageInterface<T>::insert_back(*it);
+        }
 
         return *this;
     }
@@ -58,7 +60,9 @@ class LinkedList : public LinearStorageInterface<T>
     bool insert(const uint32_t position, const T& value)
     {
         if(position > m_size)
+        {
             return false;
+        }
 
         LLNode* next = m_head;
         LLNode* prev = nullptr;
@@ -88,10 +92,14 @@ class LinkedList : public LinearStorageInterface<T>
     bool remove(const uint32_t position)
     {
         if(m_head == nullptr)
+        {
             return false;
+        }
 
         if(position > m_size - 1)
+        {
             return false;
+        }
 
         LLNode* deleted = m_head;
         LLNode* prev = nullptr;
@@ -153,7 +161,9 @@ class LinkedList : public LinearStorageInterface<T>
         for(Iterator<T> it = begin(); it != end(); ++it)
         {
             if(*it == value)
+            {
                 indices.insert_back(counter);
+            }
 
             ++counter;
         }
@@ -182,7 +192,9 @@ class LinkedList : public LinearStorageInterface<T>
         for(Iterator<T> it = begin(); it != end(); ++it)
         {
             if(*it == val)
+            {
                 return it;
+            }
         }
 
         return end();
@@ -205,7 +217,9 @@ class LinkedList : public LinearStorageInterface<T>
         for(Iterator<T> it = begin(); it != end(); ++it)
         {
             if(*it == val)
+            {
                 return it;
+            }
         }
 
         return end();
@@ -257,7 +271,9 @@ class LinkedList : public LinearStorageInterface<T>
         LLIteratorNode& next()
         {
             if(m_curr != nullptr)
+            {
                 m_curr = m_curr->m_next;
+            }
 
             return *this;
         }

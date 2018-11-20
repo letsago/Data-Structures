@@ -60,12 +60,16 @@ TYPED_TEST(MapPrimitiveTypeTests, PrimitiveTypeInsertSuccessTest)
     TypeParam A;
 
     for(uint32_t i = 0; i < ARRAYSIZE(values); ++i)
+    {
         ASSERT_TRUE(A.insert(i, values[i]));
+    }
 
     ASSERT_EQ(A.size(), ARRAYSIZE(values));
 
     for(uint32_t i = 0; i < ARRAYSIZE(values); ++i)
+    {
         ASSERT_TRUE(A.contains(i));
+    }
 }
 
 TYPED_TEST(MapPrimitiveTypeTests, PrimitiveTypeInsertFailTest)
@@ -75,7 +79,9 @@ TYPED_TEST(MapPrimitiveTypeTests, PrimitiveTypeInsertFailTest)
     TypeParam A;
 
     for(uint32_t i = 0; i < ARRAYSIZE(values); ++i)
+    {
         ASSERT_TRUE(A.insert(i, values[i]));
+    }
 
     ASSERT_EQ(A.size(), ARRAYSIZE(values));
 
@@ -87,7 +93,9 @@ TYPED_TEST(MapPrimitiveTypeTests, PrimitiveTypeInsertFailTest)
     }
 
     for(uint32_t i = 0; i < ARRAYSIZE(values); ++i)
+    {
         ASSERT_FALSE(A.insert(i, values[i] * 2));
+    }
 
     ASSERT_EQ(A.size(), ARRAYSIZE(values));
 
@@ -109,10 +117,14 @@ TYPED_TEST(MapPrimitiveTypeTests, PrimitiveTypeRemoveTest)
     ASSERT_FALSE(A.remove(0));
 
     for(uint32_t i = 0; i < ARRAYSIZE(values); ++i)
+    {
         ASSERT_TRUE(A.insert(i, values[i]));
+    }
 
     for(uint32_t i = 0; i < ARRAYSIZE(values); ++i)
+    {
         ASSERT_TRUE(A.contains(i));
+    }
 
     ASSERT_EQ(A.size(), ARRAYSIZE(values));
     ASSERT_TRUE(A.remove(0));
@@ -120,7 +132,9 @@ TYPED_TEST(MapPrimitiveTypeTests, PrimitiveTypeRemoveTest)
     data.remove(data.find(10));
 
     for(uint32_t i = 0; i < data.length(); ++i)
+    {
         ASSERT_TRUE(A.contains(i + 1));
+    }
 
     ASSERT_EQ(A.size(), data.length());
 }
@@ -136,26 +150,36 @@ TYPED_TEST(MapPrimitiveTypeTests, PrimitiveTypeClearTest)
     ASSERT_TRUE(A.empty());
 
     for(uint32_t i = 0; i < ARRAYSIZE(values); ++i)
+    {
         ASSERT_TRUE(A.insert(i, values[i]));
+    }
 
     ASSERT_EQ(A.size(), ARRAYSIZE(values));
 
     for(uint32_t i = 0; i < ARRAYSIZE(values); ++i)
+    {
         ASSERT_TRUE(A.contains(i));
+    }
 
     A.clear();
     ASSERT_TRUE(A.empty());
 
     for(uint32_t i = 0; i < ARRAYSIZE(values); ++i)
+    {
         ASSERT_FALSE(A.contains(i));
+    }
 
     for(uint32_t i = 0; i < ARRAYSIZE(values); ++i)
+    {
         ASSERT_TRUE(A.insert(i, values[i]));
+    }
 
     ASSERT_EQ(A.size(), ARRAYSIZE(values));
 
     for(uint32_t i = 0; i < ARRAYSIZE(values); ++i)
+    {
         ASSERT_TRUE(A.contains(i));
+    }
 }
 
 TYPED_TEST(MapPrimitiveTypeTests, PrimitiveTypeContainsTest)
@@ -167,10 +191,14 @@ TYPED_TEST(MapPrimitiveTypeTests, PrimitiveTypeContainsTest)
     ASSERT_FALSE(A.contains(0));
 
     for(uint32_t i = 0; i < ARRAYSIZE(values); ++i)
+    {
         ASSERT_TRUE(A.insert(i, values[i]));
+    }
 
     for(uint32_t i = 0; i < ARRAYSIZE(values); ++i)
+    {
         ASSERT_TRUE(A.contains(i));
+    }
 
     ASSERT_FALSE(A.contains(-10));
     ASSERT_FALSE(A.contains(10));
@@ -187,18 +215,24 @@ TYPED_TEST(MapPrimitiveTypeTests, PrimitiveTypeComparisonTest)
     ASSERT_TRUE(A == B);
 
     for(uint32_t i = 0; i < ARRAYSIZE(values); ++i)
+    {
         ASSERT_TRUE(A.insert(i, values[i]));
+    }
 
     ASSERT_FALSE(A == B);
 
     for(uint32_t i = 0; i < ARRAYSIZE(values2); ++i)
+    {
         ASSERT_TRUE(B.insert(i, values2[i]));
+    }
 
     ASSERT_FALSE(A == B);
     B.clear();
 
     for(uint32_t i = 0; i < ARRAYSIZE(values); ++i)
+    {
         ASSERT_TRUE(B.insert(i, values[i]));
+    }
 
     ASSERT_TRUE(A == B);
     B.clear();
@@ -207,7 +241,9 @@ TYPED_TEST(MapPrimitiveTypeTests, PrimitiveTypeComparisonTest)
     const int keys[] = {1, 4, 2, 3, 5, 8};
 
     for(uint32_t i = 0; i < ARRAYSIZE(values); ++i)
+    {
         ASSERT_TRUE(B.insert(keys[i], values[i]));
+    }
 
     ASSERT_FALSE(A == B);
 }
@@ -219,7 +255,9 @@ TYPED_TEST(MapPrimitiveTypeTests, PrimitiveTypeIteratorFindTest)
     TypeParam A;
 
     for(uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
+    {
         ASSERT_TRUE(A.insert(keys[i], i));
+    }
 
     for(uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
     {
@@ -238,7 +276,9 @@ TYPED_TEST(MapPrimitiveTypeTests, PrimitiveTypeAtTest)
     TypeParam A;
 
     for(uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
+    {
         ASSERT_TRUE(A.insert(keys[i], i));
+    }
 
     for(uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
     {
@@ -266,7 +306,9 @@ TYPED_TEST(MapPrimitiveTypeTests, PrimitiveTypeBracketOperatorTest)
     TypeParam A;
 
     for(uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
+    {
         ASSERT_TRUE(A.insert(keys[i], i));
+    }
 
     for(uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
     {
@@ -399,7 +441,9 @@ TYPED_TEST(MapNonPrimitiveValueTests, NonPrimitiveValueRemoveTest)
     }
 
     for(uint32_t i = 0; i < size; ++i)
+    {
         ASSERT_TRUE(A.contains(i));
+    }
 
     ASSERT_EQ(A.size(), size);
     ASSERT_TRUE(A.remove(0));
@@ -407,5 +451,7 @@ TYPED_TEST(MapNonPrimitiveValueTests, NonPrimitiveValueRemoveTest)
     ASSERT_EQ(A.size(), size - 1);
 
     for(uint32_t i = 0; i < size - 1; ++i)
+    {
         ASSERT_TRUE(A.contains(i + 1));
+    }
 }

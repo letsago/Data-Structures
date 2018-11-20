@@ -33,7 +33,9 @@ class Array : public LinearStorageInterface<T>
     Array& operator=(const Array& other)
     {
         for(uint32_t i = 0; i < other.m_size; ++i)
+        {
             m_data[i] = other.m_data[i];
+        }
 
         m_size = other.m_size;
 
@@ -51,15 +53,21 @@ class Array : public LinearStorageInterface<T>
     {
         // cannot insert past actual size of array
         if(position > m_size)
+        {
             return false;
+        }
 
         uint32_t new_size = m_size + 1;
 
         if(new_size > N)
+        {
             return false;
+        }
 
         for(uint32_t i = new_size - 1; i > position; i--)
+        {
             m_data[i] = m_data[i - 1];
+        }
 
         m_data[position] = value;
         m_size = new_size;
@@ -70,12 +78,16 @@ class Array : public LinearStorageInterface<T>
     bool remove(const uint32_t position)
     {
         if(position >= m_size)
+        {
             return false; // remove fails if position exceeds actual size of Array
+        }
 
         --m_size;
 
         for(uint32_t i = position; i < m_size; i++)
+        {
             m_data[i] = m_data[i + 1];
+        }
 
         return true;
     }
@@ -137,7 +149,9 @@ class Array : public LinearStorageInterface<T>
             ++m_addr;
 
             if(m_addr > m_src->m_data + m_src->m_size)
+            {
                 m_addr = m_src->m_data + m_src->m_size;
+            }
 
             return *this;
         }

@@ -61,7 +61,9 @@ class UnorderedMap
         int keyPosition = (m_map.at(bucket)).find(KeyValuePair(key));
 
         if(keyPosition == -1)
+        {
             return false;
+        }
 
         (m_map.at(bucket)).remove(keyPosition);
         --m_size;
@@ -92,15 +94,21 @@ class UnorderedMap
     bool operator==(const UnorderedMap& other) const
     {
         if(size() != other.size())
+        {
             return false;
+        }
 
         for(Iterator<K> it = begin(); it != end(); ++it)
         {
             if(!other.contains(*it))
+            {
                 return false;
+            }
 
             if(at(*it) != other.at(*it))
+            {
                 return false;
+            }
         }
 
         return true;
@@ -128,7 +136,9 @@ class UnorderedMap
     Iterator<K> begin(uint32_t bucketNumber)
     {
         if(bucketNumber >= m_bucketSize)
+        {
             throw std::out_of_range("bucket out of range");
+        }
 
         shared_ptr<IteratorNode<K>> node(new BucketIteratorNode((m_map.at(bucketNumber)).begin()));
         return node;
@@ -137,7 +147,9 @@ class UnorderedMap
     Iterator<K> end(uint32_t bucketNumber)
     {
         if(bucketNumber >= m_bucketSize)
+        {
             throw std::out_of_range("bucket out of range");
+        }
 
         shared_ptr<IteratorNode<K>> node(new BucketIteratorNode((m_map.at(bucketNumber)).end()));
         return node;
@@ -165,7 +177,9 @@ class UnorderedMap
     const Iterator<K> begin(uint32_t bucketNumber) const
     {
         if(bucketNumber >= m_bucketSize)
+        {
             throw std::out_of_range("bucket out of range");
+        }
 
         shared_ptr<IteratorNode<K>> node(new BucketIteratorNode((m_map.at(bucketNumber)).begin()));
         return node;
@@ -174,7 +188,9 @@ class UnorderedMap
     const Iterator<K> end(uint32_t bucketNumber) const
     {
         if(bucketNumber >= m_bucketSize)
+        {
             throw std::out_of_range("bucket out of range");
+        }
 
         shared_ptr<IteratorNode<K>> node(new BucketIteratorNode((m_map.at(bucketNumber)).end()));
         return node;
@@ -231,7 +247,9 @@ class UnorderedMap
                 m_depth = 0;
 
                 if(m_bucketCounter < m_src->m_bucketSize)
+                {
                     m_curr = ((m_src->m_map).at(m_bucketCounter)).begin();
+                }
             }
 
             return *this;
@@ -255,7 +273,9 @@ class UnorderedMap
         Vector<LinkedList<KeyValuePair>> newMap(m_bucketSize);
 
         for(uint32_t i = 0; i < m_bucketSize; ++i)
+        {
             newMap.insert_back(LinkedList<KeyValuePair>());
+        }
 
         for(uint32_t bucket = 0; bucket < m_bucketSize / 2; ++bucket)
         {

@@ -39,8 +39,8 @@ class OrderedMap
             at(key) = val;
             return false;
         }
-        else
-            return true;
+
+        return true;
     }
 
     bool remove(const K& key) { return m_btree.remove(KeyValuePair(key)); }
@@ -60,17 +60,23 @@ class OrderedMap
     bool operator==(const OrderedMap& other) const
     {
         if(size() != other.size())
+        {
             return false;
+        }
 
         Iterator<K> compare = other.begin();
 
         for(Iterator<K> it = begin(); it != end(); ++it)
         {
             if(*it != *compare)
+            {
                 return false;
+            }
 
             if(at(*it) != other.at(*it))
+            {
                 return false;
+            }
 
             ++compare;
         }

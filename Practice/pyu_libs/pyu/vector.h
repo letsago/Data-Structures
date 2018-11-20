@@ -58,7 +58,9 @@ class Vector : public LinearStorageInterface<T>
     {
         T* new_data = new T[other.m_memory_size];
         for(uint32_t i = 0; i < other.m_actual_size; ++i)
+        {
             new_data[i] = other.m_data[i];
+        }
 
         clear();
         m_actual_size = other.m_actual_size;
@@ -74,17 +76,25 @@ class Vector : public LinearStorageInterface<T>
     {
         // cannot insert past actual size of array
         if(position > m_actual_size)
+        {
             return false;
+        }
 
         uint32_t new_actual_size = m_actual_size + 1;
 
         if(m_actual_size == 0)
+        {
             resize(1);
+        }
         else if(new_actual_size > m_memory_size)
+        {
             resize(m_actual_size * c_capacity_ratio);
+        }
 
         for(uint32_t i = new_actual_size - 1; i > position; i--)
+        {
             m_data[i] = m_data[i - 1];
+        }
 
         m_data[position] = value;
         m_actual_size = new_actual_size;
@@ -102,7 +112,9 @@ class Vector : public LinearStorageInterface<T>
         uint32_t new_actual_size = m_actual_size - 1;
 
         for(uint32_t i = position; i < new_actual_size; i++)
+        {
             m_data[i] = m_data[i + 1];
+        }
 
         m_actual_size = new_actual_size;
 
@@ -196,7 +208,9 @@ class Vector : public LinearStorageInterface<T>
             ++m_addr;
 
             if(m_addr > m_src->m_data + m_src->m_actual_size)
+            {
                 m_addr = m_src->m_data + m_src->m_actual_size;
+            }
 
             return *this;
         }

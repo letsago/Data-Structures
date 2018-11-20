@@ -70,27 +70,35 @@ class Room
         const std::string getColor() const
         {
             if(isClean)
+            {
                 return BLUE;
-            else
-                return RESET;
+            }
+            return RESET;
         }
 
         const std::string getSymbol() const
         {
             if(isTraversable)
+            {
                 return " ";
-            else
-                return "#";
+            }
+            return "#";
         }
 
         friend std::ostream& operator<<(std::ostream& os, const RoomSpace& roomSpace)
         {
             if(!roomSpace.isTraversable)
+            {
                 os << RESET << "#";
+            }
             else if(roomSpace.isClean)
+            {
                 os << BLUE;
+            }
             else
+            {
                 os << RESET;
+            }
 
             return os;
         }

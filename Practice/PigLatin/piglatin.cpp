@@ -6,9 +6,10 @@ bool isAlphabet(const char entry)
 {
     // - and ' are treated as valid characters using same rules as Lingojam's piglatin translator found online
     if((entry >= 'a' && entry <= 'z') || (entry >= 'A' && entry <= 'Z') || entry == '\'' || entry == '-')
+    {
         return true;
-    else
-        return false;
+    }
+    return false;
 }
 
 bool isVowel(const char entry)
@@ -18,7 +19,9 @@ bool isVowel(const char entry)
     // - is treated as a vowel using same rules as Lingojam's piglatin translator found online
     if(lower_entry == 'a' || lower_entry == 'e' || lower_entry == 'i' || lower_entry == 'o' || lower_entry == 'u' ||
        lower_entry == '-')
+    {
         return true;
+    }
 
     return false;
 }
@@ -26,7 +29,9 @@ bool isVowel(const char entry)
 bool isPunctuation(const char entry)
 {
     if(entry == '.' || entry == '?' || entry == '!' || entry == ',')
+    {
         return true;
+    }
 
     return false;
 }
@@ -38,7 +43,9 @@ bool doInvalidCharsExist(const Vector<char>& input)
         if(!((input.at(i) >= 'a' && input.at(i) <= 'z') || (input.at(i) >= 'A' && input.at(i) <= 'Z') ||
              (input.at(i) == '-') || (input.at(i) == '\'') || (input.at(i) == '.') || (input.at(i) == '?') ||
              (input.at(i) == '!') || (input.at(i) == ',') || (input.at(i) == '\0') || input.at(i) == ' '))
+        {
             return true;
+        }
     }
 
     return false;
@@ -47,15 +54,19 @@ bool doInvalidCharsExist(const Vector<char>& input)
 bool pigLatinTranslate(const Vector<char>& input, Vector<char>& output)
 {
     if(doInvalidCharsExist(input))
+    {
         return false;
+    }
 
     // handles null case
     if(input.length() == 0)
+    {
         return false;
+    }
 
     int input_position = 0;
     bool isFirstLetterVowel = isVowel(input.at(0));
-    bool isFirstLetterCapital = isupper(input.at(0));
+    bool isFirstLetterCapital = isupper(input.at(0)) != 0;
 
     // loops until end of input string
     while(input.at(input_position) != '\0')
@@ -215,15 +226,23 @@ bool pigLatinTranslate(const Vector<char>& input, Vector<char>& output)
 
         // resets isFirstLetterVowel boolean
         if(input.at(input_position) == ' ' && isVowel(input.at(input_position + 1)))
+        {
             isFirstLetterVowel = true;
+        }
         else
+        {
             isFirstLetterVowel = false;
+        }
 
         // resets isFirstLetterCapital boolean
         if(input.at(input_position) == ' ' && isupper(input.at(input_position + 1)))
+        {
             isFirstLetterCapital = true;
+        }
         else
+        {
             isFirstLetterCapital = false;
+        }
 
         // moves input position past space values
         if(input.at(input_position) == ' ')

@@ -15,7 +15,9 @@ TEST_F(PigLatinTests, InvalidSymbolTest)
         char sym[] = {static_cast<char>(i)};
         pyu::Vector<char> A(sym, sizeof(sym));
         if(doInvalidCharsExist(A))
+        {
             ++counter;
+        }
     }
 
     ASSERT_EQ(counter, 196); // counter = num of invalid chars, therefore num of valid chars = 60

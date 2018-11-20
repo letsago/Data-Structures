@@ -60,7 +60,9 @@ TYPED_TEST(HashTests, GeneralMapIteratorTest)
     ASSERT_EQ(A.size(), B.size());
 
     for(Iterator<int> it = A.begin(); it != A.end(); ++it)
+    {
         ASSERT_TRUE(B.remove(*it));
+    }
 }
 
 TYPED_TEST(HashTests, OutofRangeBucketIteratorTest)
@@ -70,7 +72,9 @@ TYPED_TEST(HashTests, OutofRangeBucketIteratorTest)
     UnorderedMap<int, int, TypeParam> A;
 
     for(uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
+    {
         ASSERT_TRUE(A.insert(keys[i], i));
+    }
 
     ASSERT_EQ(A.size(), ARRAYSIZE(keys));
 
@@ -89,7 +93,9 @@ TYPED_TEST(HashTests, BucketDepthTest)
     uint32_t maxBucketDepth = UnorderedMap<int, int, TypeParam>::getBucketDepth();
 
     for(uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
+    {
         ASSERT_TRUE(A.insert(keys[i], i));
+    }
 
     ASSERT_EQ(A.size(), ARRAYSIZE(keys));
 
@@ -97,7 +103,9 @@ TYPED_TEST(HashTests, BucketDepthTest)
     {
         uint32_t bucketDepth = 1;
         for(Iterator<int> it = A.begin(bucket); it != A.end(bucket); ++it, ++bucketDepth)
+        {
             ASSERT_TRUE(bucketDepth <= maxBucketDepth);
+        }
     }
 }
 
@@ -110,7 +118,9 @@ TYPED_TEST(HashTests, BucketIteratorHashCollisionTest)
     uint32_t maxBucketDepth = UnorderedMap<int, int, TypeParam>::getBucketDepth();
 
     for(uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
+    {
         ASSERT_TRUE(A.insert(keys[i], i));
+    }
 
     ASSERT_EQ(A.size(), ARRAYSIZE(keys));
     uint32_t index = 0;
@@ -137,14 +147,20 @@ TYPED_TEST(HashTests, BucketSizeTest)
     ASSERT_EQ(A.bucket_size(), 1);
 
     for(uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
+    {
         ASSERT_TRUE(A.insert(keys[i], i));
+    }
 
     ASSERT_EQ(A.size(), ARRAYSIZE(keys));
 
     if(std::is_same<TypeParam, IntHash2>::value)
+    {
         ASSERT_EQ(A.bucket_size(), 8);
+    }
     else
+    {
         ASSERT_EQ(A.bucket_size(), 4);
+    }
 }
 
 TYPED_TEST(HashTests, BucketIteratorOrderTest)
@@ -155,7 +171,9 @@ TYPED_TEST(HashTests, BucketIteratorOrderTest)
     UnorderedMap<int, int, TypeParam> A;
 
     for(uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
+    {
         ASSERT_TRUE(A.insert(keys[i], i));
+    }
 
     ASSERT_EQ(A.size(), ARRAYSIZE(keys));
     uint32_t index = 0;
@@ -163,7 +181,9 @@ TYPED_TEST(HashTests, BucketIteratorOrderTest)
     for(uint32_t bucket = 0; bucket < A.bucket_size(); ++bucket)
     {
         for(Iterator<int> it = A.begin(bucket); it != A.end(bucket); ++it, ++index)
+        {
             ASSERT_EQ(*it, keyIteratorOrder.at(index));
+        }
     }
 }
 
@@ -175,11 +195,15 @@ TYPED_TEST(HashTests, MapIteratorOrderTest)
     UnorderedMap<int, int, TypeParam> A;
 
     for(uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
+    {
         ASSERT_TRUE(A.insert(keys[i], i));
+    }
 
     ASSERT_EQ(A.size(), ARRAYSIZE(keys));
     uint32_t index = 0;
 
     for(Iterator<int> it = A.begin(); it != A.end(); ++it, ++index)
+    {
         ASSERT_EQ(*it, keyIteratorOrder.at(index));
+    }
 }

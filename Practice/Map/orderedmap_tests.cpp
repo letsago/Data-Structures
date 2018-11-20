@@ -12,14 +12,18 @@ TEST(OrderedMapTests, IteratorTest)
     Tree<int> T;
 
     for(uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
+    {
         ASSERT_TRUE(T.insert(keys[i]));
+    }
 
     Vector<int> sorted = T.getSorted();
 
     OrderedMap<int, int> A;
 
     for(uint32_t i = 0; i < ARRAYSIZE(keys); ++i)
+    {
         ASSERT_TRUE(A.insert(keys[i], i));
+    }
 
     ASSERT_EQ(A.size(), sorted.length());
     uint32_t index = 0;

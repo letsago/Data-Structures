@@ -34,7 +34,9 @@ class LinearStorageInterface
         for(Iterator<T> it = begin(); it != end(); ++it)
         {
             if(*it == value)
+            {
                 return counter;
+            }
 
             ++counter;
         }
@@ -62,13 +64,17 @@ class LinearStorageInterface
     bool operator==(const LinearStorageInterface& other) const
     {
         if(length() != other.length())
+        {
             return false;
+        }
 
         Iterator<T> compare = other.begin();
         for(Iterator<T> it = begin(); it != end(); ++it)
         {
             if(*it != *compare)
+            {
                 return false;
+            }
 
             ++compare;
         }

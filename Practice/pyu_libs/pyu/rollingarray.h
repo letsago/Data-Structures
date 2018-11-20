@@ -68,12 +68,16 @@ class RollingArray : public LinearStorageInterface<T>
     bool insert(const uint32_t position, const T& value)
     {
         if(position != m_size)
+        {
             return false;
+        }
 
         uint32_t new_size = m_size + 1;
 
         if(new_size > N)
+        {
             return false;
+        }
 
         uint32_t pos = (m_head + m_size) % N;
         m_data[pos] = value;
@@ -86,10 +90,14 @@ class RollingArray : public LinearStorageInterface<T>
     bool remove(const uint32_t position)
     {
         if(position != 0)
+        {
             return false;
+        }
 
         if(m_size == 0)
+        {
             return false;
+        }
 
         --m_size;
         m_head = (m_head + 1) % N;
@@ -156,10 +164,14 @@ class RollingArray : public LinearStorageInterface<T>
             ++m_addr;
 
             if(m_addr > m_src->m_data + N - 1)
+            {
                 m_addr = m_src->m_data;
+            }
 
             if(m_addr > m_src->m_data + ((m_src->m_size + m_src->m_head) % N) && m_addr < m_src->m_data + m_src->m_head)
+            {
                 m_addr = m_src->m_data + ((m_src->m_size + m_src->m_head) % N);
+            }
 
             return *this;
         }

@@ -12,13 +12,17 @@ TEST(OrderedSetTests, PrimitiveTypeInsertTest)
     OrderedSet<int> A;
 
     for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    {
         ASSERT_TRUE(A.insert(arr[i]));
+    }
 
     ASSERT_FALSE(A.insert(10));
     ASSERT_EQ(A.size(), ARRAYSIZE(arr));
 
     for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    {
         ASSERT_TRUE(A.contains(arr[i]));
+    }
 }
 
 TEST(OrderedSetTests, PrimitiveTypeRemoveTest)
@@ -31,10 +35,14 @@ TEST(OrderedSetTests, PrimitiveTypeRemoveTest)
     ASSERT_FALSE(A.remove(10));
 
     for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    {
         ASSERT_TRUE(A.insert(arr[i]));
+    }
 
     for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    {
         ASSERT_TRUE(A.contains(arr[i]));
+    }
 
     ASSERT_EQ(A.size(), ARRAYSIZE(arr));
     ASSERT_TRUE(A.remove(10));
@@ -42,7 +50,9 @@ TEST(OrderedSetTests, PrimitiveTypeRemoveTest)
     data.remove(data.find(10));
 
     for(uint32_t i = 0; i < data.length(); ++i)
+    {
         ASSERT_TRUE(A.contains(data.at(i)));
+    }
 
     ASSERT_EQ(A.size(), data.length());
 }
@@ -58,26 +68,36 @@ TEST(OrderedSetTests, PrimitiveTypeClearTest)
     ASSERT_TRUE(A.empty());
 
     for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    {
         ASSERT_TRUE(A.insert(arr[i]));
+    }
 
     ASSERT_EQ(A.size(), ARRAYSIZE(arr));
 
     for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    {
         ASSERT_TRUE(A.contains(arr[i]));
+    }
 
     A.clear();
     ASSERT_TRUE(A.empty());
 
     for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    {
         ASSERT_FALSE(A.contains(arr[i]));
+    }
 
     for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    {
         ASSERT_TRUE(A.insert(arr[i]));
+    }
 
     ASSERT_EQ(A.size(), ARRAYSIZE(arr));
 
     for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    {
         ASSERT_TRUE(A.contains(arr[i]));
+    }
 }
 
 TEST(OrderedSetTests, PrimitiveTypeContainsTest)
@@ -89,10 +109,14 @@ TEST(OrderedSetTests, PrimitiveTypeContainsTest)
     ASSERT_FALSE(A.contains(0));
 
     for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    {
         ASSERT_TRUE(A.insert(arr[i]));
+    }
 
     for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    {
         ASSERT_TRUE(A.contains(arr[i]));
+    }
 
     ASSERT_FALSE(A.contains(-10));
     ASSERT_FALSE(A.contains(0));
@@ -109,18 +133,24 @@ TEST(OrderedSetTests, PrimitiveTypeComparisonTest)
     ASSERT_TRUE(A == B);
 
     for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    {
         ASSERT_TRUE(A.insert(arr[i]));
+    }
 
     ASSERT_FALSE(A == B);
 
     for(uint32_t i = 0; i < ARRAYSIZE(arr2); ++i)
+    {
         ASSERT_TRUE(B.insert(arr2[i]));
+    }
 
     ASSERT_FALSE(A == B);
     B.clear();
 
     for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    {
         ASSERT_TRUE(B.insert(arr[i]));
+    }
 
     ASSERT_TRUE(A == B);
 }
@@ -132,14 +162,18 @@ TEST(OrderedSetTests, PrimitiveTypeIteratorTest)
     Tree<int> T;
 
     for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    {
         ASSERT_TRUE(T.insert(arr[i]));
+    }
 
     Vector<int> sorted = T.getSorted();
 
     OrderedSet<int> A;
 
     for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    {
         ASSERT_TRUE(A.insert(arr[i]));
+    }
 
     ASSERT_EQ(A.size(), sorted.length());
     uint32_t index = 0;
@@ -158,7 +192,9 @@ TEST(OrderedSetTests, PrimitiveTypeIteratorFindTest)
     OrderedSet<int> A;
 
     for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
+    {
         ASSERT_TRUE(A.insert(arr[i]));
+    }
 
     for(uint32_t i = 0; i < ARRAYSIZE(arr); ++i)
     {

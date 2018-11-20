@@ -63,7 +63,9 @@ void RoombaBrain::explore(std::stack<Coordinate>& stack, Room& room)
                 m_graph.connect(oldCoor, m_roombaProperties.coor, 1);
 
                 if(!m_roomba.getCleanMode())
+                {
                     m_roomProperties.dirtySpaces.push(m_roombaProperties.coor);
+                }
 
                 // rotate twice to face dir of original coor, move to original coor, then rotate twice again to face
                 // original dir so that all directions will be explored
@@ -91,7 +93,9 @@ void RoombaBrain::moveTo(const Coordinate& pos, Room& room)
         Direction nextDir = Coordinate::GetDirectionFromUnitCoordinate(next - m_roombaProperties.coor);
 
         while(m_roombaProperties.dir != nextDir)
+        {
             rotate(room);
+        }
 
         move(room);
     }

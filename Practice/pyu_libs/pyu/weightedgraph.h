@@ -29,10 +29,14 @@ class WeightedGraph
             };
 
             if(!(contains(A)))
+            {
                 createNode(A);
+            }
 
             if(!(contains(B)))
+            {
                 createNode(B);
+            }
 
             GraphNode* nodeA = m_nodes.at(A).get();
             GraphNode* nodeB = m_nodes.at(B).get();
@@ -49,71 +53,83 @@ class WeightedGraph
         bool doesConnectionExist = false;
 
         if(!(contains(A) && contains(B)))
-            throw std::out_of_range("No connection exists");
-        else
         {
-            const GraphNode* source = (m_nodes.at(A)).get();
-            const GraphNode* target = (m_nodes.at(B)).get();
+            throw std::out_of_range("No connection exists");
+        }
 
-            if(source == target)
-                return 0;
+        const GraphNode* source = (m_nodes.at(A)).get();
+        const GraphNode* target = (m_nodes.at(B)).get();
 
-            UnorderedMap<const GraphNode*, size_t, PointerHash> history;
-            history.insert(source, 0);
-            Queue<Metadata> queue(new Vector<Metadata>(size()));
-            queue.push({source, 0});
+        if(source == target)
+        {
+            return 0;
+        }
 
-            while(!queue.empty())
+        UnorderedMap<const GraphNode*, size_t, PointerHash> history;
+        history.insert(source, 0);
+        Queue<Metadata> queue(new Vector<Metadata>(size()));
+        queue.push({source, 0});
+
+        while(!queue.empty())
+        {
+            const GraphNode* curr = (queue.front()).m_node;
+            const size_t distance = (queue.front()).m_distance;
+            queue.pop();
+
+            if(history.at(curr) < (curr->m_neighbors).size())
             {
-                const GraphNode* curr = (queue.front()).m_node;
-                const size_t distance = (queue.front()).m_distance;
-                queue.pop();
+                const UnorderedMap<GraphNode*, size_t, PointerHash>& neighbors = curr->m_neighbors;
 
-                if(history.at(curr) < (curr->m_neighbors).size())
+                for(Iterator<GraphNode*> it = neighbors.begin(); it != neighbors.end(); ++it)
                 {
-                    const UnorderedMap<GraphNode*, size_t, PointerHash>& neighbors = curr->m_neighbors;
-
-                    for(Iterator<GraphNode*> it = neighbors.begin(); it != neighbors.end(); ++it)
+                    if((*it) == target)
                     {
-                        if((*it) == target)
+                        if(!doesConnectionExist)
                         {
-                            if(!doesConnectionExist)
-                            {
-                                minDis = distance + neighbors.at(*it);
-                                doesConnectionExist = true;
-                            }
-                            else
-                                minDis = std::min<uint32_t>(minDis, (distance + neighbors.at(*it)));
-                        }
-
-                        if(!history.contains(*it))
-                        {
-                            history.insert(*it, 1);
-                            queue.push({*it, distance + neighbors.at(*it)});
+                            minDis = distance + neighbors.at(*it);
+                            doesConnectionExist = true;
                         }
                         else
-                            ++history.at(*it);
+                        {
+                            minDis = std::min<uint32_t>(minDis, (distance + neighbors.at(*it)));
+                        }
+                    }
+
+                    if(!history.contains(*it))
+                    {
+                        history.insert(*it, 1);
+                        queue.push({*it, distance + neighbors.at(*it)});
+                    }
+                    else
+                    {
+                        ++history.at(*it);
                     }
                 }
             }
-
-            if(doesConnectionExist)
-                return minDis;
-            else
-                throw std::out_of_range("No connection exists");
         }
+
+        if(doesConnectionExist)
+        {
+            return minDis;
+        }
+
+        throw std::out_of_range("No connection exists");
     }
 
     bool remove(const T& A)
     {
         if(!contains(A))
+        {
             return false;
+        }
 
         GraphNode* target = (m_nodes.at(A)).get();
         const UnorderedMap<GraphNode*, size_t, PointerHash>& targetNeighbors = target->m_neighbors;
 
         for(Iterator<GraphNode*> it = targetNeighbors.begin(); it != targetNeighbors.end(); ++it)
+        {
             (*it)->removeNeighbor(target);
+        }
 
         m_nodes.remove(A);
         return true;
@@ -142,15 +158,21 @@ class WeightedGraph
         void addNeighbor(GraphNode* neighbor, size_t distance)
         {
             if(!(m_neighbors.contains(neighbor)))
+            {
                 m_neighbors.insert(neighbor, distance);
+            }
             else
+            {
                 m_neighbors.at(neighbor) = distance;
+            }
         }
 
         void removeNeighbor(GraphNode* neighbor)
         {
             if(m_neighbors.contains(neighbor))
+            {
                 m_neighbors.remove(neighbor);
+            }
         }
 
         T m_value;

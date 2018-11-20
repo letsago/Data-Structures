@@ -20,10 +20,14 @@ class BalancedTree : public Tree<T>
         BNode* node = dynamic_cast<BNode*>(Tree<T>::insertNode(val, &prev));
 
         if(!node)
+        {
             return false;
+        }
 
         if(!Tree<T>::isBalanced())
+        {
             balance(node, Tree<T>::m_depth);
+        }
 
         return true;
     }
@@ -33,10 +37,14 @@ class BalancedTree : public Tree<T>
         BNode* targetRoot;
 
         if(!Tree<T>::removeNode(val, reinterpret_cast<Node**>(&targetRoot)))
+        {
             return false;
+        }
 
         while(findImbalance(targetRoot))
+        {
             balance(findImbalance(targetRoot), Tree<T>::m_depth);
+        }
 
         return true;
     }
@@ -44,14 +52,18 @@ class BalancedTree : public Tree<T>
     bool operator==(const BalancedTree& other) const
     {
         if(Tree<T>::size() != other.size())
+        {
             return false;
+        }
 
         Iterator<T> compare = other.begin();
 
         for(Iterator<T> it = begin(); it != end(); ++it)
         {
             if(*it != *compare)
+            {
                 return false;
+            }
 
             ++compare;
         }
@@ -71,7 +83,9 @@ class BalancedTree : public Tree<T>
         BNode* curr = dynamic_cast<BNode*>(Tree<T>::m_root);
 
         while(curr && curr->getChild(Direction::LEFT))
+        {
             curr = curr->getChild(Direction::LEFT);
+        }
 
         shared_ptr<IteratorNode<T>> node(new BTreeIteratorNode(curr));
         return Iterator<T>(node);
@@ -95,7 +109,9 @@ class BalancedTree : public Tree<T>
         BNode* curr = dynamic_cast<BNode*>(Tree<T>::m_root);
 
         while(curr && curr->getChild(Direction::LEFT))
+        {
             curr = curr->getChild(Direction::LEFT);
+        }
 
         shared_ptr<IteratorNode<T>> node(new BTreeIteratorNode(curr));
         return Iterator<T>(node);
@@ -124,15 +140,19 @@ class BalancedTree : public Tree<T>
             Tree<T>::Node::m_children[dir] = conBnode;
 
             if(conBnode)
+            {
                 dynamic_cast<BNode*>(conBnode)->m_parent = this;
+            }
         }
 
         void replace(Node* bnode, Node* parent)
         {
             if(parent)
+            {
                 dynamic_cast<BNode*>(parent)->connect(
                     Tree<T>::Node::m_children[Tree<T>::Node::m_value > bnode->m_value],
                     static_cast<Direction>(Tree<T>::Node::m_value > parent->m_value));
+            }
 
             this->reset();
 
@@ -141,7 +161,9 @@ class BalancedTree : public Tree<T>
                 Tree<T>::Node::m_children[i] = bnode->m_children[i];
 
                 if(bnode->m_children[i])
+                {
                     dynamic_cast<BNode*>(bnode->m_children[i])->m_parent = this;
+                }
             }
 
             m_parent = dynamic_cast<BNode*>(bnode)->m_parent;
@@ -170,12 +192,16 @@ class BalancedTree : public Tree<T>
                     m_curr = m_curr->getChild(Direction::RIGHT);
 
                     while(m_curr->getChild(Direction::LEFT))
+                    {
                         m_curr = m_curr->getChild(Direction::LEFT);
+                    }
                 }
                 else
                 {
                     while(m_curr->m_parent && (m_curr->m_value > m_curr->m_parent->m_value))
+                    {
                         m_curr = m_curr->m_parent;
+                    }
 
                     m_curr = m_curr->m_parent;
                 }
@@ -202,7 +228,9 @@ class BalancedTree : public Tree<T>
         BNode* rootChild = root->getChild(static_cast<Direction>(root->m_value > imbal->m_value));
 
         if(!rootChild)
+        {
             return false;
+        }
 
         queue.push({rootChild, rootDepth + 1});
         uint32_t d = rootDepth + 1;
@@ -216,9 +244,13 @@ class BalancedTree : public Tree<T>
             for(uint32_t i = 0; i < sizeof(curr->m_children) / sizeof(curr->m_children[0]); ++i)
             {
                 if(curr->m_children[i])
+                {
                     queue.push({curr->m_children[i], d});
+                }
                 else
+                {
                     return false;
+                }
             }
         }
 
@@ -236,8 +268,10 @@ class BalancedTree : public Tree<T>
             ++dummyCounter;
         }
 
-        if(pCounter)
+        if(pCounter != nullptr)
+        {
             *pCounter = dummyCounter;
+        }
 
         return targetChild;
     }
@@ -245,14 +279,20 @@ class BalancedTree : public Tree<T>
     BNode* findImbalance(BNode* targetRoot) const
     {
         if(isRemoveBalanced(targetRoot) && Tree<T>::isBalanced())
+        {
             return nullptr;
+        }
 
         BNode* start;
 
         if(targetRoot->m_parent)
+        {
             start = targetRoot->m_parent;
+        }
         else
+        {
             start = targetRoot;
+        }
 
         BNode* imbal = nullptr;
         Queue<Metadata> queue(new Vector<Metadata>(Tree<T>::size() / 2));
@@ -269,21 +309,31 @@ class BalancedTree : public Tree<T>
                 queue.pop();
 
                 if(curr->getChild(static_cast<Direction>(!dir)))
+                {
                     queue.push({curr->getChild(static_cast<Direction>(!dir)), subRootDepth});
+                }
 
                 if(curr->getChild(static_cast<Direction>(dir)))
+                {
                     queue.push({curr->getChild(static_cast<Direction>(dir)), subRootDepth});
+                }
             }
 
             if(!(queue.empty()))
+            {
                 imbal = dynamic_cast<BNode*>(queue.front().m_node);
+            }
         };
 
         if(start->getChild(Direction::LEFT))
+        {
             setImbal(Direction::LEFT);
+        }
 
         if(!imbal)
+        {
             setImbal(Direction::RIGHT);
+        }
 
         return imbal;
     }
@@ -309,7 +359,9 @@ class BalancedTree : public Tree<T>
                     for(uint32_t i = 0; i < sizeof(curr->m_children) / sizeof(curr->m_children[0]); ++i)
                     {
                         if(curr->getChild(static_cast<Direction>(i)))
+                        {
                             queue.push({curr->getChild(static_cast<Direction>(i)), depth + 1});
+                        }
                     }
                 }
 
@@ -317,19 +369,27 @@ class BalancedTree : public Tree<T>
             };
 
             if(targetRoot->getChild(Direction::LEFT))
+            {
                 leftSubTreeDepth = findSubtreeDepth(Direction::LEFT);
+            }
 
             if(targetRoot->getChild(Direction::RIGHT))
+            {
                 rightSubTreeDepth = findSubtreeDepth(Direction::RIGHT);
+            }
 
             if(std::abs(leftSubTreeDepth - rightSubTreeDepth) > 1)
+            {
                 return false;
+            }
 
             targetRoot = targetRoot->m_parent;
         }
 
         if(!targetRoot)
+        {
             targetRoot = dynamic_cast<BNode*>(Tree<T>::m_root);
+        }
 
         return true;
     }
@@ -337,7 +397,9 @@ class BalancedTree : public Tree<T>
     void balance(BNode* node, const uint32_t treeDepth)
     {
         if(!node)
+        {
             return;
+        }
 
         Stack<BNode*> stack(new Vector<BNode*>(Tree<T>::size() / 2));
         stack.push(node);
@@ -359,10 +421,14 @@ class BalancedTree : public Tree<T>
             BNode* newRoot = getTargetChild(subRoot, static_cast<Direction>(imbal->m_value > subRoot->m_value));
 
             if(newRoot->m_value == imbal->m_value)
+            {
                 imbalDepth = subRootDepth;
+            }
 
             if(newRoot->getChild(static_cast<Direction>(newRoot->m_parent->m_value > newRoot->m_value)))
+            {
                 --imbalDepth;
+            }
 
             ++subRootDepth;
             Tree<T>::nodeSwap(subRoot, subRoot->m_parent, newRoot, newRoot->m_parent);
@@ -378,19 +444,29 @@ class BalancedTree : public Tree<T>
                 rootNewParent->connect(subRoot, static_cast<Direction>(subRoot->m_value > rootNewParent->m_value));
             }
             else
+            {
                 newRoot->connect(subRoot, static_cast<Direction>(subRoot->m_value > newRoot->m_value));
+            }
 
             if(!doesSubRootChange || imbalDepth != treeDepth)
+            {
                 stack.pop();
+            }
 
             if(subRootDepth == treeDepth)
+            {
                 stack.push(subRoot);
+            }
         }
 
         if(Tree<T>::m_depthCounter == 1)
+        {
             Tree<T>::depthUpdate();
+        }
         else
+        {
             --Tree<T>::m_depthCounter;
+        }
     }
 };
 

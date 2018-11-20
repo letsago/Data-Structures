@@ -26,10 +26,14 @@ class Graph
             };
 
             if(!(contains(A)))
+            {
                 createNode(A);
+            }
 
             if(!(contains(B)))
+            {
                 createNode(B);
+            }
 
             GraphNode* nodeA = m_nodes[A].get();
             GraphNode* nodeB = m_nodes[B].get();
@@ -47,88 +51,99 @@ class Graph
         bool doesConnectionExist = false;
 
         if(!(contains(A) && contains(B)))
-            throw std::out_of_range("No connection exists");
-        else
         {
-            const GraphNode* source = m_nodes.at(A).get();
-            const GraphNode* target = m_nodes.at(B).get();
+            throw std::out_of_range("No connection exists");
+        }
 
-            if(source == target)
-                return 0;
+        const GraphNode* source = m_nodes.at(A).get();
+        const GraphNode* target = m_nodes.at(B).get();
 
-            std::unordered_map<const GraphNode*, size_t> history;
-            history[source] = 0;
-            std::queue<Metadata> queue;
-            queue.push({source, 0, shortestPath});
+        if(source == target)
+        {
+            return 0;
+        }
 
-            while(!queue.empty())
+        std::unordered_map<const GraphNode*, size_t> history;
+        history[source] = 0;
+        std::queue<Metadata> queue;
+        queue.push({source, 0, shortestPath});
+
+        while(!queue.empty())
+        {
+            const GraphNode* curr = (queue.front()).m_node;
+            const size_t distance = (queue.front()).m_distance;
+            std::queue<T> path = (queue.front()).m_path;
+            queue.pop();
+
+            if(history.at(curr) < (curr->m_neighbors).size())
             {
-                const GraphNode* curr = (queue.front()).m_node;
-                const size_t distance = (queue.front()).m_distance;
-                std::queue<T> path = (queue.front()).m_path;
-                queue.pop();
+                const std::unordered_map<GraphNode*, size_t>& neighbors = curr->m_neighbors;
 
-                if(history.at(curr) < (curr->m_neighbors).size())
+                for(auto it = neighbors.begin(); it != neighbors.end(); ++it)
                 {
-                    const std::unordered_map<GraphNode*, size_t>& neighbors = curr->m_neighbors;
-
-                    for(auto it = neighbors.begin(); it != neighbors.end(); ++it)
+                    if(it->first == target)
                     {
-                        if(it->first == target)
+                        if(!doesConnectionExist)
                         {
-                            if(!doesConnectionExist)
-                            {
-                                minDis = distance + neighbors.at(it->first);
-                                shortestPath = path;
-                                shortestPath.push(it->first->m_value);
-                                doesConnectionExist = true;
-                            }
-                            else
-                            {
-                                uint32_t oldMinDis = minDis;
-                                minDis = std::min<uint32_t>(minDis, (distance + neighbors.at(it->first)));
-
-                                if(oldMinDis != minDis)
-                                {
-                                    shortestPath = path;
-                                    shortestPath.push(it->first->m_value);
-                                }
-                            }
-                        }
-
-                        if(history.find(it->first) == history.end())
-                        {
-                            std::queue<T> tempPath = path;
-                            tempPath.push(it->first->m_value);
-                            history[it->first] = 1;
-                            queue.push({it->first, distance + neighbors.at(it->first), tempPath});
+                            minDis = distance + neighbors.at(it->first);
+                            shortestPath = path;
+                            shortestPath.push(it->first->m_value);
+                            doesConnectionExist = true;
                         }
                         else
-                            ++history.at(it->first);
+                        {
+                            uint32_t oldMinDis = minDis;
+                            minDis = std::min<uint32_t>(minDis, (distance + neighbors.at(it->first)));
+
+                            if(oldMinDis != minDis)
+                            {
+                                shortestPath = path;
+                                shortestPath.push(it->first->m_value);
+                            }
+                        }
+                    }
+
+                    if(history.find(it->first) == history.end())
+                    {
+                        std::queue<T> tempPath = path;
+                        tempPath.push(it->first->m_value);
+                        history[it->first] = 1;
+                        queue.push({it->first, distance + neighbors.at(it->first), tempPath});
+                    }
+                    else
+                    {
+                        ++history.at(it->first);
                     }
                 }
             }
-
-            if(pPath)
-                *pPath = shortestPath;
-
-            if(doesConnectionExist)
-                return minDis;
-            else
-                throw std::out_of_range("No connection exists");
         }
+
+        if(pPath)
+        {
+            *pPath = shortestPath;
+        }
+
+        if(doesConnectionExist)
+        {
+            return minDis;
+        }
+        throw std::out_of_range("No connection exists");
     }
 
     bool remove(const T& A)
     {
         if(!contains(A))
+        {
             return false;
+        }
 
         GraphNode* target = m_nodes[A];
         const std::unordered_map<GraphNode*, size_t>& targetNeighbors = target->m_neighbors;
 
         for(auto it = targetNeighbors.begin(); it != targetNeighbors.end(); ++it)
+        {
             (it->first)->removeNeighbor(target);
+        }
 
         m_nodes.erase(A);
         return true;
@@ -154,7 +169,9 @@ class Graph
         void removeNeighbor(GraphNode* neighbor)
         {
             if(m_neighbors.find(neighbor) != m_neighbors.end())
+            {
                 m_neighbors.erase(neighbor);
+            }
         }
 
         T m_value;

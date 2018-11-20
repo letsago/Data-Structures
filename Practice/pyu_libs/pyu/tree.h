@@ -55,10 +55,14 @@ class Tree
                 maxRelCol = std::max(maxRelCol, obj.m_relCol);
 
                 if(obj.m_node->m_children[RIGHT])
+                {
                     addNode(obj, obj.m_node->m_children[RIGHT], relColDiff);
+                }
 
                 if(obj.m_node->m_children[LEFT])
+                {
                     addNode(obj, obj.m_node->m_children[LEFT], -relColDiff);
+                }
             }
 
             uint32_t depth = (printData.back().m_row + 2) / 3;
@@ -69,9 +73,13 @@ class Tree
             uint32_t prevRow = 0;
 
             if(depth > 1)
+            {
                 lineCounter = (1 << (depth - 2)) - 1;
+            }
             else
+            {
                 lineCounter = 0;
+            }
 
             std::string row(numSpaces * (maxCol + 1), ' ');
             row.append("\n");
@@ -86,7 +94,9 @@ class Tree
                     output = row;
 
                     if(i != 0)
+                    {
                         lineCounter = lineCounter >> 1;
+                    }
                 }
 
                 uint32_t pos = (printData.at(i).m_relCol * normFactor + transFactor) * numSpaces +
@@ -104,7 +114,9 @@ class Tree
 
                     std::string lines;
                     for(int i = 0; i < numLines; ++i)
+                    {
                         lines += "_";
+                    }
 
                     const uint32_t position = (numSpaces * (maxCol + 1) + 1) + arrowPos;
 
@@ -146,7 +158,9 @@ class Tree
                 for(uint32_t i = 0; i < sizeof(curr->m_children) / sizeof(curr->m_children[0]); ++i)
                 {
                     if(curr->m_children[i])
+                    {
                         deleteorder.push(curr->m_children[i]);
+                    }
                 }
 
                 delete curr;
@@ -187,7 +201,9 @@ class Tree
     bool isBalanced() const
     {
         if(empty())
+        {
             return true;
+        }
 
         return (static_cast<uint32_t>(1 << (depth() - 1)) <= size());
     }
@@ -212,12 +228,16 @@ class Tree
         virtual void replace(Node* node, Node* parent)
         {
             if(parent)
+            {
                 parent->connect(m_children[m_value > node->m_value], static_cast<Direction>(m_value > parent->m_value));
+            }
 
             this->reset();
 
             for(uint32_t i = 0; i < sizeof(m_children) / sizeof(m_children[0]); ++i)
+            {
                 m_children[i] = node->m_children[i];
+            }
         }
 
         T m_value;
@@ -253,11 +273,15 @@ class Tree
             ++dummyDepth;
         }
 
-        if(pDepth)
+        if(pDepth != nullptr)
+        {
             *pDepth = dummyDepth;
+        }
 
         if(pPrev)
+        {
             *pPrev = dummyPrev;
+        }
 
         return curr;
     }
@@ -268,10 +292,14 @@ class Tree
         uint32_t newNodeDepth = 0;
 
         if(find(val, &dummyPrev, &newNodeDepth))
+        {
             return nullptr;
+        }
 
         if(newNodeDepth == m_depth)
+        {
             ++m_depthCounter;
+        }
         else if(newNodeDepth > m_depth)
         {
             m_depthCounter = 1;
@@ -281,12 +309,18 @@ class Tree
         Node* node = createNode(val);
 
         if(!m_root)
+        {
             m_root = node;
+        }
         else
+        {
             dummyPrev->connect(node, static_cast<Direction>(val > dummyPrev->m_value));
+        }
 
         if(pPrev)
+        {
             *pPrev = dummyPrev;
+        }
 
         ++m_size;
         return node;
@@ -295,14 +329,20 @@ class Tree
     void nodeSwap(Node* oldRoot, Node* oldRootParent, Node* newRoot, Node* newRootParent)
     {
         if(newRoot)
+        {
             newRoot->replace(oldRoot, newRootParent);
+        }
 
         oldRoot->reset();
 
         if(oldRoot == m_root)
+        {
             m_root = newRoot;
+        }
         else
+        {
             oldRootParent->connect(newRoot, static_cast<Direction>(oldRoot->m_value > oldRootParent->m_value));
+        }
     }
 
     Node* findNewRoot(const Node* oldRoot, Node*& newRootParent, uint32_t& newRootDepth) const
@@ -322,9 +362,13 @@ class Tree
         };
 
         if(oldRoot->m_children[LEFT])
+        {
             setNewRoot(LEFT);
+        }
         else if(oldRoot->m_children[RIGHT])
+        {
             setNewRoot(RIGHT);
+        }
 
         return newRoot;
     }
@@ -336,7 +380,9 @@ class Tree
         Node* oldRoot = find(val, &oldRootParent, &oldRootDepth);
 
         if(!oldRoot)
+        {
             return false;
+        }
 
         Node* newRootParent = nullptr;
         uint32_t newRootDepth = oldRootDepth;
@@ -344,9 +390,13 @@ class Tree
         nodeSwap(oldRoot, oldRootParent, newRoot, newRootParent);
 
         if((newRootDepth == m_depth || oldRootDepth == m_depth) && (m_depthCounter != 1))
+        {
             --m_depthCounter;
+        }
         else
+        {
             depthUpdate();
+        }
 
         delete oldRoot;
         --m_size;
@@ -354,9 +404,13 @@ class Tree
         if(pTargetRoot)
         {
             if(newRoot)
+            {
                 *pTargetRoot = newRoot;
+            }
             else
+            {
                 *pTargetRoot = oldRootParent;
+            }
         }
 
         return true;
@@ -382,7 +436,9 @@ class Tree
             order.pop();
 
             if(d == m_depth)
+            {
                 ++m_depthCounter;
+            }
             else if(d > m_depth)
             {
                 m_depth = d;
@@ -392,7 +448,9 @@ class Tree
             for(uint32_t i = 0; i < sizeof(curr->m_children) / sizeof(curr->m_children[0]); ++i)
             {
                 if(curr->m_children[i])
+                {
                     order.push({curr->m_children[i], d + 1});
+                }
             }
         }
     }
