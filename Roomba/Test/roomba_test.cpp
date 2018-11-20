@@ -8,6 +8,19 @@ class RoomTests : public ::testing::TestWithParam<const char*>
 {
 };
 
+TEST(DirectionTest, DirectionTest)
+{
+    Direction dir = RIGHT;
+    dir = static_cast<Direction>((dir + 1) % COUNT);
+    ASSERT_EQ(dir, DOWN);
+    dir = static_cast<Direction>((dir + 1) % COUNT);
+    ASSERT_EQ(dir, LEFT);
+    dir = static_cast<Direction>((dir + 1) % COUNT);
+    ASSERT_EQ(dir, UP);
+    dir = static_cast<Direction>((dir + 1) % COUNT);
+    ASSERT_EQ(dir, RIGHT);
+}
+
 TEST(RoombaTests, EmptyBatteryTest)
 {
     size_t battery = 0;
@@ -21,7 +34,7 @@ TEST(RoombaTests, InvalidRoomTest)
     size_t battery = 10;
     RoombaHardware roomba(battery);
     Room room("./Test/raw/invalid.room");
-    ASSERT_ANY_THROW(room.dropRoomba({1, 1}, Room::Direction::RIGHT, roomba););
+    ASSERT_ANY_THROW(room.dropRoomba({1, 1}, RIGHT, roomba););
 }
 
 TEST(RoombaTests, SimpleCleanTest)
@@ -29,7 +42,8 @@ TEST(RoombaTests, SimpleCleanTest)
     size_t battery = 50;
     Room room("./Test/raw/square.room");
     RoombaHardware roomba(battery);
-    room.dropRoomba({1, 3}, Room::Direction::LEFT, roomba);
+    room.dropRoomba({1, 3}, LEFT, roomba);
+    roomba.setCleanMode(true);
     ASSERT_FALSE(room.isClean());
 
     for(uint32_t i = 0; i < 2; i++)
@@ -75,11 +89,11 @@ INSTANTIATE_TEST_CASE_P(Tests, RoomTests,
 
 TEST_P(RoomTests, RoomTest)
 {
-    size_t battery = 10;
+    size_t battery = 500;
     Room room(GetParam());
     RoombaHardware roomba(battery);
     RoombaBrain roombaBrain(roomba);
-    room.dropRoomba({1, 1}, Room::Direction::RIGHT, roomba);
+    room.dropRoomba({1, 1}, RIGHT, roomba);
 
     while(!roombaBrain.isClean())
     {
@@ -95,7 +109,7 @@ TEST_P(RoomTests, MoveTest)
     size_t battery = 10;
     Room room(GetParam());
     RoombaHardware roomba(battery);
-    room.dropRoomba({1, 1}, Room::Direction::UP, roomba);
+    room.dropRoomba({1, 1}, UP, roomba);
     ASSERT_FALSE(roomba.move(room));
     roomba.rotate(room);
     roomba.rotate(room);

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "colors.h"
+#include "globals.h"
 #include "roombahardware.h"
 #include <fstream>
 #include <iostream>
@@ -15,23 +17,6 @@ class Room
     Room(std::string file);
 
     Room(const Room& other) = delete;
-
-    enum Direction
-    {
-        UP,
-        RIGHT,
-        DOWN,
-        LEFT,
-        COUNT
-    };
-
-    struct Coordinate
-    {
-        size_t x;
-        size_t y;
-
-        bool operator==(const Coordinate& other) { return (x == other.x && y == other.y); }
-    };
 
     friend std::ostream& operator<<(std::ostream& os, const Room& room);
 
@@ -52,12 +37,63 @@ class Room
     {
         Coordinate roombaCoor;
         Direction roombaDir;
+
+        friend std::ostream& operator<<(std::ostream& os, const RoombaProperties& roombaProperties)
+        {
+            switch(roombaProperties.roombaDir)
+            {
+            case UP:
+                os << "^";
+                break;
+            case RIGHT:
+                os << ">";
+                break;
+            case DOWN:
+                os << "v";
+                break;
+            case LEFT:
+                os << "<";
+                break;
+            default:
+                break;
+            }
+
+            return os;
+        }
     };
 
     struct RoomSpace
     {
         bool isTraversable;
         bool isClean;
+
+        const std::string getColor() const
+        {
+            if(isClean)
+                return BLUE;
+            else
+                return RESET;
+        }
+
+        const std::string getSymbol() const
+        {
+            if(isTraversable)
+                return " ";
+            else
+                return "#";
+        }
+
+        friend std::ostream& operator<<(std::ostream& os, const RoomSpace& roomSpace)
+        {
+            if(!roomSpace.isTraversable)
+                os << RESET << "#";
+            else if(roomSpace.isClean)
+                os << BLUE;
+            else
+                os << RESET;
+
+            return os;
+        }
     };
 
     const RoomSpace& getRoom(Coordinate coor) const;

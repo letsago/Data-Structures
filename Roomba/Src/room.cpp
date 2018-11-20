@@ -1,5 +1,4 @@
 #include "room.h"
-#include "colors.h"
 
 Room::Room(std::string file) : m_dirtySpaces(0)
 {
@@ -16,40 +15,27 @@ Room::Room(std::string file) : m_dirtySpaces(0)
 
 std::ostream& operator<<(std::ostream& os, const Room& room)
 {
-    Room::Coordinate coor = {0, 0};
+    Coordinate coor = {0, 0};
 
     for(size_t row = 0; row < room.m_room.size(); ++row)
     {
-        std::string roomRow;
         coor.x = row;
 
         for(size_t col = 0; col < room.m_room[row].size(); ++col)
         {
             coor.y = col;
+            os << room.getRoom(coor).getColor();
 
-            if(!room.getRoom(coor).isTraversable)
-                roomRow.append("#");
-            else if(room.getRoom(coor).isClean)
-            {
-                if(coor == room.m_roombaProperties.roombaCoor)
-                    roomRow.append(BLUEBACK("x"));
-                else
-                    roomRow.append(BLUEBACK(" "));
-            }
+            if(coor == room.m_roombaProperties.roombaCoor)
+                os << room.m_roombaProperties;
             else
-            {
-                if(coor == room.m_roombaProperties.roombaCoor)
-                    roomRow.append("x");
-                else
-                    roomRow.append(" ");
-            }
+                os << room.getRoom(coor).getSymbol();
         }
 
-        roomRow.append("\n");
-        os << roomRow;
+        os << std::endl;
     }
 
-    os << "\n";
+    os << std::endl;
     return os;
 }
 
@@ -108,30 +94,20 @@ void Room::dropRoomba(Coordinate coor, Direction dir, RoombaHardware& roomba)
 
 void Room::rotate(RoombaHardware& roomba)
 {
-    m_roombaProperties.roombaDir = static_cast<Direction>((m_roombaProperties.roombaDir + 1) % Room::Direction::COUNT);
+    m_roombaProperties.roombaDir = static_cast<Direction>((m_roombaProperties.roombaDir + 1) % Direction::COUNT);
 }
 
 void Room::move(RoombaHardware& roomba)
 {
     Coordinate roombaNewCoor = m_roombaProperties.roombaCoor;
 
-    switch(m_roombaProperties.roombaDir)
+    if(roomba.getCleanMode() && !getRoom(roombaNewCoor).isClean)
     {
-    case UP:
-        --roombaNewCoor.x;
-        break;
-    case RIGHT:
-        ++roombaNewCoor.y;
-        break;
-    case DOWN:
-        ++roombaNewCoor.x;
-        break;
-    case LEFT:
-        --roombaNewCoor.y;
-        break;
-    default:
-        break;
+        --m_dirtySpaces;
+        getRoom(roombaNewCoor).isClean = true;
     }
+
+    roombaNewCoor += Coordinate::GetCoordinateFromDirection(m_roombaProperties.roombaDir);
 
     if(!getRoom(roombaNewCoor).isTraversable)
         throw std::out_of_range("roomba didn't move");

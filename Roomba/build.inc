@@ -6,7 +6,7 @@ OS = Mac
 LIB_EXT = dylib
 endif
 
-CC = clang++-4.0
+CC = clang++
 DEFAULT_FLAGS = -Wall -std=c++1z -Werror
 LIB_FLAGS = -c -fPIC
 LINKER_FLAGS := $(LINKER_FLAGS)
