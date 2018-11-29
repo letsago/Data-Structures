@@ -6,10 +6,6 @@ ifeq ($(GTEST_DIR),)
     $(error GTEST_DIR is not set)
 endif
 
-INCLUDE_PATH := \
-	$(INCLUDE_PATH) \
-    $(PROJECT_DIR)/Src \
-
 RAW_INCLUDE_PATH := \
     $(RAW_INCLUDE_PATH) \
     -isystem $(GTEST_DIR)/include \

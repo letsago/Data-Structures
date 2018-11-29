@@ -84,24 +84,6 @@ class Room
             }
             return "#";
         }
-
-        friend std::ostream& operator<<(std::ostream& os, const RoomSpace& roomSpace)
-        {
-            if(!roomSpace.isTraversable)
-            {
-                os << RESET << "#";
-            }
-            else if(roomSpace.isClean)
-            {
-                os << BLUE;
-            }
-            else
-            {
-                os << RESET;
-            }
-
-            return os;
-        }
     };
 
     const RoomSpace& getRoom(Coordinate coor) const;

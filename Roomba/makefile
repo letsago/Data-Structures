@@ -6,6 +6,7 @@ TARGET_NAME = roomba_test
 DIRS := \
 	Src \
 	Test \
+	execute \
 
 include Test/makefile.exp
 include Src/makefile.exp
