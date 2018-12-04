@@ -1,6 +1,5 @@
 #pragma once
 
-#include "colors.h"
 #include "globals.h"
 #include "roombahardware.h"
 #include <fstream>
@@ -14,7 +13,7 @@ class Room
   public:
     Room() : m_dirtySpaces(0){};
 
-    Room(std::string file);
+    Room(const std::string& file);
 
     Room(const Room& other) = delete;
 
@@ -24,7 +23,7 @@ class Room
 
     bool isClean() const;
 
-    void dropRoomba(Coordinate coor, Direction dir, RoombaHardware& roomba);
+    void dropRoomba(const Coordinate& coor, const Direction& dir, const RoombaHardware& roomba);
 
   private:
     void rotate(RoombaHardware& roomba);
@@ -33,62 +32,9 @@ class Room
 
     void clear();
 
-    struct RoombaProperties
-    {
-        Coordinate roombaCoor;
-        Direction roombaDir;
+    const RoomSpace& getRoom(const Coordinate& coor) const;
 
-        friend std::ostream& operator<<(std::ostream& os, const RoombaProperties& roombaProperties)
-        {
-            switch(roombaProperties.roombaDir)
-            {
-            case UP:
-                os << "^";
-                break;
-            case RIGHT:
-                os << ">";
-                break;
-            case DOWN:
-                os << "v";
-                break;
-            case LEFT:
-                os << "<";
-                break;
-            default:
-                break;
-            }
-
-            return os;
-        }
-    };
-
-    struct RoomSpace
-    {
-        bool isTraversable;
-        bool isClean;
-
-        const std::string getColor() const
-        {
-            if(isClean)
-            {
-                return BLUE;
-            }
-            return RESET;
-        }
-
-        const std::string getSymbol() const
-        {
-            if(isTraversable)
-            {
-                return " ";
-            }
-            return "#";
-        }
-    };
-
-    const RoomSpace& getRoom(Coordinate coor) const;
-
-    RoomSpace& getRoom(Coordinate coor);
+    RoomSpace& getRoom(const Coordinate& coor);
 
     std::vector<std::vector<RoomSpace>> m_room;
     RoombaProperties m_roombaProperties;

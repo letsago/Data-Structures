@@ -100,8 +100,8 @@ TEST_P(RoomTests, RoomTest)
     size_t battery = 500;
     Room room(GetParam());
     RoombaHardware roomba(battery);
-    RoombaBrain roombaBrain(roomba);
     room.dropRoomba({1, 1}, RIGHT, roomba);
+    RoombaBrain roombaBrain(roomba);
 
     while(!roombaBrain.isClean())
     {

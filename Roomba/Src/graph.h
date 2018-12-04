@@ -157,7 +157,7 @@ class Graph
 
     void clear() { m_nodes.clear(); }
 
-  protected:
+  private:
     struct GraphNode
     {
         GraphNode(const T& value) : m_value(value){};

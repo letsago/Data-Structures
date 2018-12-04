@@ -27,6 +27,7 @@ int main(int argc, char* argv[])
         roombaBrain.step(room);
         cout << "\033[2J\033[1;1H";
         cout << room;
+        cout << roombaBrain;
         usleep(200000);
     }
 

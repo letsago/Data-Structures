@@ -1,5 +1,6 @@
 #pragma once
 
+#include "colors.h"
 #include <iostream>
 #include <stdexcept>
 
@@ -43,9 +44,13 @@ struct Coordinate
 
     bool operator!=(const Coordinate& other) const { return !(x == other.x && y == other.y); }
 
+    bool operator>(const Coordinate& other) const { return (x > other.x || y > other.y); }
+
+    bool operator<(const Coordinate& other) const { return (x < other.x || y < other.y); }
+
     friend std::ostream& operator<<(std::ostream& os, const Coordinate& coor)
     {
-        os << coor.x << " " << coor.y;
+        os << "(" << coor.x << ", " << coor.y << ")";
         return os;
     }
 
@@ -112,5 +117,66 @@ struct CoordinateHash
         size_t h2 = std::hash<int>()(coor.y);
 
         return h1 ^ (h2 << 1);
+    }
+};
+
+struct RoombaProperties
+{
+    Coordinate coor;
+    Direction dir;
+
+    friend std::ostream& operator<<(std::ostream& os, const RoombaProperties& roombaProperties)
+    {
+        switch(roombaProperties.dir)
+        {
+        case UP:
+            os << "^";
+            break;
+        case RIGHT:
+            os << ">";
+            break;
+        case DOWN:
+            os << "v";
+            break;
+        case LEFT:
+            os << "<";
+            break;
+        default:
+            break;
+        }
+
+        return os;
+    }
+};
+
+struct RoomSpace
+{
+    bool isTraversable;
+    bool isClean;
+    bool isKnown;
+
+    const std::string getColor() const
+    {
+        if(isClean)
+        {
+            return BLUE;
+        }
+
+        if(!isKnown)
+        {
+            return MAGENTA;
+        }
+
+        return RESET;
+    }
+
+    const std::string getSymbol() const
+    {
+        if(isTraversable || !isKnown)
+        {
+            return " ";
+        }
+
+        return "#";
     }
 };
