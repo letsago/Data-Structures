@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 
 namespace Color
@@ -32,6 +34,7 @@ class Modifier
 
   public:
     Modifier(Code pCode) : code(pCode) {}
-    friend std::ostream& operator<<(std::ostream& os, const Modifier& mod) { return os << "\033[" << mod.code << "m"; }
+    std::string to_string() const { return "\033[" + std::to_string(code) + "m"; }
+    friend std::ostream& operator<<(std::ostream& os, const Modifier& mod) { return os << mod.to_string(); }
 };
 } // namespace Color

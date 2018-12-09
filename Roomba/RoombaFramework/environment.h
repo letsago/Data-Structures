@@ -1,4 +1,5 @@
 #pragma once
+#include "colors.h"
 #include "common.h"
 #include <functional>
 #include <memory>
@@ -35,14 +36,32 @@ class Environment
     void step();
     bool isActive() const;
 
+    friend std::istream& operator>>(std::istream& is, Environment& env);
+    friend std::ostream& operator<<(std::ostream& os, const Environment& env);
+
   private:
-    bool isTraversable(const Pose& pose);
+    bool isTraversable(const Pose& pose) const;
 
     template <typename T>
     void handleModule(T const* module, const ID id);
 
   private:
+    struct GridUnit
+    {
+        bool isTraversable;
+        Color::Code color() const { return isTraversable ? Color::BG_BLUE : Color::BG_DEFAULT; }
+        char symbol() const { return isTraversable ? ' ' : '#'; }
+    };
+
+    const GridUnit& getGridUnit(const Pose& pose) const { return m_grid[pose.m_pos.m_x][pose.m_pos.m_y]; }
+    GridUnit& getGridUnit(const Pose& pose) { return m_grid[pose.m_pos.m_x][pose.m_pos.m_y]; }
+
+    std::vector<std::vector<GridUnit>> m_grid;
     std::unordered_map<ID, ModuleInfo> m_modules;
     std::queue<std::function<void()>> m_changeQueue;
     uint32_t m_stepsTaken;
+
+    // Because we don't care to re-alloc the buffer each and every time we make sure to make this a one time alloc durin
+    // the constructor However we allow modifications to this in the << operator as we use this to print
+    mutable std::vector<std::vector<std::string>> m_drawBuffer;
 };

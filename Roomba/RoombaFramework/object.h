@@ -13,6 +13,12 @@ class Module
     bool isActive() const { return m_active; }
     virtual void On() { m_active = true; }
     virtual void Off() { m_active = false; }
+    virtual std::string orientedColoredSymbol(const Rotation& rot) const
+    {
+        return Color::Modifier(isActive() ? Color::FG_GREEN : Color::FG_RED).to_string() + orientedSymbol(rot) +
+               Color::Modifier(Color::FG_DEFAULT).to_string();
+    }
+    virtual char orientedSymbol(const Rotation& rot) const { return '*'; }
     virtual void step() final
     {
         if(isActive())
@@ -140,6 +146,19 @@ class Object : public Module
 {
   public:
     Object(std::shared_ptr<BatteryModule> battery) : Module(), m_batteryId(battery->id()) { insert(battery); };
+    virtual char orientedSymbol(const Rotation& rot) const
+    {
+        if(rot.isForward())
+            return '^';
+        if(rot.isRight())
+            return '>';
+        if(rot.isLeft())
+            return '<';
+        if(rot.isBackward())
+            return 'v';
+
+        assert(false);
+    }
 
     void insert(std::shared_ptr<Module> obj)
     {

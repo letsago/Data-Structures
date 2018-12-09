@@ -13,7 +13,6 @@ class Coor
 
     Coor operator+(const Coor& other) const { return Coor(m_x + other.m_x, m_y + other.m_y); }
 
-  private:
     int m_x;
     int m_y;
 };
@@ -25,6 +24,14 @@ class Rotation
     static Rotation Right() { return Rotation(90); }
     static Rotation Backward() { return Rotation(180); }
     static Rotation Left() { return Rotation(270); }
+
+    bool isForward() const { return *this == Rotation::Forward(); }
+    bool isRight() const { return *this == Rotation::Right(); }
+    bool isBackward() const { return *this == Rotation::Backward(); }
+    bool isLeft() const { return *this == Rotation::Left(); }
+
+    bool operator==(const Rotation& rhs) const { return memcmp(m_matrix, rhs.m_matrix, sizeof(m_matrix)); }
+
     Rotation(uint32_t degrees)
     {
         static const int s_sin[4] = {0, 1, 0, -1};
@@ -78,7 +85,6 @@ class Pose
         return Pose(m_pos + t, r);
     }
 
-  private:
     Coor m_pos;
     Rotation m_rot;
 };
