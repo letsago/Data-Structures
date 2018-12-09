@@ -4,6 +4,7 @@ TARGET_TYPE = program
 TARGET_NAME = roomba_test
 
 DIRS := \
+	RoombaFramework \
 	Src \
 	Test \
 	execute \

@@ -1,0 +1,9 @@
+TARGET_LIBS := \
+    $(TARGET_LIBS) \
+	RoombaFramework \
+
+INCLUDE_PATH := \
+	$(INCLUDE_PATH) \
+    $(PROJECT_DIR)/RoombaFramework \
+
+include $(PROJECT_DIR)/common.exp
