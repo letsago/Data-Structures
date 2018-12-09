@@ -32,13 +32,15 @@ int main(int argc, char* argv[])
     auto env = std::make_shared<Environment>(argv[1]);
     auto roomba = CreateRoomba();
 
-    env->placeModule(roomba, Coor(1, 1));
+    env->placeModule(roomba, Pose(Coor(1, 1), Rotation::Forward()));
     roomba->On();
 
     while(env->isActive())
     {
         env->step();
+        std::cout << "\033[2J\033[1;1H";
         std::cout << *env << std::endl;
+        usleep(250000);
     }
 
     env->summary();

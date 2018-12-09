@@ -133,6 +133,7 @@ std::ostream& operator<<(std::ostream& os, const Environment& env)
             it.second.obj->orientedColoredSymbol(it.second.position.m_rot);
     }
 
+    std::cout << "Step: " << env.m_stepsTaken << std::endl;
     for(size_t row = 0; row < env.m_grid.size(); ++row)
     {
         for(size_t col = 0; col < env.m_grid[row].size(); ++col)

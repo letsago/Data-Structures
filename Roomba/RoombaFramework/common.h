@@ -30,7 +30,7 @@ class Rotation
     bool isBackward() const { return *this == Rotation::Backward(); }
     bool isLeft() const { return *this == Rotation::Left(); }
 
-    bool operator==(const Rotation& rhs) const { return memcmp(m_matrix, rhs.m_matrix, sizeof(m_matrix)); }
+    bool operator==(const Rotation& rhs) const { return memcmp(m_matrix, rhs.m_matrix, sizeof(m_matrix)) == 0; }
 
     Rotation(uint32_t degrees)
     {
@@ -39,7 +39,7 @@ class Rotation
 
         m_matrix[0] = s_cos[degrees / 90 % 4];
         m_matrix[1] = -s_sin[degrees / 90 % 4];
-        m_matrix[2] = s_cos[degrees / 90 % 4];
+        m_matrix[2] = s_sin[degrees / 90 % 4];
         m_matrix[3] = s_cos[degrees / 90 % 4];
     }
 
