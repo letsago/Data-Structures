@@ -38,8 +38,8 @@ class Rotation
         static const int s_cos[4] = {1, 0, -1, 0};
 
         m_matrix[0] = s_cos[degrees / 90 % 4];
-        m_matrix[1] = -s_sin[degrees / 90 % 4];
-        m_matrix[2] = s_sin[degrees / 90 % 4];
+        m_matrix[1] = s_sin[degrees / 90 % 4];
+        m_matrix[2] = -s_sin[degrees / 90 % 4];
         m_matrix[3] = s_cos[degrees / 90 % 4];
     }
 

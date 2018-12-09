@@ -1,3 +1,4 @@
+#include <ctime>
 #include <environment.h>
 #include <iostream>
 #include <object.h>
@@ -10,10 +11,13 @@ void addToRoomba(std::shared_ptr<Object> roomba, Args&&... args)
     auto object = std::make_shared<T>(std::forward<Args>(args)...);
     roomba->insert(object);
 }
-std::shared_ptr<Object> CreateRoomba()
+
+std::shared_ptr<Object> CreateRoomba(int battery)
 {
-    auto roomba = std::make_shared<Object>(std::make_shared<BatteryModule>(10));
+    auto roomba = std::make_shared<Object>(std::make_shared<BatteryModule>(battery));
     addToRoomba<MovementModule>(roomba, 2, 1);
+    auto dummy = std::make_shared<RandomController>();
+    Object::PairControllerAndObject(roomba, dummy);
     return roomba;
 }
 
@@ -28,11 +32,12 @@ int main(int argc, char* argv[])
 
         exit(1);
     }
+    srand(time(NULL));
 
     auto env = std::make_shared<Environment>(argv[1]);
-    auto roomba = CreateRoomba();
+    auto roomba = CreateRoomba(10);
 
-    env->placeModule(roomba, Pose(Coor(1, 1), Rotation::Forward()));
+    env->placeModule(roomba, Pose(Coor(1, 5), Rotation::Right()));
     roomba->On();
 
     while(env->isActive())
@@ -40,10 +45,9 @@ int main(int argc, char* argv[])
         env->step();
         std::cout << "\033[2J\033[1;1H";
         std::cout << *env << std::endl;
-        usleep(250000);
+        env->summary();
+        usleep(500000);
     }
-
-    env->summary();
 
     return 0;
 }

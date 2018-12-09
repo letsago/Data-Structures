@@ -1,6 +1,7 @@
 #pragma once
 #include "colors.h"
 #include "environment.h"
+#include <cstdlib>
 #include <memory>
 
 class Module
@@ -110,7 +111,7 @@ class MovementModule : public PoweredModules
     MovementModule(uint32_t power, uint8_t maxSpeed)
         : PoweredModules(power), m_maxSpeed(maxSpeed), m_speed(0), m_rotation(0){};
 
-    virtual uint32_t step_cost() const { return m_cost * (m_speed + m_rotation + 1); }
+    virtual uint32_t step_cost() const { return m_cost * (m_speed + m_rotation); }
 
     void setSpeed(uint8_t speed)
     {
@@ -142,6 +143,19 @@ class MovementModule : public PoweredModules
     uint8_t m_rotation;
 };
 
+class Object;
+
+class Controller : public PoweredModules
+{
+  public:
+    Controller() : PoweredModules(1){};
+    virtual void configureTo(std::shared_ptr<Object> obj) = 0;
+
+  protected:
+    virtual const std::string name() const { return "Controller-" + controller_name(); }
+    virtual const std::string controller_name() const = 0;
+};
+
 class Object : public Module
 {
   public:
@@ -149,25 +163,34 @@ class Object : public Module
     virtual char orientedSymbol(const Rotation& rot) const
     {
         if(rot.isForward())
-            return '^';
-        if(rot.isRight())
             return '>';
-        if(rot.isLeft())
-            return '<';
-        if(rot.isBackward())
+        if(rot.isRight())
             return 'v';
+        if(rot.isLeft())
+            return '^';
+        if(rot.isBackward())
+            return '<';
 
         assert(false);
     }
 
     void insert(std::shared_ptr<Module> obj)
     {
+        assert(!std::dynamic_pointer_cast<Controller>(obj));
         m_modules[obj->id()] = obj;
         if(auto mod = std::dynamic_pointer_cast<PoweredModules>(obj))
         {
             dynamic_cast<BatteryModule*>(m_modules[m_batteryId].get())->power(mod);
         }
     }
+
+    static void PairControllerAndObject(std::shared_ptr<Object> obj, std::shared_ptr<Controller> controller)
+    {
+        obj->m_controller = controller;
+        dynamic_cast<BatteryModule*>(obj->m_modules[obj->m_batteryId].get())->power(controller);
+        controller->configureTo(obj);
+    }
+
     virtual void On()
     {
         for(auto& obj : m_modules)
@@ -175,6 +198,8 @@ class Object : public Module
             if(!obj.second->isActive())
                 obj.second->On();
         }
+        if(!m_controller->isActive())
+            m_controller->On();
         Module::On();
     }
 
@@ -185,6 +210,8 @@ class Object : public Module
             if(obj.second->isActive())
                 obj.second->Off();
         }
+        if(m_controller->isActive())
+            m_controller->Off();
         Module::Off();
     }
 
@@ -200,11 +227,13 @@ class Object : public Module
     }
 
     const std::shared_ptr<Module> findById(const ID& id) const { return m_modules.at(id); }
+    std::shared_ptr<Module> findById(const ID& id) { return m_modules.at(id); }
 
     friend std::ostream& operator<<(std::ostream& os, const Object& obj) { return os; }
     virtual void summary(std::string prefix) const
     {
         Module::summary(prefix);
+        m_controller->summary(prefix + "\t");
         for(auto& it : m_modules)
         {
             it.second->summary(prefix + "\t");
@@ -217,6 +246,7 @@ class Object : public Module
     void step_action()
     {
         bool didStep = false;
+        m_controller->step();
         for(auto& obj : m_modules)
         {
             obj.second->step();
@@ -231,5 +261,34 @@ class Object : public Module
 
   private:
     std::unordered_map<ID, std::shared_ptr<Module>> m_modules;
+    // Only one controller allowed per object.
+    // If you wish to have two Controllers access it, they will have to decide control
+    // through an intermediary Controller
+    std::shared_ptr<Controller> m_controller;
     const ID m_batteryId;
+};
+
+class RandomController : public Controller
+{
+  public:
+    virtual void configureTo(std::shared_ptr<Object> obj)
+    {
+        m_attachedModule = obj;
+        auto MM_id = obj->findFirstByType<MovementModule>();
+        m_movementModule = std::dynamic_pointer_cast<MovementModule>(obj->findById(MM_id));
+    }
+
+  protected:
+    virtual const std::string controller_name() const { return "Random"; }
+    void step_action()
+    {
+        if(rand() % 4 == 0)
+            m_movementModule->setRotation(1);
+        else
+            m_movementModule->setSpeed(1);
+    }
+
+  private:
+    std::weak_ptr<Object> m_attachedModule;
+    std::shared_ptr<MovementModule> m_movementModule;
 };

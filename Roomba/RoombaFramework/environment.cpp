@@ -59,14 +59,17 @@ void Environment::step()
 {
     for(auto& kv : m_modules)
     {
-        kv.second.obj->step();
-        if(const Object* obj = dynamic_cast<const Object*>(kv.second.obj.get()))
+        if(kv.second.obj->isActive())
         {
-            ID id = obj->findFirstByType<MovementModule>();
-            if(id != InvalidID)
+            kv.second.obj->step();
+            if(const Object* obj = dynamic_cast<const Object*>(kv.second.obj.get()))
             {
-                auto movementMod = obj->findById(id);
-                handleModule<MovementModule>(dynamic_cast<MovementModule*>(movementMod.get()), kv.first);
+                ID id = obj->findFirstByType<MovementModule>();
+                if(id != InvalidID)
+                {
+                    auto movementMod = obj->findById(id);
+                    handleModule<MovementModule>(dynamic_cast<MovementModule*>(movementMod.get()), kv.first);
+                }
             }
         }
     }
