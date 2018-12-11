@@ -26,7 +26,7 @@ class Room
     void dropRoomba(const Coordinate& coor, const Direction& dir, const RoombaHardware& roomba);
 
   private:
-    void rotate(RoombaHardware& roomba);
+    void rotate(RoombaHardware& roomba, const Direction& dir);
 
     void move(RoombaHardware& roomba);
 

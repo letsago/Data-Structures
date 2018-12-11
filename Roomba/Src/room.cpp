@@ -101,9 +101,20 @@ void Room::dropRoomba(const Coordinate& coor, const Direction& dir, const Roomba
     m_roombaProperties.dir = dir;
 }
 
-void Room::rotate(RoombaHardware& roomba)
+void Room::rotate(RoombaHardware& roomba, const Direction& dir)
 {
-    m_roombaProperties.dir = static_cast<Direction>((m_roombaProperties.dir + 1) % Direction::COUNT);
+    if(dir == Direction::RIGHT)
+    {
+        m_roombaProperties.dir = static_cast<Direction>((m_roombaProperties.dir + 1) % Direction::COUNT);
+    }
+    else if(dir == Direction::LEFT)
+    {
+        m_roombaProperties.dir = static_cast<Direction>((m_roombaProperties.dir + 3) % Direction::COUNT);
+    }
+    else
+    {
+        throw std::out_of_range("invalid direction to rotate roomba");
+    }
 }
 
 void Room::move(RoombaHardware& roomba)

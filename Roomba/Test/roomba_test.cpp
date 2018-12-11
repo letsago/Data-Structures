@@ -26,7 +26,7 @@ TEST(RoombaTests, EmptyBatteryTest)
     size_t battery = 0;
     RoombaHardware roomba(battery);
     Room room("./Test/raw/invalid.room");
-    ASSERT_ANY_THROW(roomba.rotate(room));
+    ASSERT_ANY_THROW(roomba.rotate(room, RIGHT));
 }
 
 TEST(RoombaTests, InvalidRoomTest)
@@ -34,7 +34,81 @@ TEST(RoombaTests, InvalidRoomTest)
     size_t battery = 10;
     RoombaHardware roomba(battery);
     Room room("./Test/raw/invalid.room");
-    ASSERT_ANY_THROW(room.dropRoomba({1, 1}, RIGHT, roomba););
+    ASSERT_ANY_THROW(room.dropRoomba({1, 1}, RIGHT, roomba));
+}
+
+TEST(RoombaTests, InvalidRotateTest)
+{
+    size_t battery = 10;
+    RoombaHardware roomba(battery);
+    Room room("./Test/raw/square.room");
+    room.dropRoomba({1, 1}, RIGHT, roomba);
+
+    for(size_t i = 0; i < Direction::COUNT; ++i)
+    {
+        if(static_cast<Direction>(i) == Direction::RIGHT || static_cast<Direction>(i) == Direction::LEFT)
+        {
+            ASSERT_NO_THROW(roomba.rotate(room, static_cast<Direction>(i)));
+        }
+        else
+        {
+            ASSERT_ANY_THROW(roomba.rotate(room, static_cast<Direction>(i)));
+        }
+    }
+}
+
+TEST(RoombaTests, AddSensorTest)
+{
+    size_t battery = 10;
+    RoombaHardware roomba(battery);
+    Room room("./Test/raw/square.room");
+    room.dropRoomba({2, 2}, RIGHT, roomba);
+
+    for(size_t i = 0; i < Direction::COUNT; ++i)
+    {
+        ASSERT_NO_THROW(roomba.addSensor(static_cast<Direction>(i)));
+        ASSERT_ANY_THROW(roomba.addSensor(static_cast<Direction>(i)));
+    }
+}
+
+TEST(RoombaTests, RemoveSensorTest)
+{
+    size_t battery = 10;
+    RoombaHardware roomba(battery);
+    Room room("./Test/raw/square.room");
+    room.dropRoomba({2, 2}, RIGHT, roomba);
+
+    for(size_t i = 0; i < Direction::COUNT; ++i)
+    {
+        ASSERT_NO_THROW(roomba.addSensor(static_cast<Direction>(i)));
+    }
+
+    for(size_t i = 0; i < Direction::COUNT; ++i)
+    {
+        ASSERT_NO_THROW(roomba.removeSensor(static_cast<Direction>(i)));
+        ASSERT_ANY_THROW(roomba.removeSensor(static_cast<Direction>(i)));
+    }
+}
+
+TEST(RoombaTests, SensorReadTest)
+{
+    size_t battery = 10;
+    RoombaHardware roomba(battery);
+    Room room("./Test/raw/square.room");
+    room.dropRoomba({2, 2}, RIGHT, roomba);
+
+    for(size_t i = 0; i < Direction::COUNT; ++i)
+    {
+        ASSERT_NO_THROW(roomba.addSensor(static_cast<Direction>(i)));
+    }
+
+    for(size_t i = 0; i < Direction::COUNT; ++i)
+    {
+        bool data = true;
+        Sensor& targetSensor = roomba.getSensor(static_cast<Direction>(i));
+        targetSensor.sensorSet(data);
+        ASSERT_EQ(targetSensor.sensorRead(), data);
+    }
 }
 
 TEST(RoombaTests, SimpleCleanTest)
@@ -51,8 +125,8 @@ TEST(RoombaTests, SimpleCleanTest)
         roomba.move(room);
     }
 
-    roomba.rotate(room);
-    roomba.rotate(room);
+    roomba.rotate(room, RIGHT);
+    roomba.rotate(room, RIGHT);
     ASSERT_FALSE(room.isClean());
 
     for(uint32_t i = 0; i < 2; i++)
@@ -60,7 +134,7 @@ TEST(RoombaTests, SimpleCleanTest)
         roomba.move(room);
     }
 
-    roomba.rotate(room);
+    roomba.rotate(room, RIGHT);
     ASSERT_FALSE(room.isClean());
 
     for(uint32_t i = 0; i < 2; i++)
@@ -68,7 +142,7 @@ TEST(RoombaTests, SimpleCleanTest)
         roomba.move(room);
     }
 
-    roomba.rotate(room);
+    roomba.rotate(room, RIGHT);
     ASSERT_FALSE(room.isClean());
 
     for(uint32_t i = 0; i < 2; i++)
@@ -80,7 +154,7 @@ TEST(RoombaTests, SimpleCleanTest)
 
     for(uint32_t i = 0; i < 2; i++)
     {
-        roomba.rotate(room);
+        roomba.rotate(room, RIGHT);
         roomba.move(room);
     }
 
@@ -119,7 +193,7 @@ TEST_P(RoomTests, MoveTest)
     RoombaHardware roomba(battery);
     room.dropRoomba({1, 1}, UP, roomba);
     ASSERT_FALSE(roomba.move(room));
-    roomba.rotate(room);
-    roomba.rotate(room);
+    roomba.rotate(room, RIGHT);
+    roomba.rotate(room, RIGHT);
     ASSERT_TRUE(roomba.move(room));
 }

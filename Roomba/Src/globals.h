@@ -155,6 +155,11 @@ struct RoomSpace
     bool isClean;
     bool isKnown;
 
+    bool operator==(const RoomSpace& other) const
+    {
+        return isTraversable == other.isTraversable && isClean == other.isClean && isKnown == other.isKnown;
+    }
+
     const std::string getColor() const
     {
         if(isClean)

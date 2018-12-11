@@ -19,7 +19,7 @@ bool RoombaHardware::move(Room& room)
     }
 }
 
-void RoombaHardware::rotate(Room& room)
+void RoombaHardware::rotate(Room& room, const Direction& dir)
 {
     if(m_battery == 0)
     {
@@ -27,7 +27,7 @@ void RoombaHardware::rotate(Room& room)
     }
     --m_battery;
 
-    room.rotate(*this);
+    room.rotate(*this, dir);
 }
 
 void RoombaHardware::setCleanMode(bool cleanState)
@@ -43,4 +43,42 @@ void RoombaHardware::setCleanMode(bool cleanState)
 
 bool RoombaHardware::getCleanMode() const { return m_cleanState; }
 
-void RoombaHardware::setBattery(size_t battery) { m_battery = battery; }
+void RoombaHardware::setBattery(const size_t battery) { m_battery = battery; }
+
+void RoombaHardware::addSensor(const Direction& dir)
+{
+    if(m_sensors.find(dir) == m_sensors.end())
+    {
+        Sensor sensor;
+        m_sensors.insert({dir, sensor});
+    }
+    else
+    {
+        throw std::out_of_range("cannot add sensor to roomba");
+    }
+}
+
+void RoombaHardware::removeSensor(const Direction& dir)
+{
+    if(m_sensors.find(dir) != m_sensors.end())
+    {
+        m_sensors.erase(dir);
+    }
+    else
+    {
+        throw std::out_of_range("cannot find roomba sensor to remove");
+    }
+}
+
+Sensor& RoombaHardware::getSensor(const Direction& dir)
+{
+    if(m_sensors.find(dir) != m_sensors.end())
+    {
+        --m_battery;
+        return m_sensors.at(dir);
+    }
+    else
+    {
+        throw std::out_of_range("cannot find roomba sensor");
+    }
+}

@@ -46,7 +46,7 @@ class RoombaBrain
     void move(Room& room);
 
     // rotates roomba 90 degrees to the right
-    void rotate(Room& room);
+    void rotate(Room& room, const Direction& dir);
 
     // moves to all previously nonvisited adjacent spaces to collect room info and moves back to original coor and dir
     void explore();

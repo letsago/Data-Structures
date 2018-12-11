@@ -44,9 +44,9 @@ void RoombaBrain::move(Room& room)
     }
 }
 
-void RoombaBrain::rotate(Room& room)
+void RoombaBrain::rotate(Room& room, const Direction& dir)
 {
-    m_roomba.rotate(room);
+    m_roomba.rotate(room, dir);
     m_roombaProperties.dir = static_cast<Direction>((m_roombaProperties.dir + 1) % Direction::COUNT);
 }
 
@@ -63,7 +63,7 @@ void RoombaBrain::step(Room& room)
             move(room);
             break;
         case ROTATE:
-            rotate(room);
+            rotate(room, RIGHT);
             break;
         default:
             break;
@@ -80,7 +80,7 @@ void RoombaBrain::step(Room& room)
             move(room);
             break;
         case ROTATE:
-            rotate(room);
+            rotate(room, RIGHT);
             break;
         case SETCLEANMODE:
             m_roomba.setCleanMode(true);
