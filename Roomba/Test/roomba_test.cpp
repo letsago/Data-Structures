@@ -171,14 +171,26 @@ INSTANTIATE_TEST_CASE_P(Tests, RoomTests,
 
 TEST_P(RoomTests, RoomTest)
 {
-    size_t battery = 500;
+    size_t battery = 750;
     Room room(GetParam());
     RoombaHardware roomba(battery);
+
+    for(size_t i = 0; i < Direction::COUNT; ++i)
+    {
+        roomba.addSensor(static_cast<Direction>(i));
+    }
+
     room.dropRoomba({1, 1}, RIGHT, roomba);
     RoombaBrain roombaBrain(roomba);
 
     while(!roombaBrain.isClean())
     {
+        for(size_t i = 0; i < Direction::COUNT; ++i)
+        {
+            Sensor& sensor = roomba.getSensor(static_cast<Direction>(i));
+            room.updateSensor(sensor, static_cast<Direction>(i));
+        }
+
         roombaBrain.step(room);
     }
 

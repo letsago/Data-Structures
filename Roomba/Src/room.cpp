@@ -148,6 +148,30 @@ void Room::clear()
     m_dirtySpaces = 0;
 }
 
-const RoomSpace& Room::getRoom(const Coordinate& coor) const { return m_room[coor.x][coor.y]; }
+const RoomSpace& Room::getRoom(const Coordinate& coor) const
+{
+    throwIfCoorInvalid(coor);
+    return m_room[coor.x][coor.y];
+}
 
-RoomSpace& Room::getRoom(const Coordinate& coor) { return m_room[coor.x][coor.y]; }
+RoomSpace& Room::getRoom(const Coordinate& coor)
+{
+    throwIfCoorInvalid(coor);
+    return m_room[coor.x][coor.y];
+}
+
+void Room::updateSensor(Sensor& sensor, const Direction& dir) const
+{
+    Coordinate absNeighbor = m_roombaProperties.coor + Coordinate::GetCoordinateFromDirection(static_cast<Direction>(
+                                                           (m_roombaProperties.dir + dir) % Direction::COUNT));
+    sensor.sensorSet(getRoom(absNeighbor).isTraversable);
+}
+
+void Room::throwIfCoorInvalid(const Coordinate& coor) const
+{
+    if(m_room.empty() || m_room[coor.x].empty() || coor.x > m_room.size() - 1 || coor.x < 0 ||
+       coor.y > m_room[coor.x].size() - 1 || coor.y < 0)
+    {
+        throw std::out_of_range("cannot get room from invalid coordinate");
+    };
+}

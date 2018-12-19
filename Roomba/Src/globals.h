@@ -18,7 +18,7 @@ struct Coordinate
     int x;
     int y;
 
-    Coordinate operator+(const Coordinate& other)
+    Coordinate operator+(const Coordinate& other) const
     {
         Coordinate result = {x, y};
         result.x += other.x;
@@ -26,13 +26,13 @@ struct Coordinate
         return result;
     }
 
-    Coordinate operator+=(const Coordinate& other)
+    Coordinate& operator+=(const Coordinate& other)
     {
         *this = *this + other;
         return *this;
     }
 
-    Coordinate operator-(const Coordinate& other)
+    Coordinate operator-(const Coordinate& other) const
     {
         Coordinate result = {x, y};
         result.x -= other.x;
@@ -164,7 +164,7 @@ struct RoomSpace
     {
         if(isClean)
         {
-            return BLUE;
+            return GREEN;
         }
 
         if(!isKnown)

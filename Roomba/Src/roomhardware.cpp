@@ -2,11 +2,7 @@
 
 bool RoombaHardware::move(Room& room)
 {
-    if(m_battery == 0)
-    {
-        throw std::out_of_range("battery is depleted");
-    }
-    --m_battery;
+    updateBattery();
 
     try
     {
@@ -21,23 +17,13 @@ bool RoombaHardware::move(Room& room)
 
 void RoombaHardware::rotate(Room& room, const Direction& dir)
 {
-    if(m_battery == 0)
-    {
-        throw std::out_of_range("battery is depleted");
-    }
-    --m_battery;
-
+    updateBattery();
     room.rotate(*this, dir);
 }
 
 void RoombaHardware::setCleanMode(bool cleanState)
 {
-    if(m_battery == 0)
-    {
-        throw std::out_of_range("battery is depleted");
-    }
-    --m_battery;
-
+    updateBattery();
     m_cleanState = cleanState;
 }
 
@@ -50,7 +36,7 @@ void RoombaHardware::addSensor(const Direction& dir)
     if(m_sensors.find(dir) == m_sensors.end())
     {
         Sensor sensor;
-        m_sensors.insert({dir, sensor});
+        m_sensors[dir] = sensor;
     }
     else
     {
@@ -72,13 +58,23 @@ void RoombaHardware::removeSensor(const Direction& dir)
 
 Sensor& RoombaHardware::getSensor(const Direction& dir)
 {
+    updateBattery();
+
     if(m_sensors.find(dir) != m_sensors.end())
     {
-        --m_battery;
         return m_sensors.at(dir);
     }
     else
     {
         throw std::out_of_range("cannot find roomba sensor");
     }
+}
+
+void RoombaHardware::updateBattery()
+{
+    if(m_battery == 0)
+    {
+        throw std::out_of_range("battery is depleted");
+    }
+    --m_battery;
 }

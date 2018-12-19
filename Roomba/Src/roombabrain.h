@@ -5,17 +5,14 @@
 #include "room.h"
 #include <queue>
 #include <stack>
+#include <unordered_set>
 
 class RoombaBrain
 {
   public:
-    RoombaBrain(RoombaHardware& roomba)
-        : m_roomba(roomba), m_roombaProperties({{7, 7}, UP}), m_gridDimensions({{0, 0}, {15, 15}}), m_counter(0)
+    RoombaBrain(RoombaHardware& roomba) : m_roomba(roomba), m_roombaProperties({{7, 7}, UP})
     {
         m_mainCommands.push(SETCLEANMODE);
-        m_spaces.push(m_roombaProperties.coor);
-        std::vector<RoomSpace> initRow(m_gridDimensions.max.y - m_gridDimensions.min.y + 1, {false, false, false});
-        m_room.resize(m_gridDimensions.max.x - m_gridDimensions.min.x + 1, initRow);
     }
 
     RoombaBrain(const RoombaBrain& other) = delete;
@@ -27,18 +24,25 @@ class RoombaBrain
     void step(Room& room);
 
   private:
-    struct RoomProperties
-    {
-        RoomProperties() : isRoomExplored(false){};
-
-        bool isRoomExplored;
-        std::stack<Coordinate> dirtySpaces;
-    };
-
     struct GridDimensions
     {
         Coordinate min;
         Coordinate max;
+    };
+
+    struct RoomProperties
+    {
+        RoomProperties() : isRoomExplored(false), gridDimensions({{0, 0}, {15, 15}})
+        {
+            std::vector<RoomSpace> initRow(gridDimensions.max.y - gridDimensions.min.y + 1, {false, false, false});
+            room.resize(gridDimensions.max.x - gridDimensions.min.x + 1, initRow);
+        };
+
+        bool isRoomExplored;
+        std::unordered_set<Coordinate, CoordinateHash> dirtySpaces;
+        std::vector<std::vector<RoomSpace>> room;
+        std::unordered_set<Coordinate, CoordinateHash> nonTraversedSpaces;
+        GridDimensions gridDimensions;
     };
 
   private:
@@ -47,9 +51,6 @@ class RoombaBrain
 
     // rotates roomba 90 degrees to the right
     void rotate(Room& room, const Direction& dir);
-
-    // moves to all previously nonvisited adjacent spaces to collect room info and moves back to original coor and dir
-    void explore();
 
     // moves to designated position
     void moveTo(const Coordinate& pos);
@@ -60,22 +61,21 @@ class RoombaBrain
 
     void updatePrintBuffer(const Coordinate& oldDimensions, const Coordinate& newDimensions);
 
+    Coordinate findClosestCoor(const std::unordered_set<Coordinate, CoordinateHash>& set) const;
+
+    void updateRoom();
+
     enum Command
     {
         MOVE,
-        ROTATE,
-        SETCLEANMODE,
-        EXPLORE
+        ROTATERIGHT,
+        ROTATELEFT,
+        SETCLEANMODE
     };
 
     RoombaHardware& m_roomba;
     RoombaProperties m_roombaProperties;
     RoomProperties m_roomProperties;
-    GridDimensions m_gridDimensions;
     Graph<Coordinate, CoordinateHash> m_graph;
-    std::vector<std::vector<RoomSpace>> m_room;
     std::queue<Command> m_mainCommands;
-    std::queue<Command> m_resetCommands;
-    std::stack<Coordinate> m_spaces;
-    int m_counter;
 };

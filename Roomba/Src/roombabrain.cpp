@@ -1,4 +1,5 @@
 #include "roombabrain.h"
+#include <assert.h>
 
 bool RoombaBrain::isClean() const { return m_roomProperties.isRoomExplored && m_roomProperties.dirtySpaces.empty(); }
 
@@ -6,16 +7,16 @@ std::ostream& operator<<(std::ostream& os, RoombaBrain& roombaBrain)
 {
     Coordinate coor = {0, 0};
 
-    for(size_t row = 0; row < roombaBrain.m_room.size(); ++row)
+    for(size_t row = 0; row < roombaBrain.m_roomProperties.room.size(); ++row)
     {
         coor.x = row;
 
-        for(size_t col = 0; col < roombaBrain.m_room[row].size(); ++col)
+        for(size_t col = 0; col < roombaBrain.m_roomProperties.room[row].size(); ++col)
         {
             coor.y = col;
             os << roombaBrain.getRoom(coor).getColor();
 
-            if(coor == roombaBrain.m_roombaProperties.coor - roombaBrain.m_gridDimensions.min)
+            if(coor == roombaBrain.m_roombaProperties.coor - roombaBrain.m_roomProperties.gridDimensions.min)
             {
                 if(roombaBrain.getRoom(coor).isClean)
                 {
@@ -47,29 +48,22 @@ void RoombaBrain::move(Room& room)
 void RoombaBrain::rotate(Room& room, const Direction& dir)
 {
     m_roomba.rotate(room, dir);
-    m_roombaProperties.dir = static_cast<Direction>((m_roombaProperties.dir + 1) % Direction::COUNT);
+
+    if(dir == Direction::RIGHT)
+    {
+        m_roombaProperties.dir = static_cast<Direction>((m_roombaProperties.dir + 1) % Direction::COUNT);
+    }
+    else if(dir == Direction::LEFT)
+    {
+        m_roombaProperties.dir = static_cast<Direction>((m_roombaProperties.dir + 3) % Direction::COUNT);
+    }
 }
 
 void RoombaBrain::step(Room& room)
 {
-    if(!m_resetCommands.empty())
-    {
-        Command command = m_resetCommands.front();
-        m_resetCommands.pop();
+    updateRoom();
 
-        switch(command)
-        {
-        case MOVE:
-            move(room);
-            break;
-        case ROTATE:
-            rotate(room, RIGHT);
-            break;
-        default:
-            break;
-        }
-    }
-    else if(!m_mainCommands.empty())
+    if(!m_mainCommands.empty())
     {
         Command command = m_mainCommands.front();
         m_mainCommands.pop();
@@ -78,140 +72,73 @@ void RoombaBrain::step(Room& room)
         {
         case MOVE:
             move(room);
+            if(m_roomba.getCleanMode())
+            {
+                getRoom(m_roombaProperties.coor).isClean = true;
+            }
             break;
-        case ROTATE:
+        case ROTATERIGHT:
             rotate(room, RIGHT);
+            break;
+        case ROTATELEFT:
+            rotate(room, LEFT);
             break;
         case SETCLEANMODE:
             m_roomba.setCleanMode(true);
-            getRoom(m_roombaProperties.coor).isClean = true;
+            getRoom(m_roombaProperties.coor) = {true, true, true};
             break;
-        case EXPLORE:
-        {
-            Coordinate oldCoor = m_roombaProperties.coor;
-            Coordinate newCoor = oldCoor + Coordinate::GetCoordinateFromDirection(m_roombaProperties.dir);
-
-            if(newCoor > m_gridDimensions.max || newCoor < m_gridDimensions.min)
-            {
-                updatePrintBuffer(oldCoor, newCoor);
-                m_gridDimensions.max.x = std::max(m_gridDimensions.max.x, newCoor.x);
-                m_gridDimensions.max.y = std::max(m_gridDimensions.max.y, newCoor.y);
-                m_gridDimensions.min.x = std::min(m_gridDimensions.min.x, newCoor.x);
-                m_gridDimensions.min.y = std::min(m_gridDimensions.min.y, newCoor.y);
-            }
-
-            getRoom(newCoor - m_gridDimensions.min).isKnown = true;
-            move(room);
-
-            if(oldCoor != m_roombaProperties.coor)
-            {
-                m_spaces.push(m_roombaProperties.coor);
-                m_graph.connect(oldCoor, m_roombaProperties.coor, 1);
-                getRoom(m_roombaProperties.coor - m_gridDimensions.min).isTraversable = true;
-
-                if(!m_roomba.getCleanMode())
-                {
-                    m_roomProperties.dirtySpaces.push(m_roombaProperties.coor);
-                }
-                else
-                {
-                    getRoom(m_roombaProperties.coor - m_gridDimensions.min).isClean = true;
-                }
-
-                // rotate twice to face dir of original coor, move to original coor, then rotate twice again to
-                // face original dir so that all directions will be explored
-                m_resetCommands.push(ROTATE);
-                m_resetCommands.push(ROTATE);
-                m_resetCommands.push(MOVE);
-                m_resetCommands.push(ROTATE);
-                m_resetCommands.push(ROTATE);
-            }
-            else
-            {
-                getRoom(newCoor - m_gridDimensions.min).isTraversable = false;
-            }
-
-            m_mainCommands.push(ROTATE);
-            break;
-        }
         }
     }
     else if(!isClean())
     {
-        if(!m_roomProperties.isRoomExplored)
+        if(m_roomba.getCleanMode() && !m_roomProperties.dirtySpaces.empty())
         {
-            if(!m_spaces.empty())
+            Coordinate coor = findClosestCoor(m_roomProperties.dirtySpaces);
+            m_roomProperties.dirtySpaces.erase(coor);
+            m_roomProperties.nonTraversedSpaces.erase(coor);
+            moveTo(coor);
+        }
+        else if(!m_roomProperties.isRoomExplored)
+        {
+            if(!m_roomProperties.nonTraversedSpaces.empty())
             {
-                if(m_counter % 2 == 0)
-                {
-                    explore();
-                }
-                else
-                {
-                    Coordinate pos = m_spaces.top();
-                    m_spaces.pop();
-                    moveTo(pos);
-                }
-
-                ++m_counter;
+                Coordinate pos = findClosestCoor(m_roomProperties.nonTraversedSpaces);
+                m_roomProperties.nonTraversedSpaces.erase(pos);
+                moveTo(pos);
             }
             else
             {
                 m_roomProperties.isRoomExplored = true;
             }
         }
-        else if(m_roomba.getCleanMode())
-        {
-            if(!m_roomProperties.dirtySpaces.empty())
-            {
-                Coordinate coor = m_roomProperties.dirtySpaces.top();
-                m_roomProperties.dirtySpaces.pop();
-                moveTo(coor);
-            }
-        }
-    }
-}
-
-void RoombaBrain::explore()
-{
-    Direction curr = m_roombaProperties.dir;
-
-    for(size_t i = 0; i < Direction::COUNT; ++i)
-    {
-        Coordinate newCoor = m_roombaProperties.coor + Coordinate::GetCoordinateFromDirection(curr);
-
-        if(!m_graph.contains(newCoor))
-        {
-            m_mainCommands.push(EXPLORE);
-        }
-
-        m_mainCommands.push(ROTATE);
-        curr = static_cast<Direction>((curr + 1) % Direction::COUNT);
     }
 }
 
 void RoombaBrain::moveTo(const Coordinate& pos)
 {
     std::queue<Coordinate> path;
-    m_graph.shortestDistance(m_roombaProperties.coor, pos, &path);
+    size_t minDis = m_graph.shortestDistance(m_roombaProperties.coor, pos, &path);
     Coordinate curr = m_roombaProperties.coor;
     Direction currDir = m_roombaProperties.dir;
+    assert(minDis == path.size());
 
     while(!path.empty())
     {
         Coordinate next = path.front();
         path.pop();
         Direction nextDir = Coordinate::GetDirectionFromUnitCoordinate(next - curr);
-        int rotNum = nextDir - currDir;
+        int rotNum = (nextDir - currDir + Direction::COUNT) % Direction::COUNT;
 
-        if(rotNum < 0)
+        if(rotNum == 3)
         {
-            rotNum += Direction::COUNT;
+            m_mainCommands.push(ROTATELEFT);
         }
-
-        for(size_t i = 0; i < rotNum; ++i)
+        else
         {
-            m_mainCommands.push(ROTATE);
+            for(size_t i = 0; i < rotNum; ++i)
+            {
+                m_mainCommands.push(ROTATERIGHT);
+            }
         }
 
         m_mainCommands.push(MOVE);
@@ -220,9 +147,9 @@ void RoombaBrain::moveTo(const Coordinate& pos)
     }
 }
 
-const RoomSpace& RoombaBrain::getRoom(const Coordinate& coor) const { return m_room[coor.x][coor.y]; }
+const RoomSpace& RoombaBrain::getRoom(const Coordinate& coor) const { return m_roomProperties.room[coor.x][coor.y]; }
 
-RoomSpace& RoombaBrain::getRoom(const Coordinate& coor) { return m_room[coor.x][coor.y]; }
+RoomSpace& RoombaBrain::getRoom(const Coordinate& coor) { return m_roomProperties.room[coor.x][coor.y]; }
 
 void RoombaBrain::updatePrintBuffer(const Coordinate& oldDimensions, const Coordinate& newDimensions)
 {
@@ -230,32 +157,87 @@ void RoombaBrain::updatePrintBuffer(const Coordinate& oldDimensions, const Coord
 
     if(oldDimensions.x != newDimensions.x)
     {
-        std::vector<RoomSpace> newRow(m_room[0].size(), space);
+        std::vector<RoomSpace> newRow(m_roomProperties.room[0].size(), space);
 
         if(newDimensions.x > oldDimensions.x)
         {
-            m_room.push_back(newRow);
+            m_roomProperties.room.push_back(newRow);
         }
         else
         {
-            m_room.insert(m_room.begin(), newRow);
+            m_roomProperties.room.insert(m_roomProperties.room.begin(), newRow);
         }
     }
     else if(oldDimensions.y != newDimensions.y)
     {
         if(newDimensions.y > oldDimensions.y)
         {
-            for(size_t i = 0; i < m_room.size(); ++i)
+            for(size_t i = 0; i < m_roomProperties.room.size(); ++i)
             {
-                m_room[i].push_back(space);
+                m_roomProperties.room[i].push_back(space);
             }
         }
         else
         {
-            for(size_t i = 0; i < m_room.size(); ++i)
+            for(size_t i = 0; i < m_roomProperties.room.size(); ++i)
             {
-                m_room[i].insert(m_room[i].begin(), space);
+                m_roomProperties.room[i].insert(m_roomProperties.room[i].begin(), space);
             }
+        }
+    }
+}
+
+Coordinate RoombaBrain::findClosestCoor(const std::unordered_set<Coordinate, CoordinateHash>& set) const
+{
+    if(set.empty())
+    {
+        throw std::out_of_range("no coordinates to find from");
+    }
+
+    Coordinate target = *set.begin();
+    size_t minDis = m_graph.shortestDistance(m_roombaProperties.coor, target);
+
+    for(auto it = set.begin(); it != set.end(); ++it)
+    {
+        if(m_graph.shortestDistance(m_roombaProperties.coor, *it) < minDis)
+        {
+            minDis = m_graph.shortestDistance(m_roombaProperties.coor, *it);
+            target = *it;
+        }
+    }
+
+    return target;
+}
+
+void RoombaBrain::updateRoom()
+{
+    for(size_t i = 0; i < Direction::COUNT; ++i)
+    {
+        Coordinate relNeighbor =
+            m_roombaProperties.coor + Coordinate::GetCoordinateFromDirection(
+                                          static_cast<Direction>((m_roombaProperties.dir + i) % Direction::COUNT));
+
+        if(relNeighbor > m_roomProperties.gridDimensions.max || relNeighbor < m_roomProperties.gridDimensions.min)
+        {
+            updatePrintBuffer(m_roombaProperties.coor, relNeighbor);
+            m_roomProperties.gridDimensions.max.x = std::max(m_roomProperties.gridDimensions.max.x, relNeighbor.x);
+            m_roomProperties.gridDimensions.max.y = std::max(m_roomProperties.gridDimensions.max.y, relNeighbor.y);
+            m_roomProperties.gridDimensions.min.x = std::min(m_roomProperties.gridDimensions.min.x, relNeighbor.x);
+            m_roomProperties.gridDimensions.min.y = std::min(m_roomProperties.gridDimensions.min.y, relNeighbor.y);
+        }
+
+        getRoom(relNeighbor - m_roomProperties.gridDimensions.min).isKnown = true;
+
+        if(m_roomba.getSensor(static_cast<Direction>(i)).sensorRead())
+        {
+            if(!m_graph.contains(relNeighbor))
+            {
+                m_roomProperties.nonTraversedSpaces.insert(relNeighbor);
+                m_roomProperties.dirtySpaces.insert(relNeighbor);
+                getRoom(relNeighbor - m_roomProperties.gridDimensions.min).isTraversable = true;
+            }
+
+            m_graph.connect(m_roombaProperties.coor, relNeighbor, 1);
         }
     }
 }

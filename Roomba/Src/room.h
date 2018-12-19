@@ -25,6 +25,8 @@ class Room
 
     void dropRoomba(const Coordinate& coor, const Direction& dir, const RoombaHardware& roomba);
 
+    void updateSensor(Sensor& sensor, const Direction& dir) const;
+
   private:
     void rotate(RoombaHardware& roomba, const Direction& dir);
 
@@ -35,6 +37,8 @@ class Room
     const RoomSpace& getRoom(const Coordinate& coor) const;
 
     RoomSpace& getRoom(const Coordinate& coor);
+
+    void throwIfCoorInvalid(const Coordinate& coor) const;
 
     std::vector<std::vector<RoomSpace>> m_room;
     RoombaProperties m_roombaProperties;

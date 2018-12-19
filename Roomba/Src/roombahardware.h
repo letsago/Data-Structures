@@ -31,6 +31,8 @@ class RoombaHardware
     Sensor& getSensor(const Direction& dir);
 
   private:
+    void updateBattery();
+
     size_t m_battery;
     bool m_cleanState;
     std::unordered_map<Direction, Sensor> m_sensors;
