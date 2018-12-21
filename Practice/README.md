@@ -13,8 +13,9 @@ make run
 
 ## Directory Structure
 
-Note that each project folder has a `makefile` and `makefile.exp used` for code compilation.
+Note that each project folder has a `makefile` and `makefile.exp` used for code compilation.
 All test cases were written using [GoogleTest](https://github.com/google/googletest) framework.
+Memory leak checks were done via Valgrind.
 
 Folders Containing Data Structure Implementations
 * PigLatin
@@ -29,9 +30,9 @@ Folders Containing Test Implementations
 * Map
 * OrderedSet
 * Queue
+* Shared_Ptr
 * Stack
 * Tree 
-* Shared_Ptr
 * Vector
 
 ## Known issues
@@ -46,23 +47,20 @@ Folders Containing Test Implementations
 - [x] Queue [via Vector / Linked List / Array / Rolling Array]
 - [x] Stack [via Vector / Linked List / Array]
 - [x] Shared Pointers
-- [x] Binary Tree
-    - [x] Inorder Traversal
-    - [x] Breadth-first Traversal
-    - [x] Depth-first Traversal
-    - [x] Rendering
+- [x] Binary Tree [Inorder Traversal / Breadth-first Traversal / Depth-first Traversal / Visualization]
 - [x] Self-balancing Binary Tree
 - [x] Ordered Set
 - [x] Ordered Map
 - [ ] Unordered Set
 - [x] Unordered Map
-- [x] Graph
-    - [x] Shortest Distance (BFS)
-    - [ ] Topological Traversal
+- [x] Iterators for all above data structures
+- [x] Graph [Shortest Distance (BFS)]
+- [x] Weighted Graph [Shortest Distance (BFS)]
 
 ## Potential future work
 - [ ] More efficient Self-Balancing BST
 - [ ] Heaps
 - [ ] Tries
+- [ ] Unique Pointers
 
-Thanks for reading me and have a lovely day! 
+**Thanks for reading me and have a lovely day!**
