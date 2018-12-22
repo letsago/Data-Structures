@@ -63,3 +63,9 @@ Practice/outputs/*
 .clang-format
 .clang-tidy
 .valgrindrc
+
+# FindFilm Env folder
+FindFilms/env/*
+
+# python compile files
+*.pyc
