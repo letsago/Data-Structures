@@ -1,0 +1,22 @@
+extends ./common/mixins.jade
+
+block title
+    title FindFilms Register
+
+block content
+    div 
+        form(action='/register', method='post')
+            h2 New Account
+            div
+                label Username
+                input(type='text', id='user', name='username')
+            div
+                label Email
+                input(type='email', id='email', name='email', placeholder='name@email.com')
+            div
+                label Password
+                input(type='password', id='password', name='password')
+            div
+                label Confirm Password
+                input(type='password', id='confirmPassword', name='confirmPassword')
+            button(type='submit') Sign Up

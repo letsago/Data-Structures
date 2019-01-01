@@ -1,0 +1,53 @@
+extends ./common/layout.jade
+
+mixin generateDropDownList(label, array)
+    center
+        label(for='id')= label
+        select(name='id', id='id')
+            each val in array
+                option= val
+
+mixin addResult(movie)
+    td 
+        a(role='button', href='/details')= movie.title
+    td= movie.genre
+    td #{movie.length} min
+    td= movie.criticsRatings
+    td= movie.audienceRatings
+
+mixin movieCard(movie)
+    a(href=movie.url)
+        h2= movie.title
+    ul #{movie.rating}, #{movie.length} min 
+    img(src=movie.img)
+    h2 Location
+        h4 Theater
+        ul= movie.theater
+        h4 Address
+        ul= movie.address
+        h4 Price
+        ul= movie.price
+        h4 Times 
+        each time in movie.times
+            ul= time
+    h2 Details
+        h4 Ratings 
+        ul Rotten Tomatoes: #{movie.rottenTomatoes}
+        ul IMDb: #{movie.imdbRating}
+        h4 Actors 
+        each actor in movie.cast
+            ul= actor
+        h4 Director 
+        ul= movie.director
+
+mixin logoutButton()
+    div
+        a(href='/')
+            button(type='button') Logout
+
+mixin backToSearchButton()
+    div
+        a(href='/search')
+            button(type='button') Back to Search
+
+

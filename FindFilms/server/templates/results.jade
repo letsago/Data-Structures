@@ -1,0 +1,23 @@
+extends ./common/mixins.jade
+
+movie = {'title': 'The Dark Knight', 'genre': 'Drama/Thriller', 'length': 150, 'criticsRatings': 9, 'audienceRatings': 9}
+
+block title
+    title FindFilms Results
+
+block content
+    +logoutButton()
+    +backToSearchButton()
+    div
+        center
+            table
+                thead
+                    th Movie
+                    th Genre
+                    th Length
+                    th Critics Ratings
+                    th Audience Ratings
+                tbody
+                    +addResult(movie)
+
+

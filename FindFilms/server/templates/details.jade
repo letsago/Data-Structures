@@ -1,0 +1,13 @@
+extends ./common/mixins.jade
+
+movieList = [{'url': 'https://www.imdb.com/title/tt0468569/', 'title': 'The Dark Knight', 'rating': 'PG-13', 'length': 150, 'theater': 'AMC', 'address': '101 Main St.', 'times': ['8:00 pm', '10:00 pm'], 'price': '$8.00', 'img': 'https://upload.wikimedia.org/wikipedia/en/8/8a/Dark_Knight.jpg', 'imdbRating': 9, 'rottenTomatoes': 9, 'cast': ['Christian Bale', 'Heath Ledger', 'Aaron Eckhart'], 'director': 'Christopher Nolan', 'genres': ['Drama', 'Thriller']}]
+
+block title
+    title FindFilms Details
+
+block content
+    +logoutButton()
+    +backToSearchButton()
+    each movie in movieList
+        div
+            +movieCard(movie)

@@ -1,0 +1,24 @@
+extends ./common/mixins.jade
+
+genreArray = ['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Historical', 'Horror', 'Mystery', 'Political', 'Romance', 'Science Fiction', 'Thriller', 'Western']
+
+block title
+    title FindFilms Search
+    
+block content
+    form(action='/search', method='post')
+        a(href='/')
+            button(type='button') Logout 
+        +generateDropDownList('Genre', genreArray)
+        +generateDropDownList('Minimum Critics Ratings', numericRatings)
+        +generateDropDownList('Minimum Audience Ratings', numericRatings)
+        +generateDropDownList('Movie Length', movieLengths)
+        center
+            label Actor 
+            input(type='text') 
+        center
+            label Executive Director
+            input(type='text')
+        &nbsp;
+        center
+            button(type='submit', href='/results') Submit
