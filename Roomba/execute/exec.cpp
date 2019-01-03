@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
         exit(1);
     }
 
-    size_t battery = 800;
+    size_t battery = 10000;
     Room room(argv[1]);
     RoombaHardware roomba(battery);
 
@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
     }
 
     RoombaBrain roombaBrain(roomba);
-    room.dropRoomba({1, 1}, RIGHT, roomba);
+    room.dropRoomba({1, 1}, DOWN, roomba);
 
     while(!roombaBrain.isClean())
     {
@@ -38,8 +38,15 @@ int main(int argc, char* argv[])
 
         roombaBrain.step(room);
         cout << "\033[2J\033[1;1H";
+        cout << "ROOM'S PERSPECTIVE" << endl;
         cout << room;
+        cout << "ROOMBA'S PERSPECTIVE" << endl;
         cout << roombaBrain;
+        cout << "LEGEND" << endl;
+        cout << "# -> NON-TRAVERSABLE SPACE" << endl;
+        cout << GREEN << " " << RESET << " -> CLEAN SPACE" << endl;
+        cout << MAGENTA << " " << RESET << " -> UNKNOWN SPACE (FROM ROOMBA'S PERSPECTIVE)" << endl;
+        cout << "  -> DIRTY SPACE" << endl;
         usleep(200000);
     }
 

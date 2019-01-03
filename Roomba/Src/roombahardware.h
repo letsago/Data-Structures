@@ -2,7 +2,6 @@
 
 #include "room.h"
 #include "sensor.h"
-#include <cstddef>
 #include <unordered_map>
 
 class Room;

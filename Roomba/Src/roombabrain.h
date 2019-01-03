@@ -1,16 +1,17 @@
 #pragma once
 
-#include "globals.h"
 #include "graph.h"
 #include "room.h"
 #include <queue>
-#include <stack>
 #include <unordered_set>
 
 class RoombaBrain
 {
   public:
-    RoombaBrain(RoombaHardware& roomba) : m_roomba(roomba), m_roombaProperties({{7, 7}, UP})
+    RoombaBrain(RoombaHardware& roomba)
+        : m_roomba(roomba),
+          m_roombaProperties({{7, 7}, DOWN}),
+          m_roomProperties({m_roombaProperties.coor.x + 10, m_roombaProperties.coor.y + 10})
     {
         m_mainCommands.push(SETCLEANMODE);
     }
@@ -32,7 +33,7 @@ class RoombaBrain
 
     struct RoomProperties
     {
-        RoomProperties() : isRoomExplored(false), gridDimensions({{0, 0}, {15, 15}})
+        RoomProperties(const Coordinate& maxDim) : isRoomExplored(false), gridDimensions({{0, 0}, {maxDim.x, maxDim.y}})
         {
             std::vector<RoomSpace> initRow(gridDimensions.max.y - gridDimensions.min.y + 1, {false, false, false});
             room.resize(gridDimensions.max.x - gridDimensions.min.x + 1, initRow);
@@ -76,6 +77,6 @@ class RoombaBrain
     RoombaHardware& m_roomba;
     RoombaProperties m_roombaProperties;
     RoomProperties m_roomProperties;
-    Graph<Coordinate, CoordinateHash> m_graph;
+    Graph m_graph;
     std::queue<Command> m_mainCommands;
 };

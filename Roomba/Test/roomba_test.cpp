@@ -21,6 +21,34 @@ TEST(DirectionTest, DirectionTest)
     ASSERT_EQ(dir, RIGHT);
 }
 
+TEST(GraphTests, ShortestDistanceTest)
+{
+    Graph graph;
+
+    for(int i = 1; i < 4; ++i)
+    {
+        for(int j = 1; j < 4; ++j)
+        {
+            Coordinate coor = {i, j};
+
+            for(int d = 0; d < Direction::COUNT; ++d)
+            {
+                Coordinate neighbor = coor + Coordinate::GetCoordinateFromDirection(static_cast<Direction>(d));
+                graph.connect(coor, neighbor);
+            }
+        }
+    }
+
+    graph.connect({0, 0}, {0, 0});
+    size_t minCost1 = graph.shortestDistance({1, 1}, {3, 3}, Direction::RIGHT);
+    size_t minCost2 = graph.shortestDistance({1, 1}, {3, 3}, Direction::LEFT);
+    size_t minCost3 = graph.shortestDistance({1, 1}, {3, 4}, Direction::DOWN);
+    ASSERT_EQ(minCost1, 5);
+    ASSERT_EQ(minCost2, 6);
+    ASSERT_EQ(minCost3, 6);
+    ASSERT_ANY_THROW(graph.shortestDistance({0, 0}, {0, 1}, Direction::RIGHT));
+}
+
 TEST(RoombaTests, EmptyBatteryTest)
 {
     size_t battery = 0;
@@ -171,7 +199,7 @@ INSTANTIATE_TEST_CASE_P(Tests, RoomTests,
 
 TEST_P(RoomTests, RoomTest)
 {
-    size_t battery = 750;
+    size_t battery = 10000;
     Room room(GetParam());
     RoombaHardware roomba(battery);
 
@@ -180,7 +208,7 @@ TEST_P(RoomTests, RoomTest)
         roomba.addSensor(static_cast<Direction>(i));
     }
 
-    room.dropRoomba({1, 1}, RIGHT, roomba);
+    room.dropRoomba({1, 1}, DOWN, roomba);
     RoombaBrain roombaBrain(roomba);
 
     while(!roombaBrain.isClean())

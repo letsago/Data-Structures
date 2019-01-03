@@ -1,5 +1,4 @@
 #include "roombabrain.h"
-#include <assert.h>
 
 bool RoombaBrain::isClean() const { return m_roomProperties.isRoomExplored && m_roomProperties.dirtySpaces.empty(); }
 
@@ -116,15 +115,14 @@ void RoombaBrain::step(Room& room)
 
 void RoombaBrain::moveTo(const Coordinate& pos)
 {
-    std::queue<Coordinate> path;
-    size_t minDis = m_graph.shortestDistance(m_roombaProperties.coor, pos, &path);
+    std::stack<Coordinate> path;
+    m_graph.shortestDistance(m_roombaProperties.coor, pos, m_roombaProperties.dir, &path);
     Coordinate curr = m_roombaProperties.coor;
     Direction currDir = m_roombaProperties.dir;
-    assert(minDis == path.size());
 
     while(!path.empty())
     {
-        Coordinate next = path.front();
+        Coordinate next = path.top();
         path.pop();
         Direction nextDir = Coordinate::GetDirectionFromUnitCoordinate(next - curr);
         int rotNum = (nextDir - currDir + Direction::COUNT) % Direction::COUNT;
@@ -195,13 +193,14 @@ Coordinate RoombaBrain::findClosestCoor(const std::unordered_set<Coordinate, Coo
     }
 
     Coordinate target = *set.begin();
-    size_t minDis = m_graph.shortestDistance(m_roombaProperties.coor, target);
+    size_t minDis = m_graph.shortestDistance(m_roombaProperties.coor, target, m_roombaProperties.dir);
 
     for(auto it = set.begin(); it != set.end(); ++it)
     {
-        if(m_graph.shortestDistance(m_roombaProperties.coor, *it) < minDis)
+        size_t tempDis = m_graph.shortestDistance(m_roombaProperties.coor, *it, m_roombaProperties.dir);
+        if(tempDis < minDis)
         {
-            minDis = m_graph.shortestDistance(m_roombaProperties.coor, *it);
+            minDis = tempDis;
             target = *it;
         }
     }
@@ -237,7 +236,7 @@ void RoombaBrain::updateRoom()
                 getRoom(relNeighbor - m_roomProperties.gridDimensions.min).isTraversable = true;
             }
 
-            m_graph.connect(m_roombaProperties.coor, relNeighbor, 1);
+            m_graph.connect(m_roombaProperties.coor, relNeighbor);
         }
     }
 }

@@ -2,7 +2,6 @@
 
 #include "colors.h"
 #include <iostream>
-#include <stdexcept>
 
 enum Direction
 {
@@ -10,8 +9,21 @@ enum Direction
     RIGHT,
     DOWN,
     LEFT,
-    COUNT
+    COUNT,
+    NONE
 };
+
+inline size_t findRotationDiff(const Direction& self, const Direction& other)
+{
+    size_t rotationCost = (self - other + Direction::COUNT) % Direction::COUNT;
+
+    if(rotationCost == 3)
+    {
+        rotationCost = 1;
+    }
+
+    return rotationCost;
+}
 
 struct Coordinate
 {
@@ -106,6 +118,31 @@ struct Coordinate
         }
 
         return dir;
+    }
+
+    static const std::pair<Direction, Direction> GetDirectionsfromVector(const Coordinate& vector)
+    {
+        std::pair<Direction, Direction> directions(Direction::NONE, Direction::NONE);
+
+        if(vector.x > 0)
+        {
+            directions.first = Direction::DOWN;
+        }
+        else if(vector.x < 0)
+        {
+            directions.first = Direction::UP;
+        }
+
+        if(vector.y > 0)
+        {
+            directions.second = Direction::RIGHT;
+        }
+        else if(vector.y < 0)
+        {
+            directions.second = Direction::LEFT;
+        }
+
+        return directions;
     }
 };
 
