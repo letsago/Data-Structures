@@ -4,19 +4,22 @@ block title
     title FindFilms Register
 
 block content
+    +button('/login', 'Back to Login')
     div 
         form(action='/register', method='post')
             h2 New Account
+            if(message)
+                p= message
             div
                 label Username
-                input(type='text', id='user', name='username')
+                input(type='text', id='user', name='username', value=username, required)
             div
                 label Email
-                input(type='email', id='email', name='email', placeholder='name@email.com')
+                input(type='email', id='email', name='email', placeholder='name@email.com', value=email, required)
             div
                 label Password
-                input(type='password', id='password', name='password')
+                input(type='password', id='password', name='password', required)
             div
                 label Confirm Password
-                input(type='password', id='confirmPassword', name='confirmPassword')
+                input(type='password', id='confirmPassword', name='confirmPassword', required)
             button(type='submit') Sign Up

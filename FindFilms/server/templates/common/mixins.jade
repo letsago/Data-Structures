@@ -9,11 +9,11 @@ mixin generateDropDownList(label, array)
 
 mixin addResult(movie)
     td 
-        a(role='button', href='/details')= movie.title
+        a(role='button', href='/details/#{movie.id}')= movie.title
     td= movie.genre
     td #{movie.length} min
-    td= movie.criticsRatings
-    td= movie.audienceRatings
+    td= movie.imdbRating
+    td= movie.rottenTomatoes
 
 mixin movieCard(movie)
     a(href=movie.url)
@@ -40,14 +40,9 @@ mixin movieCard(movie)
         h4 Director 
         ul= movie.director
 
-mixin logoutButton()
+mixin button(link, message)
     div
-        a(href='/')
-            button(type='button') Logout
-
-mixin backToSearchButton()
-    div
-        a(href='/search')
-            button(type='button') Back to Search
+        a(href=link)
+            button(type='button')= message       
 
 

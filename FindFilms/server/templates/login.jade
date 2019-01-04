@@ -8,8 +8,8 @@ block content
         p Sign in with your account. Don’t have one? 
             a(href='/register') Register Now.
         form(action='/login', method='post')
-            if(error)
-                p= error
+            if(message)
+                p= message
             div
                 label Username
                 input(type='text', id='user', name='username', placeholder='enter a username')

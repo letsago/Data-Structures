@@ -1,13 +1,11 @@
 extends ./common/mixins.jade
 
-movie = {'title': 'The Dark Knight', 'genre': 'Drama/Thriller', 'length': 150, 'criticsRatings': 9, 'audienceRatings': 9}
-
 block title
     title FindFilms Results
 
 block content
-    +logoutButton()
-    +backToSearchButton()
+    +button('/', 'Logout')
+    +button('/search', 'Back to Search')
     div
         center
             table
@@ -18,6 +16,8 @@ block content
                     th Critics Ratings
                     th Audience Ratings
                 tbody
-                    +addResult(movie)
+                    for movie in movieData
+                        tr
+                            +addResult(movie)
 
 
