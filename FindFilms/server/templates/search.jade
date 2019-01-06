@@ -1,6 +1,7 @@
 extends ./common/mixins.jade
 
-genreArray = ['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Historical', 'Horror', 'Mystery', 'Political', 'Romance', 'Science Fiction', 'Thriller', 'Western']
+genreArray = ['', 'Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Historical', 'Horror', 'Mystery', 'Political', 'Romance', 'Science Fiction', 'Thriller', 'Western']
+ratingArray = ['', 'G', 'PG', 'PG-13', 'R', 'NC-17']
 
 block title
     title FindFilms Search
@@ -8,16 +9,17 @@ block title
 block content
     form(action='/search', method='post')
         +button('/', 'Logout')
-        +generateDropDownList('Genre', genreArray)
-        +generateDropDownList('Minimum Critics Ratings', numericRatings)
-        +generateDropDownList('Minimum Audience Ratings', numericRatings)
-        +generateDropDownList('Movie Length', movieLengths)
+        +generateDropDownList('Genre', 'genre', genreArray)
+        +generateDropDownList('Movie Rating', 'rating', ratingArray)
+        +generateDropDownList('Minimum Critics Score', 'imdb', numericScores)
+        +generateDropDownList('Minimum Audience Score', 'rottenTomatoes', numericScores)
+        +generateDropDownList('Max Movie Length (min)', 'length', movieLengths)
         center
-            label Actor 
-            input(type='text') 
+            label Cast 
+            input(type='text', id= 'cast', name= 'cast') 
         center
             label Executive Director
-            input(type='text')
+            input(type='text', id= 'director', name= 'director')
         &nbsp;
         center
             button(type='submit', href='/results') Submit

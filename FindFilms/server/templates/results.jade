@@ -7,17 +7,20 @@ block content
     +button('/', 'Logout')
     +button('/search', 'Back to Search')
     div
-        center
-            table
-                thead
-                    th Movie
-                    th Genre
-                    th Length
-                    th Critics Ratings
-                    th Audience Ratings
-                tbody
-                    for movie in movieData
-                        tr
-                            +addResult(movie)
+        if(movieData)
+            center
+                table
+                    thead
+                        th Movie
+                        th Genre
+                        th Length
+                        th Critics Ratings
+                        th Audience Ratings
+                    tbody
+                        for movie in movieData
+                            tr
+                                +addResult(movie)
+        else
+            center No movies in our record match your criteria. Please search again.
 
 

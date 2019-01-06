@@ -1,9 +1,9 @@
 extends ./common/layout.jade
 
-mixin generateDropDownList(label, array)
+mixin generateDropDownList(label, name, array)
     center
-        label(for='id')= label
-        select(name='id', id='id')
+        label= label
+        select(name=name, id=name)
             each val in array
                 option= val
 
@@ -12,28 +12,31 @@ mixin addResult(movie)
         a(role='button', href='/details/#{movie.id}')= movie.title
     td= movie.genre
     td #{movie.length} min
-    td= movie.imdbRating
+    td= movie.imdb
     td= movie.rottenTomatoes
 
-mixin movieCard(movie)
+mixin movieCard(movie, showing, theater)
     a(href=movie.url)
         h2= movie.title
     ul #{movie.rating}, #{movie.length} min 
     img(src=movie.img)
-    h2 Location
-        h4 Theater
-        ul= movie.theater
-        h4 Address
-        ul= movie.address
-        h4 Price
-        ul= movie.price
-        h4 Times 
-        each time in movie.times
-            ul= time
+    if(showing)
+        h2 Location
+            h4 Theater
+            ul= theater.theater
+            h4 Address
+            ul= theater.address
+            h4 Price
+            ul= showing.price
+            h4 Times 
+            each time in showing.times
+                ul= time
+    else
+        h2 Unfortunately, there are no current showings for #{movie.title} near your location.
     h2 Details
         h4 Ratings 
         ul Rotten Tomatoes: #{movie.rottenTomatoes}
-        ul IMDb: #{movie.imdbRating}
+        ul IMDb: #{movie.imdb}
         h4 Actors 
         each actor in movie.cast
             ul= actor
