@@ -1,0 +1,153 @@
+/* General */
+
+* {
+    box-sizing: border-box;
+}
+
+/* Specific positioning */
+
+.column {
+    float: left;
+    width: 600px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.move-up {
+    position: relative;
+    bottom: 10px;
+}
+
+.move-left {
+    position: relative;
+    right: 10px;
+}
+
+.col-25 {
+    float: left;
+    width: 25%;
+    margin-top: 6px;
+}
+
+.col-75 {
+    float: left;
+    width: 75%;
+    margin-top: 6px;
+}
+
+.indent {
+    text-indent: 20px;
+}
+
+/* Table */
+
+.table-mystyle td {
+    padding: 25px;
+}
+
+/* Image */
+
+.resize-50 {
+    width: 50%;
+    height: auto;
+}
+
+/* Font */
+
+.italicize {
+    font-style: italic;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.large-font {
+    font-size: large;
+}
+
+/* Form */
+
+.form-mystyle input,
+select,
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+.form-mystyle button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right;
+    position: relative;
+    top: 5px;
+}
+
+.form-mystyle button:hover {
+    background-color: #45a049;
+}
+
+.form-mystyle label {
+    padding: 12px 12px 12px 0;
+    display: inline-block;
+}
+
+/* Specific layout */
+
+.green-box {
+    display: inline;
+    position: relative;
+    top: 10px;
+    padding: 5px;
+    background-color: lawngreen;
+}
+
+.container {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.column h4 {
+    margin: 0;
+    padding: 0;
+}
+
+.logo-button {
+    background-color: lightblue;
+    color: black;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right;
+    position: relative;
+    top: 5px;
+}
+
+/* Auto formatting */
+
+@media screen and (max-width: 600px) {
+
+    .col-25,
+    .col-75,
+    input[type=submit] {
+        width: 100%;
+        margin-top: 0;
+    }
+}

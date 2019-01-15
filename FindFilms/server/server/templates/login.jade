@@ -4,20 +4,16 @@ block title
     title FindFilms Login
 
 block content
-    div 
-        p Sign in with your account. Don’t have one? 
-            a(href='/register') Register Now.
-        form(action='/login', method='post')
-            if(message)
-                p= message
-            div
-                label Username
-                input(type='text', id='user', name='username', placeholder='enter a username')
-            div
-                label Password
-                input(type='password', id='password', name='password', placeholder='enter a password')
-            button(type='submit') Submit
-            &nbsp;
-            a(role='button', href='/') Cancel
+    p Sign in with your account. Don’t have one? 
+        a(href='/register') Register Now.
+    form.form-mystyle(action='/login', method='post')
+        if(message)
+            p= message
+        label Username
+        input(type='text', id='user', name='username', placeholder='enter a username')
+        label Password
+        input(type='password', id='password', name='password', placeholder='enter a password')
+        button(type='submit') Submit
+        a(role='button', href='/') Cancel
 
 

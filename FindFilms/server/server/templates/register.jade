@@ -5,21 +5,16 @@ block title
 
 block content
     +button('/login', 'Back to Login')
-    div 
-        form(action='/register', method='post')
-            h2 New Account
-            if(message)
-                p= message
-            div
-                label Username
-                input(type='text', id='user', name='username', value=username, required)
-            div
-                label Email
-                input(type='email', id='email', name='email', placeholder='name@email.com', value=email, required)
-            div
-                label Password
-                input(type='password', id='password', name='password', required)
-            div
-                label Confirm Password
-                input(type='password', id='confirmPassword', name='confirmPassword', required)
-            button(type='submit') Sign Up
+    form.form-mystyle(action='/register', method='post')
+        h2 New Account
+        if(message)
+            p= message
+        label Username
+        input(type='text', id='user', name='username', value=username, required)
+        label Email
+        input(type='email', id='email', name='email', placeholder='name@email.com', value=email, required)
+        label Password
+        input(type='password', id='password', name='password', required)
+        label Confirm Password
+        input(type='password', id='confirmPassword', name='confirmPassword', required)
+        button(type='submit') Sign Up

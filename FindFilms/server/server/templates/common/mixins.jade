@@ -1,61 +1,72 @@
 extends ./common/layout.jade
 
 mixin generateDropDownList(label, name, array)
-    center
-        label= label
-        select(name=name, id=name)
-            each val in array
-                option= val
+    .row
+        .col-25
+            label= label
+        .col-75
+            select(name=name, id=name)
+                each val in array
+                    option= val
 
 mixin addResult(movie)
-    td 
-        a(role='button', href='/details/#{movie.id}')= movie.title
-    td= movie.genre
-    td #{movie.length} min
-    td= movie.imdb
-    td= movie.rottenTomatoes
+    td.pad-25 
+        a(role='button', href='/details/#{movie.id}').large-font.bold= movie.title
+        .italicize #{movie.rating}, #{movie.length} min, #{movie.genre}         
+        img.resize-50(src=movie.img)
+    td.pad-25
+        //- Currently static data, will update with correct data after CSS formatting changes
+        .large-font AMC - 5 miles away
+        .large-font January 11, 2019
+        .green-box 7:00 pm
+        .green-box 9:00 pm
+        .green-box 11:00 pm
+    td.pad-25
+        .large-font IMDb: #{movie.imdb}
+        .large-font Rotten Tomatoes: #{movie.rottenTomatoes}%
 
 mixin movieCard(movie, showing, theater)
-    a(href=movie.url)
-        h2= movie.title
-    ul #{movie.rating}, #{movie.length} min 
-    img(src=movie.img)
-    if(showing)
-        h2 Location
-            h4 Theater
-            ul= theater.name
-            h4 Date
-            ul= showing.pDate
-            h4 Address
-            ul= theater.address
-            h4 Distance Away
-            ul #{showing.distance} miles
-            h4 Price
-            ul #{showing.price}
-            h4 Times 
-            ul= showing.time1
-            if(showing.time2)
-                ul= showing.time2
-            if(showing.time3)
-                ul= showing.time3
-    else
-        h2 Unfortunately, there are no current showings for #{movie.title} near your location.
-    h2 Details
-        h4 Ratings 
-        ul Rotten Tomatoes: #{movie.rottenTomatoes}%
-        ul IMDb: #{movie.imdb}
-        h4 Actors 
-        ul= movie.cast1
-        if(movie.cast2)
-            ul= movie.cast2
-        if(movie.cast3)
-            ul= movie.cast3
-        h4 Director 
-        ul= movie.director
+    .column.text-center
+        a(href=movie.url)
+            h2= movie.title
+        .italicize.move-up #{movie.rating}, #{movie.length} min, #{movie.genre} 
+        img(src=movie.img)
+    .column
+        if(showing)
+            .column
+                h2= theater.name
+                h4 Date
+                .indent= showing.pDate
+                h4 Address 
+                .indent= theater.address
+                h4 Distance Away
+                .indent #{showing.distance} miles
+                h4 Price
+                .indent #{showing.price}
+                h4 Times 
+                .indent= showing.time1
+                if(showing.time2)
+                    .indent= showing.time2
+                if(showing.time3)
+                    .indent= showing.time3
+        else
+            h2 Unfortunately, there are no current showings for #{movie.title} near your location.
+        .column
+            h2 Details
+            h4 Ratings 
+            .indent Rotten Tomatoes: #{movie.rottenTomatoes}%
+            .indent IMDb: #{movie.imdb}
+            h4 Actors 
+            .indent= movie.cast1
+            if(movie.cast2)
+                .indent= movie.cast2
+            if(movie.cast3)
+                .indent= movie.cast3
+            h4 Director 
+            .indent= movie.director
 
 mixin button(link, message)
-    div
-        a(href=link)
-            button(type='button')= message       
+    a(href=link)
+        button.logo-button(type='button')= message       
 
 

@@ -4,23 +4,14 @@ block title
     title FindFilms Results
 
 block content
-    +button('/', 'Logout')
     +button('/search', 'Back to Search')
-    div
-        if(movieData)
-            center
-                table
-                    thead
-                        th Movie
-                        th Genre
-                        th Length
-                        th Critics Ratings
-                        th Audience Ratings
-                    tbody
-                        for movie in movieData
-                            tr
-                                +addResult(movie)
-        else
-            center No movies in our record match your criteria. Please search again.
+    if(movieData)
+        center
+            table.table-mystyle 
+                for movie in movieData
+                    tr
+                        +addResult(movie)
+    else
+        h1 No movies in our record match your criteria. Please search again.
 
 

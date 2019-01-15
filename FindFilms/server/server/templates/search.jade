@@ -7,19 +7,24 @@ block title
     title FindFilms Search
     
 block content
-    form(action='/search', method='post')
-        +button('/', 'Logout')
-        +generateDropDownList('Genre', 'genre', genreArray)
-        +generateDropDownList('Movie Rating', 'rating', ratingArray)
-        +generateDropDownList('Minimum IMDb Score', 'imdb', imdbScores)
-        +generateDropDownList('Minimum Rotten Tomatoes Score', 'rottenTomatoes', rottenTomatoes)
-        +generateDropDownList('Max Movie Length (min)', 'length', movieLengths)
-        center
-            label Cast 
-            input(type='text', id= 'cast', name= 'cast') 
-        center
-            label Executive Director
-            input(type='text', id= 'director', name= 'director')
-        &nbsp;
-        center
-            button(type='submit', href='/results') Submit
+    h1 Search Films in Nearby Theaters
+    .container
+        form.form-mystyle(action='/search', method='post')
+            +generateDropDownList('Genre', 'genre', genreArray)
+            +generateDropDownList('Movie Rating', 'rating', ratingArray)
+            +generateDropDownList('Minimum IMDb Score', 'imdb', imdbScores)
+            +generateDropDownList('Minimum Rotten Tomatoes Score', 'rottenTomatoes', rottenTomatoes)
+            +generateDropDownList('Max Movie Length (min)', 'length', movieLengths)
+            .row
+                .col-25
+                    label Cast
+                .col-75 
+                    input(type='text', id= 'cast', name= 'cast')
+            .row 
+                .col-25
+                    label Executive Director
+                .col-75
+                    input(type='text', id= 'director', name= 'director')
+            .row
+                button(type='submit', href='/results') Submit
+                button.move-left(type='reset') Reset
