@@ -23,23 +23,33 @@ mixin movieCard(movie, showing, theater)
     if(showing)
         h2 Location
             h4 Theater
-            ul= theater.theater
+            ul= theater.name
+            h4 Date
+            ul= showing.pDate
             h4 Address
             ul= theater.address
+            h4 Distance Away
+            ul #{showing.distance} miles
             h4 Price
-            ul= showing.price
+            ul #{showing.price}
             h4 Times 
-            each time in showing.times
-                ul= time
+            ul= showing.time1
+            if(showing.time2)
+                ul= showing.time2
+            if(showing.time3)
+                ul= showing.time3
     else
         h2 Unfortunately, there are no current showings for #{movie.title} near your location.
     h2 Details
         h4 Ratings 
-        ul Rotten Tomatoes: #{movie.rottenTomatoes}
+        ul Rotten Tomatoes: #{movie.rottenTomatoes}%
         ul IMDb: #{movie.imdb}
         h4 Actors 
-        each actor in movie.cast
-            ul= actor
+        ul= movie.cast1
+        if(movie.cast2)
+            ul= movie.cast2
+        if(movie.cast3)
+            ul= movie.cast3
         h4 Director 
         ul= movie.director
 

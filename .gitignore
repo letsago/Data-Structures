@@ -69,3 +69,6 @@ FindFilms/env/*
 
 # python compile files
 *.pyc
+
+# Databases
+*.db
