@@ -1,72 +1,79 @@
 extends ./common/layout.jade
 
 mixin generateDropDownList(label, name, array)
-    .row
-        .col-25
-            label= label
-        .col-75
-            select(name=name, id=name)
-                each val in array
-                    option= val
+    .col-6
+        label= label
+        select.custom-select(name=name, id=name)
+            each val in array
+                option= val
 
 mixin addResult(movie)
-    td.pad-25 
-        a(role='button', href='/details/#{movie.id}').large-font.bold= movie.title
-        .italicize #{movie.rating}, #{movie.length} min, #{movie.genre}         
-        img.resize-50(src=movie.img)
-    td.pad-25
-        //- Currently static data, will update with correct data after CSS formatting changes
-        .large-font AMC - 5 miles away
-        .large-font January 11, 2019
-        .green-box 7:00 pm
-        .green-box 9:00 pm
-        .green-box 11:00 pm
-    td.pad-25
-        .large-font IMDb: #{movie.imdb}
-        .large-font Rotten Tomatoes: #{movie.rottenTomatoes}%
+    .row
+        .col
+            a.h2.font-weight-bold(role='button', href='/details/#{movie.id}')= movie.title
+    .row.align-items-center.mb-4
+        .col-3
+            .font-italic #{movie.rating}, #{movie.length} min, #{movie.genre}  
+            .font-weight-bold IMDb: #{movie.imdb}
+            .font-weight-bold Rotten Tomatoes: #{movie.rottenTomatoes}%       
+            img.w-75(src=movie.img)
+        .col
+            //- Currently static data, will update with correct data after CSS formatting changes
+            h4.m-0 AMC
+            h5 January 11, 2019
+            .d-inline.p-2.bg-success.text-white.rounded-pill 7:00 pm
+            .d-inline.p-2.bg-success.text-white.rounded-pill 9:00 pm
+            .d-inline.p-2.bg-success.text-white.rounded-pill 11:00 pm
 
 mixin movieCard(movie, showing, theater)
-    .column.text-center
-        a(href=movie.url)
-            h2= movie.title
-        .italicize.move-up #{movie.rating}, #{movie.length} min, #{movie.genre} 
-        img(src=movie.img)
-    .column
-        if(showing)
-            .column
-                h2= theater.name
-                h4 Date
-                .indent= showing.pDate
-                h4 Address 
-                .indent= theater.address
-                h4 Distance Away
-                .indent #{showing.distance} miles
-                h4 Price
-                .indent #{showing.price}
-                h4 Times 
-                .indent= showing.time1
-                if(showing.time2)
-                    .indent= showing.time2
-                if(showing.time3)
-                    .indent= showing.time3
-        else
-            h2 Unfortunately, there are no current showings for #{movie.title} near your location.
-        .column
-            h2 Details
-            h4 Ratings 
-            .indent Rotten Tomatoes: #{movie.rottenTomatoes}%
-            .indent IMDb: #{movie.imdb}
-            h4 Actors 
-            .indent= movie.cast1
+    .row
+        .col
+            h2.font-weight-bold.mb-0= movie.title
+            .font-italic #{movie.rating}, #{movie.length} min, #{movie.genre}
+    .row 
+        .col-4
+            img(src=movie.img)
+        .col-3
+            h4.m-0 Ratings
+            //- Will add actual link to Rotten Tomatoes after CSS formatting changes
+            .pl-4
+                a(href=movie.url) Rotten Tomatoes: #{movie.rottenTomatoes}%
+            .pl-4
+                a(href=movie.url) IMDb: #{movie.imdb}
+            h4.m-0 Actors 
+            .pl-4= movie.cast1
             if(movie.cast2)
-                .indent= movie.cast2
+                .pl-4= movie.cast2
             if(movie.cast3)
-                .indent= movie.cast3
-            h4 Director 
-            .indent= movie.director
+                .pl-4= movie.cast3
+            h4.m-0 Director 
+            .pl-4= movie.director
+        .col
+            if(showing)
+                h4.m-0 Theater 
+                .pl-4= theater.name
+                h4.m-0 Date
+                .pl-4= showing.pDate
+                h4.m-0 Address 
+                .pl-4= theater.address
+                h4.m-0 Price
+                .pl-4= showing.price
+                h4 Times
+                .pl-4
+                    .d-inline.p-2.bg-success.text-white.rounded-pill= showing.time1
+                    if(showing.time2)
+                        .d-inline.p-2.bg-success.text-white.rounded-pill= showing.time2
+                    if(showing.time3)
+                        .d-inline.p-2.bg-success.text-white.rounded-pill= showing.time3
+            else
+                h4 Unfortunately, there are no current showings for #{movie.title} near your location.
 
 mixin button(link, message)
     a(href=link)
-        button.logo-button(type='button')= message       
+        button.btn.btn-primary.float-right(type='button')= message
 
-
+mixin navbar(title)
+    .navbar.navbar-light.bg-dark
+        .container
+            h1.text-white.mt-2= title
+            block

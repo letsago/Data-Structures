@@ -4,17 +4,22 @@ block title
     title FindFilms Register
 
 block content
-    +button('/login', 'Back to Login')
-    form.form-mystyle(action='/register', method='post')
-        h2 New Account
-        if(message)
-            p= message
-        label Username
-        input(type='text', id='user', name='username', value=username, required)
-        label Email
-        input(type='email', id='email', name='email', placeholder='name@email.com', value=email, required)
-        label Password
-        input(type='password', id='password', name='password', required)
-        label Confirm Password
-        input(type='password', id='confirmPassword', name='confirmPassword', required)
-        button(type='submit') Sign Up
+    +navbar('Register a New Account')
+        +button('/login', 'Back to Login')
+    .container.mb-4.mt-4
+        form(action='/register', method='post')
+            if(message)
+                p= message
+            .form-group
+                label Username
+                input.form-control(type='text', id='user', name='username', value=username, required)
+            .form-group
+                label Email
+                input.form-control(type='email', id='email', name='email', placeholder='name@email.com', value=email, required)
+            .form-group
+                label Password
+                input.form-control(type='password', id='password', name='password', required)
+            .form-group
+                label Confirm Password
+                input.form-control(type='password', id='confirmPassword', name='confirmPassword', required)
+            button.btn.btn-primary(type='submit') Sign Up

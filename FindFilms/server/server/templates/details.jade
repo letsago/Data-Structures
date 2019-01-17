@@ -4,5 +4,7 @@ block title
     title FindFilms Details
 
 block content
-    +button('/search', 'Back to Search')
-    +movieCard(movie, showing, theater)
+    +navbar('Details')
+        +button('/search', 'Back to Search')
+    .container.mb-4.mt-4
+        +movieCard(movie, showing, theater)

@@ -4,14 +4,13 @@ block title
     title FindFilms Results
 
 block content
-    +button('/search', 'Back to Search')
-    if(movieData)
-        center
-            table.table-mystyle 
-                for movie in movieData
-                    tr
-                        +addResult(movie)
-    else
-        h1 No movies in our record match your criteria. Please search again.
+    +navbar('Results')
+        +button('/search', 'Back to Search')
+    .container.mb-4.mt-4
+        if(movieData)
+            for movie in movieData
+                +addResult(movie)
+        else
+            h2.text-center No movies in our record match your criteria. Please search again.
 
 

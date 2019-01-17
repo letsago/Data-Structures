@@ -7,24 +7,24 @@ block title
     title FindFilms Search
     
 block content
-    h1 Search Films in Nearby Theaters
-    .container
-        form.form-mystyle(action='/search', method='post')
-            +generateDropDownList('Genre', 'genre', genreArray)
-            +generateDropDownList('Movie Rating', 'rating', ratingArray)
-            +generateDropDownList('Minimum IMDb Score', 'imdb', imdbScores)
-            +generateDropDownList('Minimum Rotten Tomatoes Score', 'rottenTomatoes', rottenTomatoes)
-            +generateDropDownList('Max Movie Length (min)', 'length', movieLengths)
-            .row
-                .col-25
+    +navbar('Search Films in Nearby Theaters')
+    .container.mb-4.mt-4
+        form(action='/search', method='post')
+            .form-row.mb-4
+                +generateDropDownList('Max Movie Length (min)', 'length', movieLengths)
+                //- Will add search by time frame functionality here later
+            .form-row.mb-4
+                +generateDropDownList('Genre', 'genre', genreArray)
+                +generateDropDownList('Movie Rating', 'rating', ratingArray)
+            .form-row.mb-4
+                +generateDropDownList('Minimum IMDb', 'imdb', imdbScores)
+                +generateDropDownList('Minimum Rotten Tomatoes', 'rottenTomatoes', rottenTomatoes)
+            .form-row.mb-4
+                .col-6
                     label Cast
-                .col-75 
-                    input(type='text', id= 'cast', name= 'cast')
-            .row 
-                .col-25
+                    input.form-control(type='text', id= 'cast', name= 'cast')
+                .col-6
                     label Executive Director
-                .col-75
-                    input(type='text', id= 'director', name= 'director')
-            .row
-                button(type='submit', href='/results') Submit
-                button.move-left(type='reset') Reset
+                    input.form-control(type='text', id= 'director', name= 'director')
+            button.btn.btn-primary(type='submit', href='/results') Submit
+            button.btn.btn-primary(type='reset') Reset
