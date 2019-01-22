@@ -35,11 +35,10 @@ mixin movieCard(movie, showing, theater)
             img(src=movie.img)
         .col-3
             h4.m-0 Ratings
-            //- Will add actual link to Rotten Tomatoes after CSS formatting changes
             .pl-4
-                a(href=movie.url) Rotten Tomatoes: #{movie.rottenTomatoes}%
+                a(href=movie.RT_url) Rotten Tomatoes: #{movie.rottenTomatoes}%
             .pl-4
-                a(href=movie.url) IMDb: #{movie.imdb}
+                a(href=movie.imdb_url) IMDb: #{movie.imdb}
             h4.m-0 Actors 
             .pl-4= movie.cast1
             if(movie.cast2)

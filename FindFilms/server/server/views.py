@@ -12,11 +12,19 @@ def errorMessage(attributes, data):
             error = attribute.capitalize() + ' already exists. Please register with a different ' + attribute + '.'
     return error
 
+def findConstraintsFromList(maxAttrNum, key, formData):
+    constraints = []
+    for i in range(1, maxAttrNum + 1):
+        if getattr(Movie, key + str(i)):
+            constraints.append(getattr(Movie, key + str(i)) == formData[key].lower().title())
+    return constraints
 
 def movieSearch(formData):
     constraints = []
     castConstraints = []
-    castNumber = 3
+    genreConstraints = []
+    castNumber = 6
+    genreNumber = 4
     searchKeys = []
     for key, value in formData.items():
         if value != '':
@@ -31,15 +39,14 @@ def movieSearch(formData):
             except ValueError:
                 return []
         elif key == 'cast':
-            for i in range(1, castNumber + 1):
-                if getattr(Movie, key + str(i)):
-                    castConstraints.append(getattr(Movie, key + str(i)) == formData[key].lower().title()) 
+            castConstraints = findConstraintsFromList(castNumber, key, formData)
         elif key == 'rating':
             constraints.append(getattr(Movie, key) == formData[key].upper())
+        elif key == 'genre':
+            genreConstraints = findConstraintsFromList(genreNumber, key, formData)
         else:
             constraints.append(getattr(Movie, key) == formData[key].lower().title())
-    return [movie.__dict__ for movie in Movie.query.filter(and_(*constraints), or_(*castConstraints))]
-
+    return [movie.__dict__ for movie in Movie.query.filter(and_(*constraints), or_(*castConstraints), or_(*genreConstraints))]
 
 def findOneRowById(table, otherId, strObject):
     try:
@@ -52,11 +59,9 @@ def findOneRowById(table, otherId, strObject):
         abort(404)
     return info
 
-
 @app.route('/')
 def home():
     return render_template('home.jade')
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -66,7 +71,6 @@ def login():
             return render_template('login.jade', message=error)
         return redirect(url_for('search'))
     return render_template('login.jade')
-
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -85,7 +89,6 @@ def register():
         return render_template('login.jade', message=success)
     return render_template('register.jade')
 
-
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     rawScores = range(1, 11)
@@ -97,11 +100,9 @@ def search():
         return render_template('results.jade', movieData=movieSearch(request.form))
     return render_template('search.jade', imdbScores=imdbScores, rottenTomatoes=rottenTomatoes, movieLengths=lengths)
 
-
 @app.route('/results')
 def results():
     return render_template('results.jade', movieData=Movie.query.all())
-
 
 @app.route('/details/<movieId>')
 def details(movieId):

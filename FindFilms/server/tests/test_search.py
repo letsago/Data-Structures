@@ -1,4 +1,4 @@
-from views import movieSearch
+from server.views import movieSearch
 import pytest
 
 def createForm(data = {}):
@@ -19,7 +19,7 @@ def createForm(data = {}):
     
     # single good input
     ({'imdb': 8.5}, [1, 3]),
-    ({'genre': 'Comedy'}, [4]),
+    ({'genre': 'Comedy'}, [2, 4, 5]),
     ({'director': 'Marc Webb'}, [2]),
     ({'cast': 'Miyu Irino'}, [3]),
     ({'rottenTomatoes': 90}, [1, 3, 4]),
@@ -28,7 +28,7 @@ def createForm(data = {}):
 
     # single bad input
     ({'imdb': 0.13}, [1, 2, 3, 4, 5]),
-    ({'genre': 'coMEdy'}, [4]),
+    ({'genre': 'coMEdy'}, [2, 4, 5]),
     ({'director': 'maRC WEbb'}, [2]),
     ({'cast': 'cHrIstIan bALe'}, [1, 5]),
     ({'rottenTomatoes': 201.45}, []),
@@ -36,7 +36,7 @@ def createForm(data = {}):
     ({'rating': 'pG-13'}, [1, 2]),
 
     # multiple input
-    ({'genre': 'thRiLLer', 'rating': 'PG-13', 'imdb': -201.67, 'rottenTomatoes': 0, 'length': 150, 'cast': 'christian bale', 'director': 'christopher nolan'}, [1])
+    ({'genre': 'Action & Adventure', 'rating': 'PG-13', 'imdb': -201.67, 'rottenTomatoes': 0, 'length': 180, 'cast': 'christian bale', 'director': 'christopher nolan'}, [1])
 ])
 
 def test_search(searchData, movieIds):
