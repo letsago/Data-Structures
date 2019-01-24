@@ -128,9 +128,9 @@ def init_db():
                         'Horror',
                         'Mystery & Suspense'
                     )
-    theater_one = Theater('AMC', '101 Main St.')
-    theater_two = Theater('Regal', '1 Hallow Rd.')
-    theater_three = Theater('Cinemark', '8 Haku Blvd.')
+    theater_one = Theater('AMC Pacific Place 11', '600 Pine Street - Ste 400', 'Seattle', 'Washington', 98101)
+    theater_two = Theater('AMC Oak Tree 6', '10006 Aurora Avenue N.', 'Seattle', 'Washington', 98133)
+    theater_three = Theater('AMC Seattle 10', '4500 9th Ave Ne', 'Seattle', 'Washington', 98105)
     user_one = User('admin', 'admin@admin.com', 'admin')
     db_session.add_all([movie_one, movie_two, movie_three, movie_four, movie_five, theater_one, theater_two, theater_three, user_one])
     db_session.commit()

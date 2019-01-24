@@ -6,8 +6,7 @@ import pytest
 def movie_scraper_for_testing(title):
     movie = RTMovie(title) 
     movie_data = {}
-    for attr, value in movie.get_general_info().items():
-        movie_data[attr] = value
+    movie_data.update(movie.get_general_info())
     movie_data['cast'] = movie.get_cast()
     return movie_data
 

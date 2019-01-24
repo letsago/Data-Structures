@@ -62,12 +62,18 @@ class Movie(Base):
 class Theater(Base):
     __tablename__ = 'theater'
     id = Column(Integer, primary_key=True)
-    name = Column(String(10))
-    address = Column(String(200))
+    name = Column(String(100))
+    street = Column(String(200))
+    city = Column(String(50))
+    state = Column(String(50))
+    zipCode = Column(Integer)
 
-    def __init__(self, name, address):
+    def __init__(self, name, street, city, state, zipCode):
         self.name = name
-        self.address = address
+        self.street = street
+        self.city = city
+        self.state = state
+        self.zipCode = zipCode
 
 class Showing(Base):
     __tablename__ = 'showing'

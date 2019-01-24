@@ -1,23 +1,16 @@
-from bs4 import BeautifulSoup
-import requests
+from common import get_response
 import unicodedata
 
 class RTMovie:
     def __init__(self, title):
         self.__title = title
         self.__url = self.get_url()
-        self.__response = self.get_response()
+        self.__response = get_response(self.__url)
 
     def get_url(self):
         identifier = self.__title.lower().replace(' ', '_')
         url = 'https://www.rottentomatoes.com/m/%s' % (identifier)
         return url
-
-    def get_response(self):
-        response = requests.get(self.__url)
-        if response.status_code != 200:
-            raise ConnectionError('Rotten Tomatoes site not found')
-        return BeautifulSoup(response.content, 'html.parser')
 
     def get_cast(self):
         cast_info = self.__response.find('div', 'castSection')
@@ -89,4 +82,8 @@ class RTMovie:
             raise LookupError('Img url not found')
         if 'data-src' in img_url.attrs:
             return img_url['data-src'].encode('utf-8')
-        return img_url['src'].encode('utf-8')
+        tag = 'src'
+        try:
+            return img_url[tag].encode('utf-8')
+        except:
+            raise KeyError('Tag %s not found in %s' % (tag, img_url))  

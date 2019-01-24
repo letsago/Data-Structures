@@ -54,7 +54,8 @@ mixin movieCard(movie, showing, theater)
                 h4.m-0 Date
                 .pl-4= showing.pDate
                 h4.m-0 Address 
-                .pl-4= theater.address
+                .pl-4= theater.street
+                .pl-4 #{theater.city}, #{theater.state} #{theater.zipCode}
                 h4.m-0 Price
                 .pl-4= showing.price
                 h4 Times
