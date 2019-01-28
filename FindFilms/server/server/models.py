@@ -81,18 +81,10 @@ class Showing(Base):
     movieId = Column(Integer, ForeignKey('movie.id'))
     theaterId = Column(Integer, ForeignKey('theater.id'))
     pDate = Column(String(20))
-    time1 = Column(String(10))
-    time2 = Column(String(10))
-    time3 = Column(String(10))
-    price = Column(String(10))
-    distance = Column(Integer)
+    time = Column(String(10))
 
-    def __init__(self, movieId, theaterId, pDate, time1, price, distance, time2=None, time3=None):
+    def __init__(self, movieId, theaterId, pDate, time):
         self.movieId = movieId
         self.theaterId = theaterId
         self.pDate = pDate
-        self.time1 = time1
-        self.price = price
-        self.distance = distance
-        self.time2 = time2
-        self.time3 = time3
+        self.time = time

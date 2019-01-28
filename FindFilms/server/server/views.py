@@ -48,9 +48,9 @@ def movieSearch(formData):
             constraints.append(getattr(Movie, key) == formData[key].lower().title())
     return [movie.__dict__ for movie in Movie.query.filter(and_(*constraints), or_(*castConstraints), or_(*genreConstraints))]
 
-def findOneRowById(table, otherId, strObject):
+def findOneRowById(table, targetId, strObject):
     try:
-        info = table.query.filter(table.id == otherId).one()
+        info = table.query.filter(table.id == targetId).one()
     except MultipleResultsFound:
         print('Multiple ' + strObject + ' found with same id')
         abort(404)  
@@ -108,9 +108,17 @@ def results():
 def details(movieId):
     id = int(movieId)
     movieInfo = findOneRowById(Movie, id, 'movies')
-    distanceSubQry = db_session.query(func.min(Showing.distance)).filter(Showing.movieId == id)
-    showingInfo = Showing.query.filter(Showing.movieId == id, Showing.distance == distanceSubQry).first()
-    if showingInfo != None:
-        theaterInfo = findOneRowById(Theater, showingInfo.theaterId, 'theaters')
-        return render_template('details.jade', movie=movieInfo.__dict__, showing=showingInfo.__dict__, theater=theaterInfo.__dict__)
+    # for now theater, only select theater id 3, as theater
+    # once location feature is integrated, theater will be selected based on calculated minimum distance from user location
+    theaterId = 3
+    allShowings = Showing.query.filter(Showing.movieId == id, Showing.theaterId == theaterId).all()
+    if allShowings != []:
+        theaterInfo = findOneRowById(Theater, theaterId, 'theaters')
+        # once search by date feature is integrated, all showings displayed will be on the same date
+        # thus only time attribute is unique in allShowings
+        showingInfo = {}
+        showingInfo['date'] = allShowings[0].pDate
+        times = [showing.time for showing in allShowings]
+        showingInfo['times'] = times
+        return render_template('details.jade', movie=movieInfo.__dict__, showing=showingInfo, theater=theaterInfo.__dict__)
     return render_template('details.jade', movie=movieInfo.__dict__)

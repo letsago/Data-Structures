@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
+# test database contains AMC showing info that needs to be updated every Wednesday - the day AMC updates their showings
 hostname = ''
 path = 'findFilmsTest.db'
 engine = create_engine('sqlite://%s/%s' % (hostname, path), convert_unicode=True)
@@ -128,16 +129,82 @@ def init_db():
                         'Horror',
                         'Mystery & Suspense'
                     )
+    movie_six = Movie(  
+                        'https://www.rottentomatoes.com/m/spider_man_into_the_spider_verse', 
+                        'https://www.imdb.com/title/tt4633694/', 
+                        'Spider-Man: Into The Spider-Verse', 
+                        'PG', 
+                        100, 
+                        'https://resizing.flixster.com/t-ysR8YcSH2cvSA6fhn2qxDY67I=/206x305/v1.bTsxMjg3MjM1MDtqOzE3OTY4OzEyMDA7NjA3Mjs5MDAw',
+                        8.7, 
+                        97, 
+                        'Action & Adventure', 
+                        'Shameik Moore', 
+                        'Bob Persichetti',
+                        "Phil Lord and Christopher Miller, the creative minds behind The Lego Movie and 21 Jump Street, bring their unique talents to a fresh vision of a different Spider-Man Universe, with a groundbreaking visual style that's the first of its kind. Spider-Man: Into the Spider-Verse introduces Brooklyn teen Miles Morales, and the limitless possibilities of the Spider-Verse, where more than one can wear the mask.",
+                        'Jake Johnson (XVI)', 
+                        'Hailee Steinfeld',
+                        'Mahershala Ali',
+                        'Brian Tyree Henry',
+                        'Lily Tomlin',
+                        'Animation',
+                        'Kids & Family',
+                        'Science Fiction & Fantasy'
+                    )
+    movie_seven = Movie(
+                        'https://www.rottentomatoes.com/m/glass_2019', 
+                        'https://www.imdb.com/title/tt6823368/', 
+                        'Glass', 
+                        'PG-13', 
+                        110,
+                        'https://resizing.flixster.com/KrOv5ONpHt5bnI8UOQgEP3hjJUI=/206x305/v1.bTsxMjc4MDk3NjtqOzE3OTY3OzEyMDA7NzkwOzEyNTE', 
+                        7.1, 
+                        36, 
+                        'Drama', 
+                        'M. Night Shyamalan', 
+                        'Bruce Willis',
+                        "From Unbreakable, Bruce Willis returns as David Dunn as does Samuel L. Jackson as Elijah Price, known also by his pseudonym Mr. Glass. Joining from Split are James McAvoy, reprising his role as Kevin Wendell Crumb and the multiple identities who reside within, and Anya Taylor-Joy as Casey Cooke, the only captive to survive an encounter with The Beast. Following the conclusion of Split, Glass finds Dunn pursuing Crumb's superhuman figure of The Beast in a series of escalating encounters, while the shadowy presence of Price emerges as an orchestrator who holds secrets critical to both men.",
+                        'James McAvoy', 
+                        'Samuel L. Jackson',
+                        'Sarah Paulson',
+                        'Anya Taylor-Joy',
+                        'Spencer Treat Clark',
+                        'Mystery & Suspense'
+                    )
     theater_one = Theater('AMC Pacific Place 11', '600 Pine Street - Ste 400', 'Seattle', 'Washington', 98101)
     theater_two = Theater('AMC Oak Tree 6', '10006 Aurora Avenue N.', 'Seattle', 'Washington', 98133)
     theater_three = Theater('AMC Seattle 10', '4500 9th Ave Ne', 'Seattle', 'Washington', 98105)
     user_one = User('admin', 'admin@admin.com', 'admin')
-    db_session.add_all([movie_one, movie_two, movie_three, movie_four, movie_five, theater_one, theater_two, theater_three, user_one])
+    db_session.add_all([movie_one, movie_two, movie_three, movie_four, movie_five, movie_six, movie_seven, theater_one, theater_two, theater_three, user_one])
     db_session.commit()
-
     db_session.add_all([
-        Showing(movie_one.id, theater_one.id, '2013-01-02', '7:00 pm', '$7.00', 5, '9:00 pm', '11:00 pm'),
-        Showing(movie_two.id, theater_two.id, '2013-04-06', '5:00 pm', '$8.00', 2),
-        Showing(movie_three.id, theater_three.id, '2013-05-09', '7:00 pm', '$6.00', 8, '8:30 pm')])
-    db_session.commit()
+        Showing(movie_six.id, theater_one.id, '2019-01-30', '10:45am'),
+        Showing(movie_six.id, theater_one.id, '2019-01-30', '1:30pm'),
+        Showing(movie_six.id, theater_one.id, '2019-01-30', '4:35pm'),
+        Showing(movie_six.id, theater_one.id, '2019-01-30', '7:50pm'),
 
+        Showing(movie_seven.id, theater_one.id, '2019-01-30', '10:55am'),
+        Showing(movie_seven.id, theater_one.id, '2019-01-30', '1:35pm'),
+        Showing(movie_seven.id, theater_one.id, '2019-01-30', '4:50pm'),
+        Showing(movie_seven.id, theater_one.id, '2019-01-30', '7:30pm'),
+
+        Showing(movie_six.id, theater_two.id, '2019-01-30', '10:45am'),
+        Showing(movie_six.id, theater_two.id, '2019-01-30', '1:40pm'),
+        Showing(movie_six.id, theater_two.id, '2019-01-30', '4:30pm'),
+        Showing(movie_six.id, theater_two.id, '2019-01-30', '7:30pm'),
+
+        Showing(movie_seven.id, theater_two.id, '2019-01-30', '11:10am'),
+        Showing(movie_seven.id, theater_two.id, '2019-01-30', '2:45pm'),
+        Showing(movie_seven.id, theater_two.id, '2019-01-30', '5:45pm'),
+        Showing(movie_seven.id, theater_two.id, '2019-01-30', '8:45pm'),
+
+        Showing(movie_six.id, theater_three.id, '2019-01-30', '1:55pm'),
+        Showing(movie_six.id, theater_three.id, '2019-01-30', '4:40pm'),
+        Showing(movie_six.id, theater_three.id, '2019-01-30', '5:10pm'),
+        Showing(movie_six.id, theater_three.id, '2019-01-30', '8:15pm'),
+
+        Showing(movie_seven.id, theater_three.id, '2019-01-30', '1:50pm'),
+        Showing(movie_seven.id, theater_three.id, '2019-01-30', '4:50pm'),
+        Showing(movie_seven.id, theater_three.id, '2019-01-30', '8:00pm')
+    ])
+    db_session.commit()

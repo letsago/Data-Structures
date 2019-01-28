@@ -52,19 +52,14 @@ mixin movieCard(movie, showing, theater)
                 h4.m-0 Theater 
                 .pl-4= theater.name
                 h4.m-0 Date
-                .pl-4= showing.pDate
+                .pl-4= showing.date
                 h4.m-0 Address 
                 .pl-4= theater.street
                 .pl-4 #{theater.city}, #{theater.state} #{theater.zipCode}
-                h4.m-0 Price
-                .pl-4= showing.price
                 h4 Times
                 .pl-4
-                    .d-inline.p-2.bg-success.text-white.rounded-pill= showing.time1
-                    if(showing.time2)
-                        .d-inline.p-2.bg-success.text-white.rounded-pill= showing.time2
-                    if(showing.time3)
-                        .d-inline.p-2.bg-success.text-white.rounded-pill= showing.time3
+                    each time in showing.times
+                        .d-inline.p-2.bg-success.text-white.rounded-pill= time
             else
                 h4 Unfortunately, there are no current showings for #{movie.title} near your location.
 

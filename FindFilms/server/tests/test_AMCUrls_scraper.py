@@ -17,13 +17,11 @@ theater_url_ids = [
     'amc-seattle-10'
 ]
 
-@pytest.fixture(params = theater_url_ids)
-def theater_url_id(request):
-    return request.param
-
 def test_theater_url_count():
     assert len(AMCUrls().get_theater_urls()) == len(theater_url_ids)
 
-def test_theater_url_existence(theater_url_id):
-    url = 'https://www.amctheatres.com/movie-theatres/seattle-tacoma/%s' % (theater_url_id)
-    assert url in AMCUrls().get_theater_urls()
+def test_theater_url_existence():
+    test_theater_urls = AMCUrls().get_theater_urls()
+    for url_id in theater_url_ids:
+        url = 'https://www.amctheatres.com/movie-theatres/seattle-tacoma/%s' % (url_id)
+        assert url in test_theater_urls
