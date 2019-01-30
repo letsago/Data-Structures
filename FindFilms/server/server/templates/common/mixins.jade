@@ -13,7 +13,7 @@ mixin addResult(movie)
             a.h2.font-weight-bold(role='button', href='/details/#{movie.id}')= movie.title
     .row.align-items-center.mb-4
         .col-3
-            .font-italic #{movie.rating}, #{movie.length} min, #{movie.genre}  
+            .font-italic #{movie.rating}, #{movie.length} min  
             .font-weight-bold IMDb: #{movie.imdb}
             .font-weight-bold Rotten Tomatoes: #{movie.rottenTomatoes}%       
             img.w-75(src=movie.img)
@@ -29,7 +29,7 @@ mixin movieCard(movie, showing, theater)
     .row
         .col
             h2.font-weight-bold.mb-0= movie.title
-            .font-italic #{movie.rating}, #{movie.length} min, #{movie.genre}
+            .font-italic #{movie.rating}, #{movie.length} min
     .row 
         .col-4
             img(src=movie.img)
@@ -39,14 +39,15 @@ mixin movieCard(movie, showing, theater)
                 a(href=movie.RT_url) Rotten Tomatoes: #{movie.rottenTomatoes}%
             .pl-4
                 a(href=movie.imdb_url) IMDb: #{movie.imdb}
-            h4.m-0 Actors 
-            .pl-4= movie.cast1
-            if(movie.cast2)
-                .pl-4= movie.cast2
-            if(movie.cast3)
-                .pl-4= movie.cast3
-            h4.m-0 Director 
-            .pl-4= movie.director
+            h4.m-0 Genres
+            each genre in movie.genres
+                .pl-4= genre            
+            h4.m-0 Cast
+            each actor in movie.cast
+                .pl-4= actor
+            h4.m-0 Directed By
+            each director in movie.directors 
+                .pl-4= director
         .col
             if(showing)
                 h4.m-0 Theater 

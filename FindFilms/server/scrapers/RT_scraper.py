@@ -50,9 +50,10 @@ class RTMovie:
                 movie_data['length'] = int(info.find('time').string.strip().split(' ')[0])
             
             if info_attr.string == 'Directed By: ':
-                if info.find('a') == None:
+                directors = info.find_all('a')
+                if directors == []:
                     raise LookupError('Director not found')
-                movie_data['director'] = info.find('a').string.encode('utf-8')
+                movie_data['director'] = [director.string.encode('utf-8') for director in directors]
             
             if info_attr.string == 'Genre: ':
                 genres = info.find_all('a')

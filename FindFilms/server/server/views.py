@@ -1,6 +1,6 @@
 from server import app
 from flask import render_template, request, redirect, url_for, abort
-from server.models import Movie, Theater, Showing, User
+from server.models import Movie, Theater, Showing, Genre, Cast, Director, User
 from sqlalchemy import and_, or_, func
 from server.database import db_session
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
@@ -12,19 +12,8 @@ def errorMessage(attributes, data):
             error = attribute.capitalize() + ' already exists. Please register with a different ' + attribute + '.'
     return error
 
-def findConstraintsFromList(maxAttrNum, key, formData):
-    constraints = []
-    for i in range(1, maxAttrNum + 1):
-        if getattr(Movie, key + str(i)):
-            constraints.append(getattr(Movie, key + str(i)) == formData[key].lower().title())
-    return constraints
-
 def movieSearch(formData):
     constraints = []
-    castConstraints = []
-    genreConstraints = []
-    castNumber = 6
-    genreNumber = 4
     searchKeys = []
     for key, value in formData.items():
         if value != '':
@@ -39,14 +28,16 @@ def movieSearch(formData):
             except ValueError:
                 return []
         elif key == 'cast':
-            castConstraints = findConstraintsFromList(castNumber, key, formData)
+            constraints.append(Cast.name == formData[key].lower().title())
         elif key == 'rating':
             constraints.append(getattr(Movie, key) == formData[key].upper())
         elif key == 'genre':
-            genreConstraints = findConstraintsFromList(genreNumber, key, formData)
+            constraints.append(Genre.category == formData[key].lower().title())
+        elif key == 'director':
+            constraints.append(Director.name == formData[key].lower().title())
         else:
             constraints.append(getattr(Movie, key) == formData[key].lower().title())
-    return [movie.__dict__ for movie in Movie.query.filter(and_(*constraints), or_(*castConstraints), or_(*genreConstraints))]
+    return [movie.__dict__ for movie in Movie.query.join(Genre, Cast, Director).filter(and_(*constraints))]
 
 def findOneRowById(table, targetId, strObject):
     try:
@@ -57,7 +48,7 @@ def findOneRowById(table, targetId, strObject):
     except NoResultFound:
         print('No ' + strObject + ' found')
         abort(404)
-    return info
+    return info.__dict__
 
 @app.route('/')
 def home():
@@ -108,6 +99,9 @@ def results():
 def details(movieId):
     id = int(movieId)
     movieInfo = findOneRowById(Movie, id, 'movies')
+    movieInfo['genres'] = [genre.category for genre in Genre.query.filter(Genre.movieId == movieInfo['id']).all()]
+    movieInfo['cast'] = [actor.name for actor in Cast.query.filter(Cast.movieId == movieInfo['id']).all()]
+    movieInfo['directors'] = [director.name for director in Director.query.filter(Director.movieId == movieInfo['id']).all()]
     # for now theater, only select theater id 3, as theater
     # once location feature is integrated, theater will be selected based on calculated minimum distance from user location
     theaterId = 3
@@ -120,5 +114,5 @@ def details(movieId):
         showingInfo['date'] = allShowings[0].pDate
         times = [showing.time for showing in allShowings]
         showingInfo['times'] = times
-        return render_template('details.jade', movie=movieInfo.__dict__, showing=showingInfo, theater=theaterInfo.__dict__)
-    return render_template('details.jade', movie=movieInfo.__dict__)
+        return render_template('details.jade', movie=movieInfo, showing=showingInfo, theater=theaterInfo)
+    return render_template('details.jade', movie=movieInfo)

@@ -24,20 +24,9 @@ class Movie(Base):
     img = Column(String(200), unique=True)
     imdb = Column(Float)
     rottenTomatoes = Column(Integer)
-    genre1 = Column(String(20))
-    genre2 = Column(String(20))
-    genre3 = Column(String(20))
-    genre4 = Column(String(20))
-    cast1 = Column(String(50))
-    cast2 = Column(String(50))
-    cast3 = Column(String(50))
-    cast4 = Column(String(50))
-    cast5 = Column(String(50))
-    cast6 = Column(String(50))
-    director = Column(String(50))
     synopsis = Column(String)
 
-    def __init__(self, RT_url, imdb_url, title, rating, length, img, imdb, rottenTomatoes, genre1, cast1, director, synopsis, cast2=None, cast3=None, cast4=None, cast5=None, cast6=None, genre2=None, genre3=None, genre4=None):
+    def __init__(self, RT_url, imdb_url, title, rating, length, img, imdb, rottenTomatoes, synopsis):
         self.RT_url = RT_url
         self.imdb_url = imdb_url
         self.title = title
@@ -46,18 +35,37 @@ class Movie(Base):
         self.img = img
         self.imdb = imdb
         self.rottenTomatoes = rottenTomatoes
-        self.genre1 = genre1
-        self.cast1 = cast1
-        self.director = director
         self.synopsis = synopsis
-        self.cast2 = cast2
-        self.cast3 = cast3
-        self.cast4 = cast4
-        self.cast5 = cast5
-        self.cast6 = cast6
-        self.genre2 = genre2
-        self.genre3 = genre3
-        self.genre4 = genre4
+
+class Genre(Base):
+    __tablename__ = 'genre'
+    id = Column(Integer, primary_key=True)
+    movieId = Column(Integer, ForeignKey('movie.id'))
+    category = Column(String(50))
+
+    def __init__(self, movieId, category):
+        self.movieId = movieId
+        self.category = category
+
+class Cast(Base):
+    __tablename__ = 'cast'
+    id = Column(Integer, primary_key=True)
+    movieId = Column(Integer, ForeignKey('movie.id'))
+    name = Column(String(50))  
+
+    def __init__(self, movieId, name):
+        self.movieId = movieId
+        self.name = name
+
+class Director(Base):
+    __tablename__ = 'director'
+    id = Column(Integer, primary_key=True)
+    movieId = Column(Integer, ForeignKey('movie.id'))
+    name = Column(String(50))    
+    
+    def __init__(self, movieId, name):
+        self.movieId = movieId
+        self.name = name
 
 class Theater(Base):
     __tablename__ = 'theater'
