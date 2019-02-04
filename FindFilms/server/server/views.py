@@ -4,6 +4,7 @@ from server.models import Movie, Theater, Showing, Genre, Cast, Director, User
 from sqlalchemy import and_, or_, func
 from server.database import db_session
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
+import datetime
 
 def errorMessage(attributes, data):
     error = ''
@@ -105,11 +106,10 @@ def details(movieId):
     # for now theater, only select theater id 3, as theater
     # once location feature is integrated, theater will be selected based on calculated minimum distance from user location
     theaterId = 3
-    allShowings = Showing.query.filter(Showing.movieId == id, Showing.theaterId == theaterId).all()
+    # until search by date feature is integrated, all showings displayed will be on today's date
+    allShowings = Showing.query.filter(Showing.movieId == id, Showing.theaterId == theaterId, Showing.pDate == datetime.datetime.today().strftime('%Y-%m-%d')).all()
     if allShowings != []:
         theaterInfo = findOneRowById(Theater, theaterId, 'theaters')
-        # once search by date feature is integrated, all showings displayed will be on the same date
-        # thus only time attribute is unique in allShowings
         showingInfo = {}
         showingInfo['date'] = allShowings[0].pDate
         times = [showing.time for showing in allShowings]

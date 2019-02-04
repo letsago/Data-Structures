@@ -1,10 +1,11 @@
 from scrapers.RT_scraper import RTMovie
+from scrapers.prod_db_integration import get_RT_url
 from server.models import Movie, Cast, Genre, Director
 from sqlalchemy.orm.exc import NoResultFound
 import pytest
 
 def movie_scraper_for_testing(title):
-    movie = RTMovie(title) 
+    movie = RTMovie(get_RT_url(title)) 
     movie_data = {}
     movie_data.update(movie.get_general_info())
     movie_data['cast'] = movie.get_cast()

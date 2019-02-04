@@ -10,12 +10,11 @@ db_session = scoped_session(sessionmaker(autocommit=False,
                                          bind=engine))
 Base = declarative_base()
 Base.query = db_session.query_property()
-
-
-def init_db():
+Base.metadata.create_all(bind=engine)
+                
+def init_test_db():
     from server.database import db_session
     from server.models import Movie, Theater, Showing, User, Genre, Cast, Director
-    Base.metadata.create_all(bind=engine)
 
     Movie.query.delete()
     Theater.query.delete()
@@ -109,9 +108,9 @@ def init_db():
                         "From Unbreakable, Bruce Willis returns as David Dunn as does Samuel L. Jackson as Elijah Price, known also by his pseudonym Mr. Glass. Joining from Split are James McAvoy, reprising his role as Kevin Wendell Crumb and the multiple identities who reside within, and Anya Taylor-Joy as Casey Cooke, the only captive to survive an encounter with The Beast. Following the conclusion of Split, Glass finds Dunn pursuing Crumb's superhuman figure of The Beast in a series of escalating encounters, while the shadowy presence of Price emerges as an orchestrator who holds secrets critical to both men."
                     )
 
-    theater_one = Theater('AMC Pacific Place 11', '600 Pine Street - Ste 400', 'Seattle', 'Washington', 98101)
-    theater_two = Theater('AMC Oak Tree 6', '10006 Aurora Avenue N.', 'Seattle', 'Washington', 98133)
-    theater_three = Theater('AMC Seattle 10', '4500 9th Ave Ne', 'Seattle', 'Washington', 98105)
+    theater_one = Theater('https://www.amctheatres.com/movie-theatres/seattle-tacoma/amc-pacific-place-11', 'AMC Pacific Place 11', '600 Pine Street - Ste 400', 'Seattle', 'Washington', 98101)
+    theater_two = Theater('https://www.amctheatres.com/movie-theatres/seattle-tacoma/amc-oak-tree-6', 'AMC Oak Tree 6', '10006 Aurora Avenue N.', 'Seattle', 'Washington', 98133)
+    theater_three = Theater('https://www.amctheatres.com/movie-theatres/seattle-tacoma/amc-seattle-10', 'AMC Seattle 10', '4500 9th Ave Ne', 'Seattle', 'Washington', 98105)
     user_one = User('admin', 'admin@admin.com', 'admin')
     db_session.add_all([movie_one, movie_two, movie_three, movie_four, movie_five, movie_six, movie_seven, theater_one, theater_two, theater_three, user_one])
     db_session.commit()

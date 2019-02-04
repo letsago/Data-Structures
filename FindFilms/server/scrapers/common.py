@@ -4,5 +4,5 @@ import requests
 def get_response(url):
     response = requests.get(url)
     if response.status_code != 200:
-        raise ConnectionError('%s not found' % (url))
+        raise requests.ConnectionError('%s not found' % (url))
     return BeautifulSoup(response.content, 'html.parser')

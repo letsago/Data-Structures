@@ -70,13 +70,15 @@ class Director(Base):
 class Theater(Base):
     __tablename__ = 'theater'
     id = Column(Integer, primary_key=True)
+    url = Column(String(200), unique=True)
     name = Column(String(100))
     street = Column(String(200))
     city = Column(String(50))
     state = Column(String(50))
     zipCode = Column(Integer)
 
-    def __init__(self, name, street, city, state, zipCode):
+    def __init__(self, url, name, street, city, state, zipCode):
+        self.url = url
         self.name = name
         self.street = street
         self.city = city

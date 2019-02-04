@@ -25,6 +25,7 @@ class AMCTheaters:
         if address_section == None: 
             raise LookupError('%s address not found' % (self.__url))
         theater_info = {}        
+        theater_info['url'] = self.__url
         theater_info['name'] = theater_section.string.encode('utf-8').strip()
         formatted_addr = AMCTheaters.extract_formatted_addr(address_section.string.encode('utf-8'))
         theater_info.update(formatted_addr)

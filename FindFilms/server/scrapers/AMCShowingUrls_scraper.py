@@ -24,11 +24,9 @@ class AMCShowingUrls:
             if movie_url_id_section == None:
                 raise LookupError('%s movie tag not found' % (self.__theater_url))
             try:
-                # only selecting Glass movies for now
                 # movie tag format '/movies/movie-id/showtimes'
                 movie_url_id = movie_url_id_section[tag].split('/')[2].encode('utf-8')
-                if movie_url_id == 'glass-51215':
-                    movie_url_ids.append(movie_url_id)
+                movie_url_ids.append(movie_url_id)
             except:
                 raise KeyError('Tag %s not found in %s' % (tag, movie_url_id_section))
         return movie_url_ids

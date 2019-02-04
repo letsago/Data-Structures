@@ -13,10 +13,16 @@ mixin addResult(movie)
             a.h2.font-weight-bold(role='button', href='/details/#{movie.id}')= movie.title
     .row.align-items-center.mb-4
         .col-3
-            .font-italic #{movie.rating}, #{movie.length} min  
-            .font-weight-bold IMDb: #{movie.imdb}
-            .font-weight-bold Rotten Tomatoes: #{movie.rottenTomatoes}%       
-            img.w-75(src=movie.img)
+            if(movie.rating)
+                .font-italic Rating: #{movie.rating} 
+            if(movie.length)
+                .font-italic Runtime: #{movie.length} min
+            if(movie.imdb)  
+                .font-italic IMDb: #{movie.imdb}
+            if(movie.rottenTomatoes)
+                .font-italic Rotten Tomatoes: #{movie.rottenTomatoes}%
+            if(movie.img)       
+                img.w-75(src=movie.img)
         .col
             //- Currently static data, will update with correct data after CSS formatting changes
             h4.m-0 AMC
@@ -29,16 +35,22 @@ mixin movieCard(movie, showing, theater)
     .row
         .col
             h2.font-weight-bold.mb-0= movie.title
-            .font-italic #{movie.rating}, #{movie.length} min
+            if(movie.rating)
+                .font-italic Rating: #{movie.rating} 
+            if(movie.length)
+                .font-italic Runtime: #{movie.length} min
     .row 
         .col-4
-            img(src=movie.img)
+            if(movie.img)
+                img(src=movie.img)
         .col-3
             h4.m-0 Ratings
-            .pl-4
-                a(href=movie.RT_url) Rotten Tomatoes: #{movie.rottenTomatoes}%
-            .pl-4
-                a(href=movie.imdb_url) IMDb: #{movie.imdb}
+            if(movie.rottenTomatoes)
+                .pl-4
+                    a(href=movie.RT_url) Rotten Tomatoes: #{movie.rottenTomatoes}%
+            if(movie.imdb)
+                .pl-4
+                    a(href=movie.imdb_url) IMDb: #{movie.imdb}
             h4.m-0 Genres
             each genre in movie.genres
                 .pl-4= genre            
@@ -63,7 +75,10 @@ mixin movieCard(movie, showing, theater)
                         .d-inline.p-2.bg-success.text-white.rounded-pill= time
             else
                 h4 Unfortunately, there are no current showings for #{movie.title} near your location.
-
+    .row
+        .col.mt-3
+            if(movie.synopsis)
+                .p= movie.synopsis
 mixin button(link, message)
     a(href=link)
         button.btn.btn-primary.float-right(type='button')= message
