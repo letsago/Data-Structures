@@ -15,16 +15,13 @@ def find_id(table, db_attr, test_info, test_attr):
 # these tests contain AMC showing info that need to be updated every Wednesday - the day AMC updates their showings
 @pytest.mark.parametrize('existent_showings_url_id', [
     # amc pacific place 11 showings
-    ('spider-man-into-the-spider-verse-48153/2019-01-30/amc-pacific-place-11/all'),
-    ('glass-51215/2019-01-30/amc-pacific-place-11/all'),
+    ('alita-battle-angel-43118/2019-02-13/amc-pacific-place-11/all'),
 
     # amc oak tree 6 showings
-    ('spider-man-into-the-spider-verse-48153/2019-01-30/amc-oak-tree-6/all'),
-    ('glass-51215/2019-01-30/amc-oak-tree-6/all'),
+    ('alita-battle-angel-43118/2019-02-13/amc-oak-tree-6/all'),
 
     # amc seattle 10 showings
-    ('spider-man-into-the-spider-verse-48153/2019-01-30/amc-seattle-10/all'),
-    ('glass-51215/2019-01-30/amc-seattle-10/all')
+    ('alita-battle-angel-43118/2019-02-13/amc-seattle-10/all'),
 ])
 
 def test_existent_showing_info(existent_showings_url_id):

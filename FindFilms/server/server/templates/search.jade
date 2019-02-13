@@ -1,8 +1,5 @@
 extends ./common/mixins.jade
 
-genreArray = ['', 'Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Historical', 'Horror', 'Mystery', 'Political', 'Romance', 'Science Fiction', 'Thriller', 'Western']
-ratingArray = ['', 'G', 'PG', 'PG-13', 'R', 'NC-17']
-
 block title
     title FindFilms Search
     
@@ -11,8 +8,10 @@ block content
     .container.mb-4.mt-4
         form(action='/search', method='post')
             .form-row.mb-4
+                .col-6
+                    label Date
+                    input.form-control(type='date', id='date', name='date', value= date, required)
                 +generateDropDownList('Max Movie Length (min)', 'length', movieLengths)
-                //- Will add search by time frame functionality here later
             .form-row.mb-4
                 +generateDropDownList('Genre', 'genre', genreArray)
                 +generateDropDownList('Movie Rating', 'rating', ratingArray)

@@ -21,7 +21,7 @@ class Movie(Base):
     title = Column(String(100))
     rating = Column(String(10))
     length = Column(Integer)
-    img = Column(String(200), unique=True)
+    img = Column(String(200))
     imdb = Column(Float)
     rottenTomatoes = Column(Integer)
     synopsis = Column(String)
@@ -90,11 +90,13 @@ class Showing(Base):
     id = Column(Integer, primary_key=True)
     movieId = Column(Integer, ForeignKey('movie.id'))
     theaterId = Column(Integer, ForeignKey('theater.id'))
+    url = Column(String(200))    
     pDate = Column(String(20))
     time = Column(String(10))
 
-    def __init__(self, movieId, theaterId, pDate, time):
+    def __init__(self, movieId, theaterId, url, pDate, time):
         self.movieId = movieId
         self.theaterId = theaterId
+        self.url = url
         self.pDate = pDate
         self.time = time

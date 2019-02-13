@@ -7,10 +7,10 @@ block content
     +navbar('Results')
         +button('/search', 'Back to Search')
     .container.mb-4.mt-4
-        if(movieData)
-            for movie in movieData
-                +addResult(movie)
+        if(allData)
+            for data in allData
+                +addResult(data)
         else
-            h2.text-center No movies in our record match your criteria. Please search again.
+            h2.text-center No showings in our record match your criteria. Please search again.
 
 

@@ -36,8 +36,6 @@ def movieSearch(formData):
             constraints.append(Genre.category == formData[key].lower().title())
         elif key == 'director':
             constraints.append(Director.name == formData[key].lower().title())
-        else:
-            constraints.append(getattr(Movie, key) == formData[key].lower().title())
     return [movie.__dict__ for movie in Movie.query.join(Genre, Cast, Director).filter(and_(*constraints))]
 
 def findOneRowById(table, targetId, strObject):
@@ -51,9 +49,38 @@ def findOneRowById(table, targetId, strObject):
         abort(404)
     return info.__dict__
 
+def getTheaterShowing(movieId, theaterId, date):
+    theaterShowing = {}
+    showings = Showing.query.filter(Showing.pDate == date, Showing.movieId == movieId, Showing.theaterId == theaterId).all()
+    if showings != []:
+        theaterShowing = findOneRowById(Theater, theaterId, 'theaters')
+        theaterShowing['date'] = showings[0].pDate
+        theaterShowing['showingUrl'] = showings[0].url
+        theaterShowing['times'] = [showing.time for showing in showings]
+    return theaterShowing
+
+def showingSearch(formData):
+    targetShowings = []
+    movies = movieSearch(formData)
+    # hardcoded theaterIds 1-3 for now because wanted to make sure frontend and backend were functioning for multiple theaters
+    # will update later with a user inputted theater finder that will return the appropriate theaters
+    theaterIds = [1, 2, 3]
+    for movie in movies:
+        theaterShowings = []
+        for theaterId in theaterIds:
+            theaterShowing = getTheaterShowing(movie['id'], theaterId, formData['date'])
+            if theaterShowing:
+                theaterShowings.append(theaterShowing)
+        if theaterShowings != []:
+            allInfo = {}
+            allInfo['movie'] = movie
+            allInfo['theaterShowings'] = theaterShowings
+            targetShowings.append(allInfo)
+    return targetShowings
+
 @app.route('/')
 def home():
-    return render_template('home.jade')
+    return redirect(url_for('search'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -83,36 +110,24 @@ def register():
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
+    today = datetime.datetime.today().strftime('%Y-%m-%d')
     rawScores = range(1, 11)
     imdbScores = [''] + rawScores
     rottenTomatoes = [''] + [score * 10 for score in rawScores]
-    rawLengths = range(60, 210, 30)
-    lengths = [''] + rawLengths
+    lengths = [''] + range(60, 210, 30)
+    genres = [''] + [genre.category for genre in db_session.query(Genre.category).distinct()]
+    ratings = [''] + [movie.rating for movie in db_session.query(Movie.rating).distinct()]
     if request.method == 'POST':
-        return render_template('results.jade', movieData=movieSearch(request.form))
-    return render_template('search.jade', imdbScores=imdbScores, rottenTomatoes=rottenTomatoes, movieLengths=lengths)
+        return render_template('results.jade', allData=showingSearch(request.form))
+    return render_template('search.jade', genreArray=genres, ratingArray=ratings, imdbScores=imdbScores, rottenTomatoes=rottenTomatoes, movieLengths=lengths, date=today)
 
-@app.route('/results')
-def results():
-    return render_template('results.jade', movieData=Movie.query.all())
-
-@app.route('/details/<movieId>')
-def details(movieId):
-    id = int(movieId)
-    movieInfo = findOneRowById(Movie, id, 'movies')
+@app.route('/details/<mId>/<showingDate>/<tId>')
+def details(mId, showingDate, tId):
+    movieId = int(mId)
+    theaterId = int(tId)
+    movieInfo = findOneRowById(Movie, movieId, 'movies')
     movieInfo['genres'] = [genre.category for genre in Genre.query.filter(Genre.movieId == movieInfo['id']).all()]
     movieInfo['cast'] = [actor.name for actor in Cast.query.filter(Cast.movieId == movieInfo['id']).all()]
     movieInfo['directors'] = [director.name for director in Director.query.filter(Director.movieId == movieInfo['id']).all()]
-    # for now theater, only select theater id 3, as theater
-    # once location feature is integrated, theater will be selected based on calculated minimum distance from user location
-    theaterId = 3
-    # until search by date feature is integrated, all showings displayed will be on today's date
-    allShowings = Showing.query.filter(Showing.movieId == id, Showing.theaterId == theaterId, Showing.pDate == datetime.datetime.today().strftime('%Y-%m-%d')).all()
-    if allShowings != []:
-        theaterInfo = findOneRowById(Theater, theaterId, 'theaters')
-        showingInfo = {}
-        showingInfo['date'] = allShowings[0].pDate
-        times = [showing.time for showing in allShowings]
-        showingInfo['times'] = times
-        return render_template('details.jade', movie=movieInfo, showing=showingInfo, theater=theaterInfo)
-    return render_template('details.jade', movie=movieInfo)
+    theaterShowing = getTheaterShowing(movieId, theaterId, showingDate)
+    return render_template('details.jade', movie=movieInfo, theaterShowing=theaterShowing)

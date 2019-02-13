@@ -1,4 +1,4 @@
-from server.database import db_session
+from server.database import db_session, Base, engine
 from server.models import Movie, Theater, Showing, Genre, Cast, Director
 from RT_scraper import RTMovie
 from AMCShowingInfo_scraper import AMCShowingInfo
@@ -83,7 +83,7 @@ def commit_db_showings(theater_db):
             if RT_url != None:
                 movie_db = get_or_create_movie_data(RT_url, showing_info['movie'])
                 for time in showing_info['times']:
-                    db_session.add(Showing(movie_db.id, theater_db.id, showing_info['date'], time))
+                    db_session.add(Showing(movie_db.id, theater_db.id, showing_url, showing_info['date'], time))
                 db_session.commit()
 
 def update_prod_showings():
@@ -103,6 +103,8 @@ def update_prod_theaters():
 
 def init_prod_db():
     # performs a full initialization of the entire production database after deleting all tables
+    # added Base back into this function otherwise can't reinitialize database after deleting db file due to schema changes
+    Base.metadata.create_all(bind=engine)
     update_prod_theaters()
     Movie.query.delete()
     Genre.query.delete()

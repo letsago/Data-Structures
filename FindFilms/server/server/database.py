@@ -10,9 +10,9 @@ db_session = scoped_session(sessionmaker(autocommit=False,
                                          bind=engine))
 Base = declarative_base()
 Base.query = db_session.query_property()
-Base.metadata.create_all(bind=engine)
                 
 def init_test_db():
+    Base.metadata.create_all(bind=engine)
     from server.database import db_session
     from server.models import Movie, Theater, Showing, User, Genre, Cast, Director
 
@@ -85,34 +85,22 @@ def init_test_db():
                     )
 
     movie_six = Movie(  
-                        'https://www.rottentomatoes.com/m/spider_man_into_the_spider_verse',
-                        'https://www.imdb.com/title/tt4633694/', 
-                        'Spider-Man: Into The Spider-Verse', 
-                        'PG', 
-                        100, 
-                        'https://resizing.flixster.com/t-ysR8YcSH2cvSA6fhn2qxDY67I=/206x305/v1.bTsxMjg3MjM1MDtqOzE3OTY4OzEyMDA7NjA3Mjs5MDAw',
-                        8.7, 
-                        97, 
-                        "Phil Lord and Christopher Miller, the creative minds behind The Lego Movie and 21 Jump Street, bring their unique talents to a fresh vision of a different Spider-Man Universe, with a groundbreaking visual style that's the first of its kind. Spider-Man: Into the Spider-Verse introduces Brooklyn teen Miles Morales, and the limitless possibilities of the Spider-Verse, where more than one can wear the mask."
-                    )
-
-    movie_seven = Movie(
-                        'https://www.rottentomatoes.com/m/glass_2019',
-                        'https://www.imdb.com/title/tt6823368/',  
-                        'Glass', 
+                        'https://www.rottentomatoes.com/m/alita_battle_angel',
+                        'https://www.imdb.com/title/tt0437086/', 
+                        'Alita: Battle Angel', 
                         'PG-13', 
-                        110,
-                        'https://resizing.flixster.com/KrOv5ONpHt5bnI8UOQgEP3hjJUI=/206x305/v1.bTsxMjc4MDk3NjtqOzE3OTY3OzEyMDA7NzkwOzEyNTE', 
-                        7.1, 
-                        36, 
-                        "From Unbreakable, Bruce Willis returns as David Dunn as does Samuel L. Jackson as Elijah Price, known also by his pseudonym Mr. Glass. Joining from Split are James McAvoy, reprising his role as Kevin Wendell Crumb and the multiple identities who reside within, and Anya Taylor-Joy as Casey Cooke, the only captive to survive an encounter with The Beast. Following the conclusion of Split, Glass finds Dunn pursuing Crumb's superhuman figure of The Beast in a series of escalating encounters, while the shadowy presence of Price emerges as an orchestrator who holds secrets critical to both men."
+                        125, 
+                        'https://resizing.flixster.com/dL-8X6XHhPBaA60t2zmquQzA6uI=/fit-in/200x296.2962962962963/v1.bTsxMjk4NTcxOTtqOzE3OTcwOzEyMDA7NDA1MDs2MDAw',
+                        7.6, 
+                        61, 
+                        "From visionary filmmakers James Cameron (AVATAR) and Robert Rodriguez (SIN CITY), comes ALITA: BATTLE ANGEL, an epic adventure of hope and empowerment. When Alita (Rosa Salazar) awakens with no memory of who she is in a future world she does not recognize, she is taken in by Ido (Christoph Waltz), a compassionate doctor who realizes that somewhere in this abandoned cyborg shell is the heart and soul of a young woman with an extraordinary past. As Alita learns to navigate her new life and the treacherous streets of Iron City, Ido tries to shield her from her mysterious history while her street-smart new friend Hugo (Keean Johnson) offers instead to help trigger her memories. But it is only when the deadly and corrupt forces that run the city come after Alita that she discovers a clue to her past - she has unique fighting abilities that those in power will stop at nothing to control. If she can stay out of their grasp, she could be the key to saving her friends, her family and the world she's grown to love."
                     )
 
     theater_one = Theater('https://www.amctheatres.com/movie-theatres/seattle-tacoma/amc-pacific-place-11', 'AMC Pacific Place 11', '600 Pine Street - Ste 400', 'Seattle', 'Washington', 98101)
     theater_two = Theater('https://www.amctheatres.com/movie-theatres/seattle-tacoma/amc-oak-tree-6', 'AMC Oak Tree 6', '10006 Aurora Avenue N.', 'Seattle', 'Washington', 98133)
     theater_three = Theater('https://www.amctheatres.com/movie-theatres/seattle-tacoma/amc-seattle-10', 'AMC Seattle 10', '4500 9th Ave Ne', 'Seattle', 'Washington', 98105)
     user_one = User('admin', 'admin@admin.com', 'admin')
-    db_session.add_all([movie_one, movie_two, movie_three, movie_four, movie_five, movie_six, movie_seven, theater_one, theater_two, theater_three, user_one])
+    db_session.add_all([movie_one, movie_two, movie_three, movie_four, movie_five, movie_six, theater_one, theater_two, theater_three, user_one])
     db_session.commit()
     db_session.add_all([
         Genre(movie_one.id, 'Action & Adventure'),
@@ -172,56 +160,24 @@ def init_test_db():
         Director(movie_five.id, 'Mary Harron'),
 
         Genre(movie_six.id, 'Action & Adventure'),
-        Genre(movie_six.id, 'Animation'),
-        Genre(movie_six.id, 'Kids & Family'),
-        Genre(movie_six.id, 'Science Fiction & Fantasy'),
-        Cast(movie_six.id, 'Shameik Moore'),
-        Cast(movie_six.id, 'Jake Johnson'),
-        Cast(movie_six.id, 'Hailee Steinfeld'),
+        Genre(movie_six.id, 'Romance'),
+        Cast(movie_six.id, 'Rosa Salazar'),
+        Cast(movie_six.id, 'Christoph Waltz'),
+        Cast(movie_six.id, 'Jennifer Connelly'),
         Cast(movie_six.id, 'Mahershala Ali'),
-        Cast(movie_six.id, 'Brian Tyree Henry'),
-        Cast(movie_six.id, 'Lily Tomlin'),
-        Director(movie_six.id, 'Bob Persichetti'),
-        Director(movie_six.id, 'Peter Ramsey'),
-        Director(movie_six.id, 'Rodney Rothman'),
+        Cast(movie_six.id, 'Ed Skrein'),
+        Cast(movie_six.id, 'Jackie Earle Haley'),
+        Director(movie_six.id, 'Robert Rodriguez'),
 
-        Genre(movie_seven.id, 'Drama'),
-        Genre(movie_seven.id, 'Mystery & Suspense'),
-        Cast(movie_seven.id, 'Bruce Willis'),
-        Cast(movie_seven.id, 'James McAvoy'),
-        Cast(movie_seven.id, 'Samuel L. Jackson'),
-        Cast(movie_seven.id, 'Sarah Paulson'),
-        Cast(movie_seven.id, 'Anya Taylor-Joy'),
-        Cast(movie_seven.id, 'Spencer Treat Clark'),
-        Director(movie_seven.id, 'M. Night Shyamalan'),
+        Showing(movie_six.id, theater_one.id, 'https://www.amctheatres.com/showtimes/alita-battle-angel-43118/2019-02-13/amc-pacific-place-11/all', '2019-02-13', '7:00pm'),
+        Showing(movie_six.id, theater_one.id, 'https://www.amctheatres.com/showtimes/alita-battle-angel-43118/2019-02-13/amc-pacific-place-11/all', '2019-02-13', '9:55pm'),
 
-        Showing(movie_six.id, theater_one.id, '2019-01-30', '10:45am'),
-        Showing(movie_six.id, theater_one.id, '2019-01-30', '1:30pm'),
-        Showing(movie_six.id, theater_one.id, '2019-01-30', '4:35pm'),
-        Showing(movie_six.id, theater_one.id, '2019-01-30', '7:50pm'),
+        Showing(movie_six.id, theater_two.id, 'https://www.amctheatres.com/showtimes/alita-battle-angel-43118/2019-02-13/amc-oak-tree-6/all', '2019-02-13', '7:00pm'),
+        Showing(movie_six.id, theater_two.id, 'https://www.amctheatres.com/showtimes/alita-battle-angel-43118/2019-02-13/amc-oak-tree-6/all', '2019-02-13', '9:15pm'),
 
-        Showing(movie_seven.id, theater_one.id, '2019-01-30', '10:55am'),
-        Showing(movie_seven.id, theater_one.id, '2019-01-30', '1:35pm'),
-        Showing(movie_seven.id, theater_one.id, '2019-01-30', '4:50pm'),
-        Showing(movie_seven.id, theater_one.id, '2019-01-30', '7:30pm'),
-
-        Showing(movie_six.id, theater_two.id, '2019-01-30', '10:45am'),
-        Showing(movie_six.id, theater_two.id, '2019-01-30', '1:40pm'),
-        Showing(movie_six.id, theater_two.id, '2019-01-30', '4:30pm'),
-        Showing(movie_six.id, theater_two.id, '2019-01-30', '7:30pm'),
-
-        Showing(movie_seven.id, theater_two.id, '2019-01-30', '11:10am'),
-        Showing(movie_seven.id, theater_two.id, '2019-01-30', '2:45pm'),
-        Showing(movie_seven.id, theater_two.id, '2019-01-30', '5:45pm'),
-        Showing(movie_seven.id, theater_two.id, '2019-01-30', '8:45pm'),
-
-        Showing(movie_six.id, theater_three.id, '2019-01-30', '1:55pm'),
-        Showing(movie_six.id, theater_three.id, '2019-01-30', '4:40pm'),
-        Showing(movie_six.id, theater_three.id, '2019-01-30', '5:10pm'),
-        Showing(movie_six.id, theater_three.id, '2019-01-30', '8:15pm'),
-
-        Showing(movie_seven.id, theater_three.id, '2019-01-30', '1:50pm'),
-        Showing(movie_seven.id, theater_three.id, '2019-01-30', '4:50pm'),
-        Showing(movie_seven.id, theater_three.id, '2019-01-30', '8:00pm')
+        Showing(movie_six.id, theater_three.id, 'https://www.amctheatres.com/showtimes/alita-battle-angel-43118/2019-02-13/amc-seattle-10/all', '2019-02-13', '7:00pm'),
+        Showing(movie_six.id, theater_three.id, 'https://www.amctheatres.com/showtimes/alita-battle-angel-43118/2019-02-14/amc-seattle-10/all', '2019-02-14', '4:30pm'),
+        Showing(movie_six.id, theater_three.id, 'https://www.amctheatres.com/showtimes/alita-battle-angel-43118/2019-02-14/amc-seattle-10/all', '2019-02-14', '7:20pm'),
+        Showing(movie_six.id, theater_three.id, 'https://www.amctheatres.com/showtimes/alita-battle-angel-43118/2019-02-14/amc-seattle-10/all', '2019-02-14', '10:10pm')
     ])
     db_session.commit()

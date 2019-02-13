@@ -35,6 +35,10 @@ class AMCShowingInfo:
         movie_title = movie_section.find('h2')
         if movie_title == None:
             raise LookupError('%s movie title not found' % (self.__url))
+        # check to see if no showtimes tag exists, if so then there are no showtimes
+        no_showtimes_tag = response.find('div', 'Theatre-Wrapper-First No-Showtimes-First')
+        if no_showtimes_tag != None:
+            return None
         showtimes_section = response.find('section', 'ShowtimeButtons')
         # attempts to locate showtimes sections by number of maxAttempts
         maxAttempts = 3
