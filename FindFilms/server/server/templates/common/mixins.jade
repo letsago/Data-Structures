@@ -8,6 +8,7 @@ mixin generateDropDownList(label, name, array)
                 option= val
 
 mixin addResult(data)
+    //- will display imdb score once imdb web scraper is implemented
     .row
         .col
             h2.font-weight-bold.m-0= data.movie.title
@@ -17,8 +18,6 @@ mixin addResult(data)
                 .font-italic Rating: #{data.movie.rating} 
             if(data.movie.length)
                 .font-italic Runtime: #{data.movie.length} min
-            if(data.movie.imdb)  
-                .font-italic IMDb: #{data.movie.imdb}
             if(data.movie.rottenTomatoes)
                 .font-italic Rotten Tomatoes: #{data.movie.rottenTomatoes}%
             if(data.movie.img)       
@@ -31,6 +30,7 @@ mixin addResult(data)
                     a.d-inline.p-2.bg-success.text-white.rounded-pill.mr-2(role='button', href=theaterShowing.showingUrl)= time
 
 mixin movieCard(movie, theaterShowing)
+    //- will display imdb score once imdb web scraper is implemented
     .row
         .col
             h2.font-weight-bold.mb-0= movie.title
@@ -47,9 +47,6 @@ mixin movieCard(movie, theaterShowing)
             if(movie.rottenTomatoes)
                 .pl-4
                     a(href=movie.RT_url) Rotten Tomatoes: #{movie.rottenTomatoes}%
-            if(movie.imdb)
-                .pl-4
-                    a(href=movie.imdb_url) IMDb: #{movie.imdb}
             h4.m-0 Genres
             each genre in movie.genres
                 .pl-4= genre            

@@ -6,17 +6,20 @@ block title
 block content
     +navbar('Search Films in Nearby Theaters')
     .container.mb-4.mt-4
+        //- will include search by imdb score once imdb web scraper is implemented
         form(action='/search', method='post')
             .form-row.mb-4
                 .col-6
                     label Date
                     input.form-control(type='date', id='date', name='date', value= date, required)
-                +generateDropDownList('Max Movie Length (min)', 'length', movieLengths)
+                .col-6
+                    label City
+                    input.form-control(type='text', id='city', name='city', required)
             .form-row.mb-4
                 +generateDropDownList('Genre', 'genre', genreArray)
                 +generateDropDownList('Movie Rating', 'rating', ratingArray)
             .form-row.mb-4
-                +generateDropDownList('Minimum IMDb', 'imdb', imdbScores)
+                +generateDropDownList('Max Movie Length (min)', 'length', movieLengths)
                 +generateDropDownList('Minimum Rotten Tomatoes', 'rottenTomatoes', rottenTomatoes)
             .form-row.mb-4
                 .col-6

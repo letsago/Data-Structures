@@ -29,13 +29,13 @@ def movieSearch(formData):
             except ValueError:
                 return []
         elif key == 'cast':
-            constraints.append(Cast.name == formData[key].lower().title())
+            constraints.append(Cast.name == ' '.join(formData[key].lower().title().split()))
         elif key == 'rating':
-            constraints.append(getattr(Movie, key) == formData[key].upper())
+            constraints.append(getattr(Movie, key) == formData[key].upper().strip())
         elif key == 'genre':
-            constraints.append(Genre.category == formData[key].lower().title())
+            constraints.append(Genre.category == ' '.join(formData[key].lower().title().split()))
         elif key == 'director':
-            constraints.append(Director.name == formData[key].lower().title())
+            constraints.append(Director.name == ' '.join(formData[key].lower().title().split()))
     return [movie.__dict__ for movie in Movie.query.join(Genre, Cast, Director).filter(and_(*constraints))]
 
 def findOneRowById(table, targetId, strObject):
@@ -62,9 +62,7 @@ def getTheaterShowing(movieId, theaterId, date):
 def showingSearch(formData):
     targetShowings = []
     movies = movieSearch(formData)
-    # hardcoded theaterIds 1-3 for now because wanted to make sure frontend and backend were functioning for multiple theaters
-    # will update later with a user inputted theater finder that will return the appropriate theaters
-    theaterIds = [1, 2, 3]
+    theaterIds = [theater.id for theater in Theater.query.filter(Theater.city == ' '.join(formData['city'].lower().title().split()))]
     for movie in movies:
         theaterShowings = []
         for theaterId in theaterIds:
