@@ -5,28 +5,38 @@ block title
     
 block content
     +navbar('Search Films in Nearby Theaters')
-    .container.mb-4.mt-4
-        //- will include search by imdb score once imdb web scraper is implemented
-        form(action='/search', method='post')
-            .form-row.mb-4
-                .col-6
-                    label Date
-                    input.form-control(type='date', id='date', name='date', value= date, required)
-                .col-6
-                    label City
-                    input.form-control(type='text', id='city', name='city', required)
-            .form-row.mb-4
-                +generateDropDownList('Genre', 'genre', genreArray)
-                +generateDropDownList('Movie Rating', 'rating', ratingArray)
-            .form-row.mb-4
-                +generateDropDownList('Max Movie Length (min)', 'length', movieLengths)
-                +generateDropDownList('Minimum Rotten Tomatoes', 'rottenTomatoes', rottenTomatoes)
-            .form-row.mb-4
-                .col-6
-                    label Cast
-                    input.form-control(type='text', id= 'cast', name= 'cast')
-                .col-6
-                    label Executive Director
-                    input.form-control(type='text', id= 'director', name= 'director')
-            button.btn.btn-primary(type='submit', href='/results') Submit
-            button.btn.btn-primary(type='reset') Reset
+    .container.mt-4
+        #expandSearch.button.btn.btn-link.p-0 Expand Search
+        #basicSearch.mt-4        
+            form(action='/search', method='post')
+                .form-row.mb-4
+                    .col-6
+                        input.form-control(type='text', id='city', name='city', placeholder='What city do you live in?', required)
+                    .col-6
+                        button.btn.btn-primary(type='submit', href='/results') Submit
+        #advancedSearch.mt-4
+            //- will include search by imdb score once imdb web scraper is implemented
+            form(action='/search', method='post')
+                .form-row.mb-4
+                    .col-6
+                        label Date
+                        input.form-control(type='date', id='date', name='date', value= date, required)
+                    .col-6
+                        label City
+                        input.form-control(type='text', id='city', name='city', required)
+                .form-row.mb-4
+                    +generateDropDownList('Genre', 'genre', genreArray)
+                    +generateDropDownList('Movie Rating', 'rating', ratingArray)
+                .form-row.mb-4
+                    +generateDropDownList('Max Movie Length (min)', 'length', movieLengths)
+                    +generateDropDownList('Minimum Rotten Tomatoes', 'rottenTomatoes', rottenTomatoes)
+                .form-row.mb-4
+                    .col-6
+                        label Cast
+                        input.form-control(type='text', id= 'cast', name= 'cast')
+                    .col-6
+                        label Executive Director
+                        input.form-control(type='text', id= 'director', name= 'director')
+                button.btn.btn-primary(type='submit', href='/results') Submit
+                button.btn.btn-primary(type='reset') Reset
+        

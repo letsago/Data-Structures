@@ -116,7 +116,12 @@ def search():
     genres = [''] + [genre.category for genre in db_session.query(Genre.category).distinct()]
     ratings = [''] + [movie.rating for movie in db_session.query(Movie.rating).distinct()]
     if request.method == 'POST':
-        return render_template('results.jade', allData=showingSearch(request.form))
+        # if basic search is implemented then date is added into form data as today's date
+        formData = request.form.to_dict()
+        date_key = 'date'
+        if date_key not in formData:
+            formData[date_key] = today
+        return render_template('results.jade', allData=showingSearch(formData))
     return render_template('search.jade', genreArray=genres, ratingArray=ratings, imdbScores=imdbScores, rottenTomatoes=rottenTomatoes, movieLengths=lengths, date=today)
 
 @app.route('/details/<mId>/<showingDate>/<tId>')
