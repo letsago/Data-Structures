@@ -7,11 +7,47 @@ mixin generateDropDownList(label, name, array)
             each val in array
                 option= val
 
+mixin addMovieModal()
+    #movieModal.modal.fade(role='dialog')
+        .modal-dialog(role='document', class='modal-dialog modal-lg')
+            .modal-content
+                .modal-header.pb-2.pt-3
+                    #title.h3.m-0
+                    button.close(data-dismiss='modal', aria-label='Close')
+                        span &times;
+                .modal-body.pb-3.pt-2
+                    h4.m-0 Genres       
+                    #genres.pl-4
+                    h4.m-0 Cast
+                    #cast.pl-4
+                    h4.m-0 Directed By
+                    #directors.pl-4
+                    h4.m-0 Synopsis 
+                    #synopsis.pl-4
+
+mixin addTheaterModal()
+    #theaterModal.modal.fade(role='dialog')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header.pb-2.pt-3
+                    #name.h3.m-0
+                    button.close(data-dismiss='modal', aria-label='Close')
+                        span &times;
+                .modal-body.pb-3.pt-2
+                    h4.m-0 Date
+                    #date.pl-4
+                    h4.m-0 Address 
+                    #street.pl-4
+                    #otherAddrInfo.pl-4
+                    h4 Times
+                    #times.pl-4
+
 mixin addResult(data)
     //- will display imdb score once imdb web scraper is implemented
     .row
         .col
-            h2.font-weight-bold.m-0= data.movie.title
+            a.h2.font-weight-bold.m-0(data-toggle='modal', data-target='#movieModal', href='#', data-movie=data.movie.movieJson)= data.movie.title
+            +addMovieModal()
     .row.align-items-center.mb-4
         .col-3
             if(data.movie.rating)
@@ -24,57 +60,8 @@ mixin addResult(data)
                 img.w-75(src=data.movie.img)
         each theaterShowing in data.theaterShowings
             .col
-                a.h4.font-weight-bold(role='button', href='/details/#{data.movie.id}/#{theaterShowing.date}/#{theaterShowing.id}')= theaterShowing.name
-                h5= theaterShowing.date
-                each time in theaterShowing.times
-                    a.d-inline.p-2.bg-success.text-white.rounded-pill.mr-2(role='button', href=theaterShowing.showingUrl)= time
-
-mixin movieCard(movie, theaterShowing)
-    //- will display imdb score once imdb web scraper is implemented
-    .row
-        .col
-            h2.font-weight-bold.mb-0= movie.title
-            if(movie.rating)
-                .font-italic Rating: #{movie.rating} 
-            if(movie.length)
-                .font-italic Runtime: #{movie.length} min
-    .row 
-        .col-4
-            if(movie.img)
-                img(src=movie.img)
-        .col-3
-            h4.m-0 Ratings
-            if(movie.rottenTomatoes)
-                .pl-4
-                    a(href=movie.RT_url) Rotten Tomatoes: #{movie.rottenTomatoes}%
-            h4.m-0 Genres
-            each genre in movie.genres
-                .pl-4= genre            
-            h4.m-0 Cast
-            each actor in movie.cast
-                .pl-4= actor
-            h4.m-0 Directed By
-            each director in movie.directors 
-                .pl-4= director
-        .col
-            if(theaterShowing)
-                h4.m-0 Theater 
-                .pl-4= theaterShowing.name
-                h4.m-0 Date
-                .pl-4= theaterShowing.date
-                h4.m-0 Address 
-                .pl-4= theaterShowing.street
-                .pl-4 #{theaterShowing.city}, #{theaterShowing.state} #{theaterShowing.zipCode}
-                h4 Times
-                .pl-4
-                    each time in theaterShowing.times
-                        a.d-inline.p-2.bg-success.text-white.rounded-pill.mr-2(role='button', href=theaterShowing.showingUrl)= time
-            else
-                h4 Unfortunately, there are no current showings for #{showing.title} near your location.
-    .row
-        .col.mt-3
-            if(movie.synopsis)
-                .p= movie.synopsis
+                button.btn.btn-info(data-toggle='modal', data-target='#theaterModal', data-showing=theaterShowing.showingJson)= theaterShowing.name
+                +addTheaterModal()
                 
 mixin button(link, message)
     a(href=link)

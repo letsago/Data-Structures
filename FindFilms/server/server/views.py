@@ -1,17 +1,11 @@
 from server import app
 from flask import render_template, request, redirect, url_for, abort
-from server.models import Movie, Theater, Showing, Genre, Cast, Director, User
-from sqlalchemy import and_, or_, func
+from server.models import Movie, Theater, Showing, Genre, Cast, Director
+from sqlalchemy import and_
 from server.database import db_session
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 import datetime
-
-def errorMessage(attributes, data):
-    error = ''
-    for attribute in attributes:
-        if any(User.query.filter(getattr(User, attribute) == data[attribute])):
-            error = attribute.capitalize() + ' already exists. Please register with a different ' + attribute + '.'
-    return error
+import json
 
 def movieSearch(formData):
     constraints = []
@@ -57,6 +51,9 @@ def getTheaterShowing(movieId, theaterId, date):
         theaterShowing['date'] = showings[0].pDate
         theaterShowing['showingUrl'] = showings[0].url
         theaterShowing['times'] = [showing.time for showing in showings]
+        # removing this key to convert showing dictionary into JSON string for javascript usage
+        theaterShowing.pop('_sa_instance_state', None)
+        theaterShowing['showingJson'] = json.dumps(theaterShowing)
     return theaterShowing
 
 def showingSearch(formData):
@@ -71,6 +68,12 @@ def showingSearch(formData):
                 theaterShowings.append(theaterShowing)
         if theaterShowings != []:
             allInfo = {}
+            movie['genres'] = [genre.category for genre in Genre.query.filter(Genre.movieId == movie['id']).all()]
+            movie['cast'] = [actor.name for actor in Cast.query.filter(Cast.movieId == movie['id']).all()]
+            movie['directors'] = [director.name for director in Director.query.filter(Director.movieId == movie['id']).all()]
+            # removing this key to convert movie dictionary into JSON string for javascript usage
+            movie.pop('_sa_instance_state', None)
+            movie['movieJson'] = json.dumps(movie)
             allInfo['movie'] = movie
             allInfo['theaterShowings'] = theaterShowings
             targetShowings.append(allInfo)
@@ -79,32 +82,6 @@ def showingSearch(formData):
 @app.route('/')
 def home():
     return redirect(url_for('search'))
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        if not list(User.query.filter(User.username == request.form['username'], User.password == request.form['password'])):
-            error = 'Invalid Credentials. Please Try Again'
-            return render_template('login.jade', message=error)
-        return redirect(url_for('search'))
-    return render_template('login.jade')
-
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        data = request.form
-        attributes = ['username', 'email']
-        error = errorMessage(attributes, data)
-        if error != '':
-            return render_template('register.jade', message=error)
-        if data['password'] != data['confirmPassword']:
-            error = 'Passwords do not match. Please enter your information again.'
-            return render_template('register.jade', message=error, username=data['username'], email=data['email'])
-        db_session.add(User(data['username'], data['email'], data['password']))
-        db_session.commit()
-        success = 'Registration successful! Please login now.'
-        return render_template('login.jade', message=success)
-    return render_template('register.jade')
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
@@ -123,14 +100,3 @@ def search():
             formData[date_key] = today
         return render_template('results.jade', allData=showingSearch(formData))
     return render_template('search.jade', genreArray=genres, ratingArray=ratings, imdbScores=imdbScores, rottenTomatoes=rottenTomatoes, movieLengths=lengths, date=today)
-
-@app.route('/details/<mId>/<showingDate>/<tId>')
-def details(mId, showingDate, tId):
-    movieId = int(mId)
-    theaterId = int(tId)
-    movieInfo = findOneRowById(Movie, movieId, 'movies')
-    movieInfo['genres'] = [genre.category for genre in Genre.query.filter(Genre.movieId == movieInfo['id']).all()]
-    movieInfo['cast'] = [actor.name for actor in Cast.query.filter(Cast.movieId == movieInfo['id']).all()]
-    movieInfo['directors'] = [director.name for director in Director.query.filter(Director.movieId == movieInfo['id']).all()]
-    theaterShowing = getTheaterShowing(movieId, theaterId, showingDate)
-    return render_template('details.jade', movie=movieInfo, theaterShowing=theaterShowing)
