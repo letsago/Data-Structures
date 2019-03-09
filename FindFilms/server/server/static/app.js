@@ -1,9 +1,3 @@
-var socket = io.connect('http://' + document.domain + ':' + location.port)
-
-socket.on('showActiveUserCount', function (data) {
-    $("#activeUserCount").text('Active user count: ' + data)
-})
-
 $(document).ready(function () {
     // initiate form display when page is ready
     $('#basicSearch').show()
@@ -40,7 +34,7 @@ $('#theaterModal').on('show.bs.modal', function (event) {
         return $('<a>', {
             text: obj,
             href: showingDict['showingUrl'],
-        }).addClass('d-inline p-2 m-1 bg-success text-white rounded-pill')
+        }).addClass('d-inline p-2 bg-success text-white rounded-pill mr-2')
     })
 })
 
