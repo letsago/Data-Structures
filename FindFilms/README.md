@@ -4,7 +4,7 @@ Hello and welcome to this README! This documents my implementation of FindFilms 
 The FindFilms app returns relevant movie showings based on date, city, and specific movie criteria user input. 
 The app is built using: 
 
-* Flask (Python library) - for the server
+* Flask-SocketIO (Python library) - for the server
 * Jade - for page content
 * Bootstrap - for page layout
 * Sqlite3 - for database
@@ -40,9 +40,9 @@ SERVER_SETTINGS=./configs/production.cfg python -c 'from scrapers.prod_db_integr
 SERVER_SETTINGS=./configs/test.cfg pytest 
 
 # To run site with specific configuration
-FLASK_APP=server.py FLASK_ENV=production SERVER_SETTINGS=./configs/production.cfg flask run
-FLASK_APP=server.py FLASK_ENV=test SERVER_SETTINGS=./configs/test.cfg flask run
-FLASK_APP=server.py FLASK_ENV=development SERVER_SETTINGS=./configs/development.cfg flask run
+SERVER_SETTINGS=./configs/production.cfg python launch.py
+SERVER_SETTINGS=./configs/test.cfg python launch.py
+SERVER_SETTINGS=./configs/development.cfg python launch.py
 ```
 
 ## Directory Structure
@@ -54,7 +54,8 @@ All test cases were written using [pytest](https://docs.pytest.org/en/latest/) f
 ### Directories
 * /server
     * Setup code for Flask deployment
-    * Contains production and test databases  
+    * Contains production and test databases
+    * Launches app 
     * /scrapers
         * Runs all the web scrapers that extracts all the relevant data and inserts the data into the database
         * Contains functions to initialize and update production database
@@ -88,11 +89,13 @@ All test cases were written using [pytest](https://docs.pytest.org/en/latest/) f
 - [x] Production, test, and development configurations
 - [x] Integration of web scraped data into production database
 - [x] Updated search function to return available showings from user inputted city and date 
+- [x] Added basic search feature
+- [x] Created pop up modals to show detailed results
+- [x] Display active user count
 
 ## Potential future work
 - [ ] Parallel processing to speed up web scraping
 - [ ] Find and return minimum distance theater with available showing from user location
-- [ ] Add basic search feature
 - [ ] Create recommendation system with user search history
 
 **Thanks for reading me and have a lovely day!**
