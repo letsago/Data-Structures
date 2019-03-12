@@ -32,10 +32,19 @@ $('#theaterModal').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
     var showingDict = button.data('showing') // Extracting showing info as dictionary object
     var modal = $(this)
-    modal.find('#name').text(showingDict['name'])
-    modal.find('#date').text(showingDict['date'])
-    modal.find('#street').text(showingDict['street'])
-    modal.find('#otherAddrInfo').text(showingDict['city'] + ', ' + showingDict['state'] + ' ' + showingDict['zipCode'])
+    $.ajax({
+        type: 'POST',
+        url: '/theaterData',
+        data: {
+            'theaterId': showingDict['theaterId'],
+        },
+        dataType: 'json'
+    }).done(function (data) {
+        modal.find('#name').text(data['name'])
+        modal.find('#street').text(data['street'])
+        modal.find('#otherAddrInfo').text(data['city'] + ', ' + data['state'] + ' ' + data['zipCode'])
+    })
+    modal.find('#date').text(showingDict['showingDate'])
     appendToModalTag(modal, showingDict, 'times', obj => {
         return $('<a>', {
             text: obj,
@@ -46,16 +55,28 @@ $('#theaterModal').on('show.bs.modal', function (event) {
 
 $('#movieModal').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
-    var movieDict = button.data('movie') // Extracting showing info as dictionary object
+    var movie = button.data('movie') // Extracting movie info as dictionary object
     var modal = $(this)
-    modal.find('#title').text(movieDict['title'])
-    modal.find('#synopsis').text(movieDict['synopsis'])
-    var content = obj => {
-        return $('<div>', {
-            text: obj,
-        })
-    }
-    appendToModalTag(modal, movieDict, 'genres', content)
-    appendToModalTag(modal, movieDict, 'cast', content)
-    appendToModalTag(modal, movieDict, 'directors', content)
+    $.ajax({
+        type: 'POST',
+        url: '/movieData',
+        data: {
+            'movieId': movie['id'],
+        },
+        dataType: 'json'
+    }).done(function (data) {
+        modal.find('#title').text(data['title'])
+        modal.find('#rating').text(data['rating'])
+        modal.find('#length').text(data['length'] + ' min')
+        modal.find('#rottenTomatoes').text(data['rottenTomatoes'] + '%')
+        modal.find('#synopsis').text(data['synopsis'])
+        var content = obj => {
+            return $('<div>', {
+                text: obj,
+            })
+        }
+        appendToModalTag(modal, data, 'genres', content)
+        appendToModalTag(modal, data, 'cast', content)
+        appendToModalTag(modal, data, 'directors', content)
+    })
 })

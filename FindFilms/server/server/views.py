@@ -30,7 +30,13 @@ def movieSearch(formData):
             constraints.append(Genre.category == ' '.join(formData[key].lower().title().split()))
         elif key == 'director':
             constraints.append(Director.name == ' '.join(formData[key].lower().title().split()))
-    return [movie.__dict__ for movie in Movie.query.join(Genre, Cast, Director).filter(and_(*constraints))]
+    movies = []
+    for movie in Movie.query.join(Genre, Cast, Director).filter(and_(*constraints)):
+        movieData = {}
+        movieData.update({'id': movie.id, 'title': movie.title, 'img': movie.img})
+        movieData['json'] = json.dumps({'id': movie.id})
+        movies.append(movieData)
+    return movies
 
 def findOneRowById(table, targetId, strObject):
     try:
@@ -47,13 +53,9 @@ def getTheaterShowing(movieId, theaterId, date):
     theaterShowing = {}
     showings = Showing.query.filter(Showing.pDate == date, Showing.movieId == movieId, Showing.theaterId == theaterId).all()
     if showings != []:
-        theaterShowing = findOneRowById(Theater, theaterId, 'theaters')
-        theaterShowing['date'] = showings[0].pDate
-        theaterShowing['showingUrl'] = showings[0].url
-        theaterShowing['times'] = [showing.time for showing in showings]
-        # removing this key to convert showing dictionary into JSON string for javascript usage
-        theaterShowing.pop('_sa_instance_state', None)
-        theaterShowing['showingJson'] = json.dumps(theaterShowing)
+        showingInfo = {'theaterId': theaterId, 'showingDate': date, 'showingUrl': showings[0].url, 'times': [showing.time for showing in showings]}
+        theaterShowing['name'] = findOneRowById(Theater, theaterId, 'theaters')['name']
+        theaterShowing['json'] = json.dumps(showingInfo)
     return theaterShowing
 
 def showingSearch(formData):
@@ -68,12 +70,6 @@ def showingSearch(formData):
                 theaterShowings.append(theaterShowing)
         if theaterShowings != []:
             allInfo = {}
-            movie['genres'] = [genre.category for genre in Genre.query.filter(Genre.movieId == movie['id']).all()]
-            movie['cast'] = [actor.name for actor in Cast.query.filter(Cast.movieId == movie['id']).all()]
-            movie['directors'] = [director.name for director in Director.query.filter(Director.movieId == movie['id']).all()]
-            # removing this key to convert movie dictionary into JSON string for javascript usage
-            movie.pop('_sa_instance_state', None)
-            movie['movieJson'] = json.dumps(movie)
             allInfo['movie'] = movie
             allInfo['theaterShowings'] = theaterShowings
             targetShowings.append(allInfo)
@@ -100,3 +96,21 @@ def search():
             formData[date_key] = today
         return render_template('results.jade', allData=showingSearch(formData))
     return render_template('search.jade', genreArray=genres, ratingArray=ratings, imdbScores=imdbScores, rottenTomatoes=rottenTomatoes, movieLengths=lengths, date=today)
+
+@app.route('/theaterData', methods=['POST'])
+def theaterData():
+    formData = request.form
+    theaterData = findOneRowById(Theater, formData['theaterId'], 'theater')
+    theaterData.pop('_sa_instance_state', None)
+    return json.dumps(theaterData)
+
+@app.route('/movieData', methods=['POST'])
+def movieData():
+    formData = request.form
+    movieData = findOneRowById(Movie, formData['movieId'], 'movie')
+    movieData.pop('_sa_instance_state', None)
+    movieData['genres'] = [genre.category for genre in Genre.query.filter(Genre.movieId == movieData['id']).all()]
+    movieData['cast'] = [actor.name for actor in Cast.query.filter(Cast.movieId == movieData['id']).all()]
+    movieData['directors'] = [director.name for director in Director.query.filter(Director.movieId == movieData['id']).all()]
+    return json.dumps(movieData)
+
