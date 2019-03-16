@@ -24,6 +24,7 @@ def find_id(table, db_attr, test_info, test_attr):
     ('alita-battle-angel-43118/2019-02-13/amc-seattle-10/all'),
 ])
 
+@pytest.mark.skip(reason='test database AMC showing info is not up to date with current showings')
 def test_existent_showing_info(existent_showings_url_id):
     # because each showing in the db has a unique time, .first() will return a unique showing if that showing exists else it returns None
     # thus by filtering for every database attribute, verifying existence can show if all attributes between test_showing and database showing match

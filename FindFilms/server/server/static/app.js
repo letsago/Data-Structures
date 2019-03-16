@@ -67,8 +67,12 @@ $('#movieModal').on('show.bs.modal', function (event) {
     }).done(function (data) {
         modal.find('#title').text(data['title'])
         modal.find('#rating').text(data['rating'])
-        modal.find('#length').text(data['length'] + ' min')
-        modal.find('#rottenTomatoes').text(data['rottenTomatoes'] + '%')
+        if (data['length']) {
+            modal.find('#length').text(data['length'] + ' min')
+        }
+        if (data['rottenTomatoes']) {
+            modal.find('#rottenTomatoes').text(data['rottenTomatoes'] + '%')
+        }
         modal.find('#synopsis').text(data['synopsis'])
         var content = obj => {
             return $('<div>', {

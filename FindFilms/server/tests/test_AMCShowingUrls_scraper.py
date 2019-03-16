@@ -1,7 +1,7 @@
 from scrapers.AMCShowingUrls_scraper import AMCShowingUrls
 import pytest
 
-# testing that .get_showing_urls() extracts all showing urls for Alita Battle Angle in amc-seattle-10 theater for next week
+@pytest.mark.skip(reason='test database AMC showing urls are not up to date with current showings')
 def test_showing_urls():
     dates = AMCShowingUrls.get_next_week_dates()
     showing_urls = AMCShowingUrls('https://www.amctheatres.com/movie-theatres/seattle-tacoma/amc-seattle-10').get_showing_urls()

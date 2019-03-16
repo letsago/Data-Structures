@@ -56,7 +56,7 @@ def get_or_create_movie_data(RT_url, movie_title):
                         movie_general_info['length'],
                         movie.get_img(),
                         # add actual imdb_score later
-                        9.0,
+                        None,
                         movie.get_RT_score(),
                         movie.get_synopsis())
         db_session.add(movie_db)

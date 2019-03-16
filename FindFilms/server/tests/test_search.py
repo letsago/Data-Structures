@@ -42,22 +42,22 @@ def createForm(data = {}):
 def test_movieSearch(movieSearchData, movieIds):
     assert [movie['id'] for movie in movieSearch(createForm(movieSearchData))] == movieIds
 
-@pytest.mark.parametrize('goodShowingSearchInput, showingTimes', [    
+@pytest.mark.parametrize('goodShowingSearchInput, showingTheaters', [    
     # well formatted input with standard date type format which is also date input format for Jade
-    ({'date': '2019-02-13', 'city': 'Seattle'}, [['7:00pm', '9:55pm'], ['7:00pm', '9:15pm'], ['7:00pm']]),
-    ({'date': '2019-02-14', 'city': 'Seattle'}, [['4:30pm', '7:20pm', '10:10pm']]),
+    ({'date': '2019-02-13', 'city': 'Seattle'}, ['AMC Pacific Place 11', 'AMC Oak Tree 6', 'AMC Seattle 10']),
+    ({'date': '2019-02-14', 'city': 'Seattle'}, ['AMC Seattle 10']),
 
     # bad formatted city input
-    ({'date': '2019-02-14', 'city': 'SEaTtlE'}, [['4:30pm', '7:20pm', '10:10pm']]),
-    ({'date': '2019-02-14', 'city': ' seattle '}, [['4:30pm', '7:20pm', '10:10pm']])
+    ({'date': '2019-02-14', 'city': 'SEaTtlE'}, ['AMC Seattle 10']),
+    ({'date': '2019-02-14', 'city': ' seattle '}, ['AMC Seattle 10'])
 ])
 
-def test_validShowingsSearch(goodShowingSearchInput, showingTimes):
+def test_validShowingsSearch(goodShowingSearchInput, showingTheaters):
     # since test db only has showing for Alita Battle Angel movie, there should only be one targetShowing
     targetShowings = showingSearch(createForm(goodShowingSearchInput))
     assert len(targetShowings) == 1
-    for i in range(len(showingTimes)):
-        assert targetShowings[0]['theaterShowings'][i]['times'] == showingTimes[i]
+    for i in range(len(showingTheaters)):
+        assert targetShowings[0]['theaterShowings'][i]['name'] == showingTheaters[i]
 
 @pytest.mark.parametrize('badShowingSearchInput', [    
     # no date input

@@ -92,6 +92,7 @@ All test cases were written using [pytest](https://docs.pytest.org/en/latest/) f
 - [x] Added basic search feature
 - [x] Created pop up modals to show detailed results
 - [x] Display active user count
+- [x] Pop up modals request detailed results on user clicks
 
 ## Potential future work
 - [ ] Parallel processing to speed up web scraping

@@ -9,6 +9,7 @@ def movie_scraper_for_testing(title):
     movie_data = {}
     movie_data.update(movie.get_general_info())
     movie_data['cast'] = movie.get_cast()
+    movie_data['rottenTomatoes'] = movie.get_RT_score()
     return movie_data
 
 def assert_movie_attr_exists(table, db_attr, db_movie, test_attr, test_movie):
