@@ -31,10 +31,10 @@ class AMCShowingInfo:
         response = get_response(self.__url)
         movie_section = response.find('a', 'MovieTitleHeader-title')
         if movie_section == None:
-            raise LookupError('%s movie section not found' % (self.__url))
+            return None
         movie_title = movie_section.find('h2')
         if movie_title == None:
-            raise LookupError('%s movie title not found' % (self.__url))
+            return None
         # check to see if no showtimes tag exists, if so then there are no showtimes
         no_showtimes_tag = response.find('div', 'Theatre-Wrapper-First No-Showtimes-First')
         if no_showtimes_tag != None:

@@ -30,12 +30,10 @@ class AMCUrls:
         for location_url in self.__location_urls:
             response = get_response(location_url)
             all_theaters_info = response.find_all('div', 'TheatreInfo')
-            if all_theaters_info == []:
-                raise LookupError('AMC theater info not found')
             for theater_info in all_theaters_info:
                 theater_url_section = theater_info.find('a', 'Link')
                 if theater_url_section == None:
-                    raise LookupError('AMC theater url section not found')
+                    continue
                 try:
                     theater_urls.add(self.__base_url + theater_url_section[tag].encode('utf-8'))
                 except:

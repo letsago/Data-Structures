@@ -28,7 +28,8 @@ def get_theaters():
     AMC_theater_urls = AMCUrls().get_theater_urls()
     for theater_url in AMC_theater_urls:
         theater_info = AMCTheaters(theater_url).get_theater_info()
-        theaters.append(theater_info)
+        if theater_info != None:
+            theaters.append(theater_info)
     return theaters
 
 def create_theater_data(theater_info):

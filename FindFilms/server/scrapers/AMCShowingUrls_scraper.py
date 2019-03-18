@@ -16,13 +16,13 @@ class AMCShowingUrls:
         response = get_response(self.__theater_url)
         movie_section = response.find_all('div', 'PosterContent')
         if movie_section == []:
-            raise LookupError('%s movie section not found' % (self.__theater_url))
+            return []
         tag = 'href'
         movie_url_ids = []
         for movie in movie_section:
             movie_url_id_section = movie.find('a', 'Btn Btn--primary')
             if movie_url_id_section == None:
-                raise LookupError('%s movie tag not found' % (self.__theater_url))
+                continue
             try:
                 # movie tag format '/movies/movie-id/showtimes'
                 movie_url_id = movie_url_id_section[tag].split('/')[2].encode('utf-8')

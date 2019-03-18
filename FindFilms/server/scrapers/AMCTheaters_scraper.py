@@ -20,10 +20,10 @@ class AMCTheaters:
         response = get_response(self.__url)
         theater_section = response.find('h1', itemprop='name')
         if theater_section == None:
-            raise LookupError('%s theater not found' % (self.__url))
+            return None
         address_section = response.find('p', 'Headline--sub')
-        if address_section == None: 
-            raise LookupError('%s address not found' % (self.__url))
+        if address_section == None:
+            return None 
         theater_info = {}        
         theater_info['url'] = self.__url
         theater_info['name'] = theater_section.string.encode('utf-8').strip()
