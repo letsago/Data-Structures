@@ -23,15 +23,13 @@ def get_RT_url(movie_title):
             return RT_url
     return None
 
-def get_seattle_theaters():
-    # only choose theaters in Seattle for now
-    seattle_theaters =[]
+def get_theaters():
+    theaters =[]
     AMC_theater_urls = AMCUrls().get_theater_urls()
     for theater_url in AMC_theater_urls:
         theater_info = AMCTheaters(theater_url).get_theater_info()
-        if theater_info['city'] == 'Seattle':
-            seattle_theaters.append(theater_info)
-    return seattle_theaters
+        theaters.append(theater_info)
+    return theaters
 
 def create_theater_data(theater_info):
     # theater name is unique so first will return unique row if found
@@ -97,8 +95,8 @@ def update_prod_showings():
 def update_prod_theaters():
     Theater.query.delete()
 
-    seattle_theaters = get_seattle_theaters()
-    for theater_info in seattle_theaters:
+    theaters = get_theaters()
+    for theater_info in theaters:
         create_theater_data(theater_info)
 
 def init_prod_db():
