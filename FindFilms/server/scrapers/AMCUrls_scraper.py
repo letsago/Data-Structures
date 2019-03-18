@@ -19,8 +19,7 @@ class AMCUrls:
         tag = 'href'
         for location in locations:
             try:
-                if location[tag] == '/movie-theatres/seattle-tacoma':
-                    location_urls.append(self.__base_url + location[tag].encode('utf-8'))
+                location_urls.append(self.__base_url + location[tag].encode('utf-8'))
             except:
                 raise KeyError('Tag %s not found in %s' % (tag, location))
         return location_urls
