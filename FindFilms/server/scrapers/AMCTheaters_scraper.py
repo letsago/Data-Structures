@@ -10,9 +10,9 @@ class AMCTheaters:
         formatted_addr = {}
         address_section = address_section.split(',')
         formatted_addr['street'] = address_section[0]
-        formatted_addr['city'] = address_section[1].strip()        
-        formatted_addr['zipCode'] = int(address_section[2][-5:])
-        formatted_addr['state'] = address_section[2][:-5].strip()
+        formatted_addr['city'] = address_section[-2].strip()        
+        formatted_addr['zipCode'] = int(address_section[-1][-5:])
+        formatted_addr['state'] = address_section[-1][:-5].strip()
         return formatted_addr
 
     def get_theater_info(self):
