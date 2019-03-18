@@ -45,6 +45,11 @@ SERVER_SETTINGS=./configs/test.cfg python launch.py
 SERVER_SETTINGS=./configs/development.cfg python launch.py
 ```
 
+## Run App in Production Mode with Docker
+```
+docker run -d -p 5000:3001 letsago/findfilm:server
+```
+
 ## Directory Structure
 
 Note that the main project folders are scrapers, server, and tests modules. 
