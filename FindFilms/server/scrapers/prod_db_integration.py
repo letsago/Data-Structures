@@ -23,12 +23,13 @@ def get_RT_url(movie_title):
             return RT_url
     return None
 
+# only getting Washington state AMC theaters for now
 def get_theaters():
     theaters =[]
     AMC_theater_urls = AMCUrls().get_theater_urls()
     for theater_url in AMC_theater_urls:
         theater_info = AMCTheaters(theater_url).get_theater_info()
-        if theater_info != None:
+        if theater_info != None and theater_info['state'] == 'Washington':
             theaters.append(theater_info)
     return theaters
 
