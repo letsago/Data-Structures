@@ -15,20 +15,20 @@ class AMCShowingUrls:
     def get_movie_url_ids(self):
         response = get_response(self.__theater_url)
         movie_section = response.find_all('div', 'PosterContent')
+        # if movie_section doesn't exist then return empty list to prevent bad site from raising error and terminating program
         if movie_section == []:
-            raise LookupError('%s movie section not found' % (self.__theater_url))
+            return []
         tag = 'href'
         movie_url_ids = []
         for movie in movie_section:
             movie_url_id_section = movie.find('a', 'Btn Btn--primary')
-            if movie_url_id_section == None:
-                raise LookupError('%s movie tag not found' % (self.__theater_url))
-            try:
-                # movie tag format '/movies/movie-id/showtimes'
-                movie_url_id = movie_url_id_section[tag].split('/')[2].encode('utf-8')
-                movie_url_ids.append(movie_url_id)
-            except:
-                raise KeyError('Tag %s not found in %s' % (tag, movie_url_id_section))
+            if movie_url_id_section != None:
+                try:
+                    # movie tag format '/movies/movie-id/showtimes'
+                    movie_url_id = movie_url_id_section[tag].split('/')[2].encode('utf-8')
+                    movie_url_ids.append(movie_url_id)
+                except:
+                    raise KeyError('Tag %s not found in %s' % (tag, movie_url_id_section))
         return movie_url_ids
 
     @staticmethod

@@ -7,6 +7,10 @@ from AMCTheaters_scraper import AMCTheaters
 from AMCUrls_scraper import AMCUrls
 import datetime
 import requests
+import time
+from multiprocessing.dummy import Pool as ThreadPool
+from functools import partial
+from tqdm import tqdm
 
 def get_RT_url(movie_title):
     # RT url format is 'https://www.rottentomatoes.com/m/movie_name*_release_year*'
@@ -23,15 +27,18 @@ def get_RT_url(movie_title):
             return RT_url
     return None
 
-def get_seattle_theaters():
-    # only choose theaters in Seattle for now
-    seattle_theaters =[]
+def get_theater_info(theater_url):
+    theater_info = AMCTheaters(theater_url).get_theater_info()
+    return theater_info
+
+def get_theaters():
     AMC_theater_urls = AMCUrls().get_theater_urls()
-    for theater_url in AMC_theater_urls:
-        theater_info = AMCTheaters(theater_url).get_theater_info()
-        if theater_info['city'] == 'Seattle':
-            seattle_theaters.append(theater_info)
-    return seattle_theaters
+    pool = ThreadPool(12)
+    theaters = tqdm(pool.map(get_theater_info, AMC_theater_urls), total=len(AMC_theater_urls))
+    theaters.set_description('Fetching theater info')
+    pool.close()
+    pool.join()
+    return list(theaters)
 
 def create_theater_data(theater_info):
     # theater name is unique so first will return unique row if found
@@ -71,35 +78,68 @@ def get_or_create_movie_data(RT_url, movie_title):
         db_session.commit()
     return movie_db
 
-def commit_db_showings(theater_db):
+def get_showing_info(showing_url, theater_db):
+    showing_info = AMCShowingInfo(showing_url).get_showing_info()
+    # will not commit to database if showing info section is not found when scraping
+    if showing_info != None:
+        RT_url = get_RT_url(showing_info['movie'])
+        return {'RT_url': RT_url, 'theater': theater_db.name, 'theater_id': theater_db.id, 'movie': showing_info['movie'], 'url': showing_url, 'date': showing_info['date'], 'times': showing_info['times']}
+    return None
+
+def get_theater_showings(theater_db):
     AMC_showing_urls = AMCShowingUrls(theater_db.url).get_showing_urls()
-    for showing_url in AMC_showing_urls:
-        showing_info = AMCShowingInfo(showing_url).get_showing_info()
-        # will not commit to database if showing info section is not found when scraping
-        if showing_info != None:
-            RT_url = get_RT_url(showing_info['movie'])
-            # noting an edge case where get_RT_url will return no valid RT_url and subsequently will not commit showings... 
-            # for that movie if it was released more than a year ago, is indistinguishable by name only, and is currently showing in theaters
-            if RT_url != None:
-                movie_db = get_or_create_movie_data(RT_url, showing_info['movie'])
-                for time in showing_info['times']:
-                    db_session.add(Showing(movie_db.id, theater_db.id, showing_url, showing_info['date'], time))
-                db_session.commit()
+    pool = ThreadPool(12)
+    showings = tqdm(pool.map(partial(get_showing_info, theater_db=theater_db), AMC_showing_urls), total=len(AMC_showing_urls))
+    for showing in showings:
+        if showing != None:
+            showings.set_description('Fetching showing info for theater %s' % (showing['theater']))
+    pool.close()
+    pool.join()
+    return showings
+
+def get_all_showings(theaters):
+    pool = ThreadPool(12)
+    showings = pool.map(get_theater_showings, theaters)
+    pool.close()
+    pool.join()
+    return showings
+
+def commit_db_showings(theater_showings):
+    pbar = tqdm(range(len(theater_showings)))
+    pbar.set_description('Committing showings into database')
+    for i in pbar:
+        for showing in theater_showings[i]:
+            if showing != None and showing['RT_url'] != None:
+                movie_db = get_or_create_movie_data(showing['RT_url'], showing['movie'])
+                for time in showing['times']:
+                    db_session.add(Showing(movie_db.id, showing['theater_id'], showing['url'], showing['date'], time))
+                    db_session.commit()
 
 def update_prod_showings():
     # updates showings database and adds any new movies and related info to their appropriate databases using preexisting theater database info
+    start = time.time()
     Showing.query.delete()
 
     theaters = Theater.query.all()
-    for theater in theaters:
-        commit_db_showings(theater)
+    theater_showings = get_all_showings(theaters)
+    commit_db_showings(theater_showings)
+    
+    end = time.time()
+    print 'Updating showings took %f seconds' % (end - start) 
 
 def update_prod_theaters():
+    start = time.time()
     Theater.query.delete()
 
-    seattle_theaters = get_seattle_theaters()
-    for theater_info in seattle_theaters:
-        create_theater_data(theater_info)
+    theaters = get_theaters()
+    pbar = tqdm(range(len(theaters)))
+    pbar.set_description('Committing theaters into database')
+    for i in pbar:
+        if theaters[i] != None:
+            create_theater_data(theaters[i])
+
+    end = time.time()
+    print 'Updating theaters took %f seconds' % (end - start)
 
 def init_prod_db():
     # performs a full initialization of the entire production database after deleting all tables
