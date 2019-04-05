@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from server import app
 
 # test database contains AMC showing info that needs to be updated every Wednesday - the day AMC updates their showings
-engine = create_engine(app.config['DATABASE_URI'], convert_unicode=True)
+engine = create_engine(app.config['DATABASE_URI'], convert_unicode=True, pool_size=150, max_overflow=0)
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
                                          bind=engine))

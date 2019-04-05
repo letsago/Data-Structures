@@ -76,7 +76,7 @@ class RTMovie:
         synopsis = self.__response.find(id='movieSynopsis')
         if synopsis == None:
             return None
-        return synopsis.string.strip()
+        return unicodedata.normalize('NFD', synopsis.string).encode('ascii', 'ignore').strip()
 
     def get_img(self):
         img_url = self.__response.find('img', 'posterImage')
