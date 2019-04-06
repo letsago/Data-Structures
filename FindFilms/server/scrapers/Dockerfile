@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . /app
 
 # Install any needed packages specified in requirements.txt
-RUN pip install --trusted-host pypi.python.org -r requirements.txt
+RUN pip install --trusted-host pypi.python.org -r ../requirements.txt
 
 # Define environment variable SERVER_SETTINGS to be in production mode
 ENV SERVER_SETTINGS ./configs/production.cfg
