@@ -1,6 +1,9 @@
 # Use an official Python runtime as a parent image
 FROM python:2.7-slim
 
+# Use an official MySQL image
+FROM mysql
+
 # Set the working directory to /app
 WORKDIR /app
 
