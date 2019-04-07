@@ -13,7 +13,7 @@ from functools import partial
 import threading
 
 lock = threading.Lock()
-target_states = {'California', 'Washington'}
+target_states = {'Washington'}
 
 def get_RT_url(movie_title):
     # RT url format is 'https://www.rottentomatoes.com/m/movie_name*_release_year*'
