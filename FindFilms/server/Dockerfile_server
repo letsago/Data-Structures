@@ -2,7 +2,7 @@
 FROM mysql
 
 # Install python
-RUN apt install -y python
+RUN apt-get install -y python
 
 # Set the working directory to /app
 WORKDIR /app
