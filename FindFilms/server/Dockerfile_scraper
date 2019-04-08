@@ -1,8 +1,15 @@
-# Use an official Python runtime as a parent image
-FROM python:2.7-slim
+# Use an official MySQL runtime as a parent image
+FROM mysql:latest
 
-# Use an official MySQL image
-FROM mysql
+# Define MySQL environment variables
+ENV MYSQL_DATABASE=findfilmsdb
+ENV MYSQL_USER=kurtis
+ENV MYSQL_PASSWORD=carsch
+
+# Install python and python-pip
+RUN apt-get update && apt-get install -y \
+    python \
+    python-pip
 
 # Set the working directory to /app
 WORKDIR /app
@@ -18,4 +25,3 @@ ENV SERVER_SETTINGS ./configs/production.cfg
 
 # Run python command to update showings
 RUN python -c 'from scrapers.prod_db_integration import update_prod_showings; update_prod_showings()'
-

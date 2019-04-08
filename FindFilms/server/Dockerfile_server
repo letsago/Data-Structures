@@ -1,8 +1,15 @@
 # Use an official MySQL runtime as a parent image
-FROM mysql
+FROM mysql:latest
 
-# Install python
-RUN apt-get install -y python
+# Define MySQL environment variables
+ENV MYSQL_DATABASE=findfilmsdb
+ENV MYSQL_USER=kurtis
+ENV MYSQL_PASSWORD=carsch
+
+# Install python and python-pip
+RUN apt-get update && apt-get install -y \
+    python \
+    python-pip
 
 # Set the working directory to /app
 WORKDIR /app
