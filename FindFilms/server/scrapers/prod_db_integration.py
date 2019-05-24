@@ -106,10 +106,7 @@ def get_theater_showings(theater_db):
         pool.join()
 
 def commit_all_showings(theaters):
-    # pool = ThreadPool(12)
-    # pool.map(get_theater_showings, theaters)
-    # pool.close()
-    # pool.join()
+    # add static wait time after processing every 50 theaters to prevent being kicked out of AMC server while scraping
     theater_processed_count = 0
     for theater_db in theaters:
         get_theater_showings(theater_db)
