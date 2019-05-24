@@ -63,8 +63,6 @@ class RTMovie:
 
     def get_RT_score(self):
         score = self.__response.find('span', 'mop-ratings-wrap__percentage') 
-        if score == None:
-            raise LookupError('%s Rotten Tomatoes scores not found' % self.__url)
         try:
             # score format is "dd%"
             return int(score.string.strip()[:-1])

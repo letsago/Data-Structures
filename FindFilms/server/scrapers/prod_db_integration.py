@@ -13,7 +13,17 @@ from functools import partial
 import threading
 
 lock = threading.Lock()
-target_states = {'California', 'Washington'}
+target_states = {   
+                    'Alabama', 'Arizona', 'Arkansas', 'California', 'Colorado', 
+                    'Connecticut', 'Delaware', 'District of Columbia', 'Florida', 
+                    'Georgia', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 
+                    'Kentucky', 'Louisiana', 'Maryland', 'Massachusetts', 'Michigan', 
+                    'Minnesota', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 
+                    'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina',
+                    'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania',  
+                    'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah',
+                    'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+                }
 
 def get_RT_url(movie_title):
     # RT url format is 'https://www.rottentomatoes.com/m/movie_name*_release_year*'
@@ -96,10 +106,16 @@ def get_theater_showings(theater_db):
         pool.join()
 
 def commit_all_showings(theaters):
-    pool = ThreadPool(12)
-    pool.map(get_theater_showings, theaters)
-    pool.close()
-    pool.join()
+    # pool = ThreadPool(12)
+    # pool.map(get_theater_showings, theaters)
+    # pool.close()
+    # pool.join()
+    theater_processed_count = 0
+    for theater_db in theaters:
+        get_theater_showings(theater_db)
+        theater_processed_count += 1
+        if theater_processed_count % 50 == 0:
+            time.sleep(120)
 
 def update_prod_showings():
     # updates showings database and adds any new movies and related info to their appropriate databases using preexisting theater database info
