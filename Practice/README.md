@@ -5,9 +5,10 @@ Hello and welcome to this README! This documents my implementations of the major
 ## How to run
 
 ```bash
-git clone https://flashhire@dev.azure.com/flashhire/PatrickYu/_git/PatrickYu
-cd PatrickYu/Practice
-source ~/References/tools/setup.sh
+git clone https://github.com/letsago/Data-Structures.git
+cd Data-Structures/Practice/
+git clone https://flashhire.visualstudio.com/_git/Reference
+. ~/Data-Structures/Practice/Reference/tools/setup.sh
 make run
 ```
 
